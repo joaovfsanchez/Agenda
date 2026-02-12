@@ -64,26 +64,30 @@
             margin-top: 5px;
         }
 
-        /* Botão da Lâmpada */
-        #theme-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 999;
-            background: var(--card-bg);
-            border: 2px solid var(--p-med);
-            border-radius: 50%;
-            width: 45px;
-            height: 45px;
-            cursor: pointer;
-            font-size: 20px;
-            display: none; /* Começa escondido para não aparecer na Splash */
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 8px var(--shadow);
-            transition: transform 0.2s;
-        }
-        #theme-toggle:active { transform: scale(0.9); }
+       /* Botão da Lâmpada - Movido para o canto inferior direito */
+#theme-toggle {
+    position: fixed;
+    bottom: 25px; /* Margem do fundo */
+    right: 25px;  /* Margem da direita */
+    z-index: 999;
+    background: var(--card-bg);
+    border: 2px solid var(--p-med);
+    border-radius: 50%;
+    width: 50px;  /* Aumentei um pouquinho para facilitar o toque */
+    height: 50px;
+    cursor: pointer;
+    font-size: 22px;
+    display: none; /* Mantemos oculto durante a Splash */
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3); /* Sombra mais visível no modo escuro */
+    transition: transform 0.2s, background 0.3s;
+}
+
+/* Efeito de clique no celular */
+#theme-toggle:active { 
+    transform: scale(0.85); 
+}
 
         /* Animações */
         @keyframes entrarESurgir {
@@ -269,3 +273,4 @@
 </script>
 </body>
 </html>
+
