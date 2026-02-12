@@ -148,32 +148,42 @@
     }
 
     function mostrarAba(nomeAba) {
-        const modal = document.getElementById('meuModal');
-        const titulo = document.getElementById('modal-titulo');
-        const corpo = document.getElementById('modal-corpo');
-        titulo.innerText = nomeAba;
-        corpo.innerHTML = "";
-        const itens = dadosApp[nomeAba] || [];
-        if(itens.length === 0) {
-            corpo.innerHTML = "<p>Nada cadastrado aqui ainda.</p>";
-        } else {
-            itens.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'aviso-item';
-                let conteudo = "";
-                if(nomeAba === "Avisos") {
-                    conteudo = `<span class="aviso-titulo">${item.Título}</span><span>${item.Mensagem}</span>`;
-                } else if(nomeAba === "Grade") {
-                    conteudo = `<span class="aviso-titulo">${item.Matéria}</span><small>${item.Horário} - ${item.Sala}</small>`;
-                } else {
-                    conteudo = Object.values(item).join(" - ");
-                }
-                div.innerHTML = conteudo;
-                corpo.appendChild(div);
-            });
-        }
-        modal.style.display = "flex";
+    const modal = document.getElementById('meuModal');
+    const titulo = document.getElementById('modal-titulo');
+    const corpo = document.getElementById('modal-corpo');
+    titulo.innerText = nomeAba;
+    corpo.innerHTML = "";
+
+    // Pega os itens da aba
+    let itens = dadosApp[nomeAba] || [];
+
+    // --- O TRUQUE ESTÁ AQUI ---
+    // Inverte a ordem: o último da planilha vira o primeiro da lista
+    itens = [...itens].reverse(); 
+    // --------------------------
+
+    if(itens.length === 0) {
+        corpo.innerHTML = "<p>Nada cadastrado aqui ainda.</p>";
+    } else {
+        itens.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'aviso-item';
+            
+            // O restante do seu código de preenchimento continua igual...
+            let conteudo = "";
+            if(nomeAba === "Avisos") {
+                conteudo = `<span class="aviso-titulo">${item.Título}</span><span>${item.Mensagem}</span>`;
+            } else if(nomeAba === "Grade") {
+                conteudo = `<span class="aviso-titulo">${item.Matéria}</span><small>${item.Horário} - ${item.Sala}</small>`;
+            } else {
+                conteudo = Object.values(item).join(" - ");
+            }
+            div.innerHTML = conteudo;
+            corpo.appendChild(div);
+        });
     }
+    modal.style.display = "flex";
+}
 
     function fecharModal() { document.getElementById('meuModal').style.display = "none"; }
     carregarDados();
@@ -194,6 +204,7 @@ window.addEventListener('load', () => {
 </body>
 
 </html>
+
 
 
 
