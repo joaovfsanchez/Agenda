@@ -15,94 +15,140 @@
     <link rel="icon" type="image/png" href="icon.png">
     <link rel="icon" sizes="192x192" href="icon.png">
     <link rel="icon" sizes="512x512" href="icon.png">
-    <meta name="mobile-web-app-capable" content="yes">
     <link rel="manifest" href="manifest.json">
+
     <style>
+        /* CONFIGURAÇÃO DE CORES (VARIÁVEIS) */
+        :root { 
+            --p-med: #007bff; 
+            --bg: #f4f7f6; 
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --header-bg: #ffffff;
+            --shadow: rgba(0,0,0,0.1);
+        }
+
+        /* CORES PARA O MODO ESCURO */
+        [data-theme="dark"] {
+            --bg: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --header-bg: #1e1e1e;
+            --shadow: rgba(0,0,0,0.5);
+        }
+
         /* Container da Splash */
-#splash {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background-color: #ffffff; /* Fundo branco limpo */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 10000; /* Garante que fica por cima de tudo */
-    transition: opacity 0.8s ease-out;
-}
+        #splash {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            transition: opacity 0.8s ease-out;
+        }
 
-/* O Logo pulsando */
-.logo-animado {
-    width: 180px; /* Ajuste o tamanho conforme achar melhor */
-    margin-bottom: 20px;
-    animation: entrarESurgir 1.2s ease-out forwards, pulsar 2s infinite 1.2s;
-}
+        .logo-animado {
+            width: 180px;
+            margin-bottom: 20px;
+            animation: entrarESurgir 1.2s ease-out forwards, pulsar 2s infinite 1.2s;
+        }
 
-.loader-text {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-weight: bold;
-    color: #003366; /* Azul marinho elegante */
-    font-size: 14px;
-    letter-spacing: 2px;
-}
+        .sub-text-splash {
+            font-family: sans-serif;
+            color: #888;
+            font-size: 12px;
+            margin-top: 5px;
+        }
 
-.sub-text {
-    font-family: sans-serif;
-    color: #888;
-    font-size: 12px;
-    margin-top: 5px;
-}
+        /* Botão da Lâmpada */
+        #theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 999;
+            background: var(--card-bg);
+            border: 2px solid var(--p-med);
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            cursor: pointer;
+            font-size: 20px;
+            display: none; /* Começa escondido para não aparecer na Splash */
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px var(--shadow);
+            transition: transform 0.2s;
+        }
+        #theme-toggle:active { transform: scale(0.9); }
 
-/* Animações CSS */
-@keyframes entrarESurgir {
-    0% { opacity: 0; transform: scale(0.7); }
-    100% { opacity: 1; transform: scale(1); }
-}
+        /* Animações */
+        @keyframes entrarESurgir {
+            0% { opacity: 0; transform: scale(0.7); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        @keyframes pulsar {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
 
-@keyframes pulsar {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-        :root { --p-med: #007bff; --bg: #f4f7f6; }
+        /* Estilos Base */
         body { 
             font-family: -apple-system, system-ui, sans-serif; 
             background: var(--bg); 
-            margin: 0; 
-            padding: 20px; 
-            color: #333; 
+            margin: 0; padding: 20px; 
+            color: var(--text-color); 
             -webkit-tap-highlight-color: transparent;
+            transition: background 0.3s, color 0.3s;
         }
-        .header { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; text-align: center; }
+
+        .header { 
+            background: var(--header-bg); 
+            padding: 15px; border-radius: 12px; 
+            box-shadow: 0 2px 5px var(--shadow); 
+            margin-bottom: 20px; text-align: center; 
+        }
+
         #status-bar { font-size: 0.8em; margin-top: 5px; }
         .status-online { color: #5cb85c; }
         
         .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        
         .card { 
-            background: white; padding: 20px; border-radius: 15px; text-align: center; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05); cursor: pointer; 
+            background: var(--card-bg); padding: 20px; border-radius: 15px; text-align: center; 
+            box-shadow: 0 4px 6px var(--shadow); cursor: pointer; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            font-weight: 600; transition: transform 0.1s;
+            font-weight: 600; transition: transform 0.1s, background 0.3s;
         }
-        .card:active { transform: scale(0.95); background: #f9f9f9; }
+        .card:active { transform: scale(0.95); }
         .card span { font-size: 1.5em; margin-bottom: 8px; }
 
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; z-index: 100; }
-        .modal-content { background: white; padding: 20px; border-radius: 20px; width: 100%; max-width: 400px; max-height: 80%; overflow-y: auto; position: relative; }
-        .close-btn { background: #eee; border: none; padding: 10px; border-radius: 50%; position: absolute; top: 10px; right: 10px; cursor: pointer; }
-        .aviso-item { border-bottom: 1px solid #eee; padding: 10px 0; }
-        .aviso-titulo { font-weight: bold; color: var(--p-med); display: block; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; z-index: 1000; }
+        .modal-content { background: var(--card-bg); padding: 25px; border-radius: 20px; width: 100%; max-width: 400px; max-height: 80%; overflow-y: auto; position: relative; color: var(--text-color); }
+        
+        .close-btn { background: var(--bg); color: var(--text-color); border: none; padding: 10px; border-radius: 50%; position: absolute; top: 10px; right: 10px; cursor: pointer; }
+        .aviso-item { border-bottom: 1px solid var(--shadow); padding: 12px 0; }
+        .aviso-titulo { font-weight: bold; color: var(--p-med); display: block; margin-bottom: 4px; }
         
         .footer { margin-top: 30px; text-align: center; }
         .btn-email { background: var(--p-med); color: white; padding: 12px 25px; border-radius: 25px; text-decoration: none; display: inline-block; font-weight: bold; }
     </style>
 </head>
 <body>
+
+<button id="theme-toggle" onclick="toggleTheme()">
+    <span id="theme-icon">💡</span>
+</button>
+
 <div id="splash">
     <img src="logo_UCP.png?v=1" class="logo-animado" alt="UCP Logo">
-    <div class="sub-text">Medicina - PJC</div>
+    <div class="sub-text-splash">Medicina - PJC</div>
 </div>
+
 <div class="header">
     <h2 style="margin:0">Medicina - Turma H</h2>
     <div id="status-bar">Sincronizando...</div>
@@ -124,12 +170,28 @@
 </div>
 
 <div class="footer">
-    <a href="" class="btn-email">📧 Sugerir Alteração</a>
+    <a href="mailto:seuemail@gmail.com" class="btn-email">📧 Sugerir Alteração</a>
 </div>
 
 <script>
     const URL_API = "https://script.google.com/macros/s/AKfycbxDt1R5Gpu2aDY5dts6aDQcigKLx28ZxjmXynrvOvmGmvwaG86xBQmOABbn_BsKsUNP7A/exec";
     let dadosApp = {};
+
+    // --- LÓGICA DO TEMA ESCURO ---
+    function toggleTheme() {
+        const html = document.documentElement;
+        const themeIcon = document.getElementById('theme-icon');
+        
+        if (html.getAttribute('data-theme') === 'dark') {
+            html.removeAttribute('data-theme');
+            themeIcon.innerText = '💡';
+            localStorage.setItem('theme', 'light');
+        } else {
+            html.setAttribute('data-theme', 'dark');
+            themeIcon.innerText = '🌙';
+            localStorage.setItem('theme', 'dark');
+        }
+    }
 
     async function carregarDados() {
         const status = document.getElementById('status-bar');
@@ -148,70 +210,62 @@
     }
 
     function mostrarAba(nomeAba) {
-    const modal = document.getElementById('meuModal');
-    const titulo = document.getElementById('modal-titulo');
-    const corpo = document.getElementById('modal-corpo');
-    titulo.innerText = nomeAba;
-    corpo.innerHTML = "";
+        const modal = document.getElementById('meuModal');
+        const titulo = document.getElementById('modal-titulo');
+        const corpo = document.getElementById('modal-corpo');
+        titulo.innerText = nomeAba;
+        corpo.innerHTML = "";
 
-    // Pega os itens da aba
-    let itens = dadosApp[nomeAba] || [];
+        let itens = dadosApp[nomeAba] || [];
+        itens = [...itens].reverse(); // Inverte a ordem para os mais novos aparecerem primeiro
 
-    // --- O TRUQUE ESTÁ AQUI ---
-    // Inverte a ordem: o último da planilha vira o primeiro da lista
-    itens = [...itens].reverse(); 
-    // --------------------------
-
-    if(itens.length === 0) {
-        corpo.innerHTML = "<p>Nada cadastrado aqui ainda.</p>";
-    } else {
-        itens.forEach(item => {
-            const div = document.createElement('div');
-            div.className = 'aviso-item';
-            
-            // O restante do seu código de preenchimento continua igual...
-            let conteudo = "";
-            if(nomeAba === "Avisos") {
-                conteudo = `<span class="aviso-titulo">${item.Título}</span><span>${item.Mensagem}</span>`;
-            } else if(nomeAba === "Grade") {
-                conteudo = `<span class="aviso-titulo">${item.Matéria}</span><small>${item.Horário} - ${item.Sala}</small>`;
-            } else {
-                conteudo = Object.values(item).join(" - ");
-            }
-            div.innerHTML = conteudo;
-            corpo.appendChild(div);
-        });
+        if(itens.length === 0) {
+            corpo.innerHTML = "<p>Nada cadastrado aqui ainda.</p>";
+        } else {
+            itens.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'aviso-item';
+                let conteudo = "";
+                if(nomeAba === "Avisos") {
+                    conteudo = `<span class="aviso-titulo">${item.Título}</span><span>${item.Mensagem}</span>`;
+                } else if(nomeAba === "Grade") {
+                    conteudo = `<span class="aviso-titulo">${item.Matéria}</span><small>${item.Horário} - ${item.Sala}</small>`;
+                } else {
+                    conteudo = Object.values(item).join(" - ");
+                }
+                div.innerHTML = conteudo;
+                corpo.appendChild(div);
+            });
+        }
+        modal.style.display = "flex";
     }
-    modal.style.display = "flex";
-}
 
     function fecharModal() { document.getElementById('meuModal').style.display = "none"; }
-    carregarDados();
-    // Função para esconder a Splash Screen
-window.addEventListener('load', () => {
-    // Espera 2.5 segundos para a pessoa ver o logo e a animação
-    setTimeout(() => {
-        const splash = document.getElementById('splash');
-        splash.style.opacity = '0'; // Faz o fade-out
-        
-        // Remove do HTML após o fade para não atrapalhar os cliques
+
+    // Inicialização
+    window.addEventListener('load', () => {
+        carregarDados();
+
+        // Aplicar tema salvo
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.getElementById('theme-icon').innerText = '🌙';
+        }
+
+        // Timer da Splash Screen
         setTimeout(() => {
-            splash.style.display = 'none';
-        }, 800); 
-    }, 2500);
-});
+            const splash = document.getElementById('splash');
+            const themeBtn = document.getElementById('theme-toggle');
+            
+            splash.style.opacity = '0';
+            
+            setTimeout(() => {
+                splash.style.display = 'none';
+                themeBtn.style.display = 'flex'; // Mostra a lâmpada só depois da Splash
+            }, 800); 
+        }, 2500);
+    });
 </script>
 </body>
-
 </html>
-
-
-
-
-
-
-
-
-
-
-
