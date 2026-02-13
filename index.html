@@ -253,6 +253,36 @@
         }
     }
 
+    // --- FUNÇÃO DE BUSCA PARA GRUPOS ---
+    function filtrarGrupos() {
+        const termo = document.getElementById('inputBuscaGrupo').value.toLowerCase();
+        const materias = document.querySelectorAll('.materia-retratil');
+
+        materias.forEach(materia => {
+            const grupos = materia.querySelectorAll('.grupo-detalhe');
+            let materiaTemMatch = false;
+
+            grupos.forEach(grupo => {
+                const nomes = grupo.getAttribute('data-nomes') || "";
+                if (nomes.includes(termo)) {
+                    grupo.style.display = "block";
+                    materiaTemMatch = true;
+                } else {
+                    grupo.style.display = "none";
+                }
+            });
+
+            materia.style.display = materiaTemMatch ? "block" : "none";
+            
+            // Abre a pasta da matéria se houver busca, senão fecha
+            if (termo.length > 0 && materiaTemMatch) {
+                materia.open = true;
+            } else if (termo.length === 0) {
+                materia.open = false;
+            }
+        });
+    }
+
     function mostrarAba(nomeAba) {
         const modal = document.getElementById('meuModal');
         const corpo = document.getElementById('modal-corpo');
@@ -263,26 +293,34 @@
         if (nomeAba === "Grade" || nomeAba === "Arquivos" || nomeAba === "Grupos") {
             const estrutura = {};
             
-            // --- LÓGICA DE ORDENAÇÃO PARA A GRADE ---
+            // Se for Grupos, adiciona o campo de busca primeiro
+            if (nomeAba === "Grupos") {
+                const buscaHTML = `
+                    <div style="position: sticky; top: -20px; background: var(--card-bg); padding: 10px 0; z-index: 10; margin-bottom: 15px;">
+                        <input type="text" id="inputBuscaGrupo" placeholder="🔍 Digite seu nome..." 
+                            style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--p-med); background: var(--input-bg); color: var(--text-color); font-size: 16px;"
+                            oninput="filtrarGrupos()">
+                    </div>
+                    <div id="container-lista-dinamica"></div>
+                `;
+                corpo.innerHTML = buscaHTML;
+            }
+
+            // Ordenação da Grade
             if (nomeAba === "Grade") {
                 const ordemDias = {
-                    "Segunda-Feira / Lunes": 1,
-                    "Terça-Feira / Martes": 2,
-                    "Quarta-Feira / Miércoles": 3,
-                    "Quinta-Feira / Jueves": 4,
-                    "Sexta-Feira / Viernes": 5,
-                    "Sábado / Sábado": 6
+                    "Segunda-Feira / Lunes": 1, "Terça-Feira / Martes": 2, "Quarta-Feira / Miércoles": 3,
+                    "Quinta-Feira / Jueves": 4, "Sexta-Feira / Viernes": 5, "Sábado / Sábado": 6
                 };
-
                 itens.sort((a, b) => {
                     let ordemA = ordemDias[a["Dia da Semana"]] || 99;
                     let ordemB = ordemDias[b["Dia da Semana"]] || 99;
                     if (ordemA !== ordemB) return ordemA - ordemB;
-                    // Se for o mesmo dia, ordena pelo horário
                     return (a.Horários || "").localeCompare(b.Horários || "");
                 });
             }
 
+            // Agrupa os dados
             itens.forEach(item => {
                 let cat;
                 if (nomeAba === "Grade") cat = item["Dia da Semana"] || "Outros";
@@ -292,16 +330,15 @@
                 estrutura[cat].push(item);
             });
 
-            // Criar os elementos visuais mantendo a ordem que acabamos de definir
-            const categoriasOrdenadas = (nomeAba === "Grade") ? Object.keys(estrutura) : Object.keys(estrutura);
+            const alvo = (nomeAba === "Grupos") ? document.getElementById('container-lista-dinamica') : corpo;
 
-            categoriasOrdenadas.forEach(cat => {
+            Object.keys(estrutura).forEach(cat => {
                 const det = document.createElement('details');
                 det.className = 'materia-retratil';
                 
                 det.addEventListener('toggle', function() {
                     if (this.open) {
-                        corpo.querySelectorAll('.materia-retratil').forEach(o => { if (o !== this) o.open = false; });
+                        alvo.querySelectorAll('.materia-retratil').forEach(o => { if (o !== this) o.open = false; });
                     }
                 });
 
@@ -329,7 +366,7 @@
                         grps[g].push(formatarNome(i["Integrantes"]));
                     });
                     conteudoInterno = Object.keys(grps).map(g => `
-                        <details class="grupo-detalhe" style="margin-bottom:10px; border:1px solid var(--shadow); border-radius:8px; width: 100%;">
+                        <details class="grupo-detalhe" style="margin-bottom:10px; border:1px solid var(--shadow); border-radius:8px; width: 100%;" data-nomes="${grps[g].join(',').toLowerCase()}">
                             <summary style="padding:12px; font-size:0.9em; font-weight:bold; cursor:pointer; display: flex; justify-content: space-between; align-items: center; text-align: left;">
                                 <span>${g}</span> <small style="color: #888; margin-left:10px;">${grps[g].length} ▾</small>
                             </summary>
@@ -338,10 +375,9 @@
                 }
 
                 det.innerHTML = `<summary class="materia-sumario"><span>${cat}</span></summary><div style="padding: 12px; box-sizing: border-box;">${conteudoInterno}</div>`;
-                corpo.appendChild(det);
+                alvo.appendChild(det);
             });
         } else {
-            // Lógica para Avisos (Invertido para o mais recente aparecer primeiro)
             itens.slice().reverse().forEach(item => {
                 const div = document.createElement('div');
                 div.style.padding = "15px"; div.style.borderBottom = "1px solid var(--shadow)"; div.style.textAlign = "left";
@@ -374,6 +410,7 @@
 </script>
 </body>
 </html>
+
 
 
 
