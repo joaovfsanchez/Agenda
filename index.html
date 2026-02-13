@@ -147,12 +147,11 @@
             if (cacheRaw) {
                 const cacheAntigo = JSON.parse(cacheRaw);
                 
-                // Lógica de Notificação Ultra-Segura
+                // Lógica de Notificação revisada
                 if (cacheAntigo.Avisos && cacheAntigo.Avisos.length > 0 && novosDados.Avisos && novosDados.Avisos.length > 0) {
                     const ultimoNovo = novosDados.Avisos[novosDados.Avisos.length - 1].Titulo;
                     const ultimoCache = cacheAntigo.Avisos[cacheAntigo.Avisos.length - 1].Titulo;
 
-                    // Só mostra se os dois existirem e forem diferentes
                     if (ultimoNovo && ultimoCache && ultimoNovo !== ultimoCache) {
                         document.getElementById('badge-avisos').style.display = 'block';
                     }
@@ -189,7 +188,6 @@
                 div.className = 'aviso-item';
                 
                 if(nomeAba === "Avisos") {
-                    // Formatação de data brasileira dd/mm/aaaa
                     let dataFormatada = "";
                     if (item.Data) {
                         const d = new Date(item.Data);
