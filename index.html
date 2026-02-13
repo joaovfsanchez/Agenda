@@ -223,15 +223,32 @@
         setupAccordion("gps");
     }
 
+    // --- LÓGICA DO BOTÃO AULAS ONLINE (TOQUE NORMAL VS TOQUE LONGO) ---
+    let timerPlanilha;
+    const btnAulas = document.querySelector('div[onclick="abrirLinks()"]');
+
+    // Quando segura o dedo no botão (3 segundos)
+    btnAulas.addEventListener('touchstart', () => {
+        timerPlanilha = setTimeout(() => {
+            // SUBSTITUA PELO LINK DA SUA PLANILHA (Aba Links)
+            window.open("https://docs.google.com/spreadsheets/d/SEU_ID_DA_PLANILHA/edit#gid=ID_DA_ABA", "_blank");
+        }, 3000); 
+    });
+
+    btnAulas.addEventListener('touchend', () => clearTimeout(timerPlanilha));
+
     function abrirLinks() {
         const corpo = document.getElementById('modal-corpo');
         document.getElementById('modal-titulo').innerText = "Portal de Aulas Online";
+        
+        // Puxa os dados REAIS da sua planilha
         const itens = dadosApp["Links"] || [];
         
         if (itens.length === 0) {
-            corpo.innerHTML = "<p style='text-align:center; opacity:0.5; padding:20px;'>Nenhum link agendado.</p>";
+            corpo.innerHTML = "<p style='text-align:center; opacity:0.5; padding:40px;'>Nenhuma aula agendada no momento.</p>";
         } else {
             corpo.innerHTML = itens.map(i => {
+                // Cálculo de tempo real para o teste de agendamento
                 const agora = new Date();
                 const [dia, mes, ano] = i["Data"].split('/');
                 const [hora, minuto] = i["Horário"].split(':');
@@ -241,27 +258,35 @@
                 let btnCor = "#6c757d"; 
                 let textoBtn = "LINK INDISPONÍVEL";
 
-                if (agora >= dataAula) {
-                    statusHtml = '<span style="color:#28a745; font-size:0.7em;">● AO VIVO</span>';
+                // Se a hora atual for maior ou igual ao início da aula
+                // (Adicionamos uma tolerância: aula fica 'Ao Vivo' por até 3 horas após o início)
+                const tresHorasDepois = new Date(dataAula.getTime() + (3 * 60 * 60 * 1000));
+
+                if (agora >= dataAula && agora <= tresHorasDepois) {
+                    statusHtml = '<span style="color:#28a745; font-size:0.75em; font-weight:bold;">● AO VIVO</span>';
                     btnCor = "#28a745";
-                    textoBtn = "ACESSAR AULA AGORA";
-                } else {
-                    statusHtml = `<span style="color:#ffa500; font-size:0.7em;">⌛ AGENDADA</span>`;
+                    textoBtn = "ENTRAR NA AULA AGORA";
+                } else if (agora < dataAula) {
+                    statusHtml = `<span style="color:#ffa500; font-size:0.75em; font-weight:bold;">⌛ AGENDADA</span>`;
                     btnCor = "#007bff";
-                    textoBtn = "ABRIR LINK";
+                    textoBtn = "VER LINK AGENDADO";
+                } else {
+                    statusHtml = `<span style="color:#888; font-size:0.75em;">✓ ENCERRADA</span>`;
+                    btnCor = "#444";
+                    textoBtn = "REVISAR CONTEÚDO";
                 }
 
                 return `
-                    <div class="item-lista" style="flex-direction:column; align-items:flex-start; border-left: 5px solid ${btnCor};">
+                    <div class="item-lista" style="flex-direction:column; align-items:flex-start; border-left: 6px solid ${btnCor}; margin-bottom:15px;">
                         <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
                             <b style="color:var(--p-med); font-size:1.1em;">${i["Materia"]}</b>
                             ${statusHtml}
                         </div>
-                        <div style="margin: 5px 0; font-size:0.85em; opacity:0.8;">
-                            🗓️ ${i["Data"]} | ⏰ ${i["Horário"]}
+                        <div style="margin: 8px 0; font-size:0.85em; opacity:0.8;">
+                            🗓️ Data: ${i["Data"]} | ⏰ Início: ${i["Horário"]}
                         </div>
                         <a href="${i["Url"]}" target="_blank" 
-                           style="background:${btnCor}; color:white; text-decoration:none; padding:12px; border-radius:10px; width:100%; text-align:center; font-weight:bold; margin-top:10px; display:block;">
+                           style="background:${btnCor}; color:white; text-decoration:none; padding:14px; border-radius:10px; width:100%; text-align:center; font-weight:bold; display:block;">
                            ${textoBtn}
                         </a>
                     </div>`;
@@ -289,4 +314,5 @@
 </script>
 </body>
 </html>
+
 
