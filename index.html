@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Agenda Medicina - Turma H</title>
+    <title>Agenda Medicine - Turma H</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -25,7 +25,7 @@
             color: var(--text-color); 
             transition: background 0.3s; 
             padding-bottom: 100px;
-            /* BLOQUEIA O REFRESH PADRÃO DO NAVEGADOR NO ANDROID */
+            /* BLOQUEIA O REFRESH NATIVO DO ANDROID */
             overscroll-behavior-y: contain; 
         }
 
@@ -79,6 +79,7 @@
 
         .admin-form input, .admin-form textarea { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid var(--shadow); background: var(--input-bg); color: var(--text-color); font-family: inherit; }
         .btn-postar { background: #28a745; color: white; border: none; padding: 15px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        #statusEnvio { text-align: center; font-weight: bold; margin-top: 10px; font-size: 0.9em; }
     </style>
 </head>
 <body>
@@ -121,11 +122,11 @@
         <div class="admin-form">
             <input type="password" id="adminSenha" placeholder="Senha de Acesso">
             <hr style="opacity: 0.2;">
-            <input type="text" id="avisoTitulo" placeholder="Título">
-            <textarea id="avisoTexto" rows="4" placeholder="Mensagem..."></textarea>
+            <input type="text" id="avisoTitulo" placeholder="Título (ex: Mudança de Sala)">
+            <textarea id="avisoTexto" rows="4" placeholder="Mensagem para a turma..."></textarea>
             <button class="btn-postar" onclick="enviarAviso()">🚀 Postar Agora</button>
         </div>
-        <div id="statusEnvio" style="text-align:center; font-weight:bold; margin-top:10px;"></div>
+        <div id="statusEnvio"></div>
     </div>
 </div>
 
@@ -133,11 +134,12 @@
     const URL_API = "https://script.google.com/macros/s/AKfycbxDt1R5Gpu2aDY5dts6aDQcigKLx28ZxjmXynrvOvmGmvwaG86xBQmOABbn_BsKsUNP7A/exec"; 
     let dadosApp = {};
     let timerAdmin;
+
+    // --- LÓGICA DE ATUALIZAÇÃO (PULL-TO-REFRESH) CORRIGIDA ---
     let touchStart = 0;
     let touchEnd = 0;
     const indicator = document.getElementById('refresh-indicator');
 
-    // --- PULL TO REFRESH ---
     window.addEventListener('touchstart', (e) => {
         touchStart = e.targetTouches[0].pageY;
     }, { passive: true });
@@ -145,8 +147,12 @@
     window.addEventListener('touchmove', (e) => {
         touchEnd = e.targetTouches[0].pageY;
         const distance = touchEnd - touchStart;
-        if (window.scrollY <= 0 && distance > 80) {
-            indicator.style.top = '20px';
+
+        // Se estiver no topo e puxar para baixo
+        if (window.scrollY <= 0 && distance > 0) {
+            if (distance > 80) {
+                indicator.style.top = '20px';
+            }
         }
     }, { passive: true });
 
@@ -156,15 +162,21 @@
             indicator.innerText = "🔄 Atualizando...";
             await carregarDados();
             indicator.innerText = "✅ Atualizado!";
-            setTimeout(() => { indicator.style.top = '-60px'; }, 1000);
+            setTimeout(() => {
+                indicator.style.top = '-60px';
+            }, 1000);
         }
-        touchStart = 0; touchEnd = 0;
+        touchStart = 0;
+        touchEnd = 0;
     });
 
-    // --- FUNÇÕES GERAIS ---
+    // --- RESTANTE DAS FUNÇÕES ---
+
     const tituloHeader = document.getElementById('tituloPrincipal');
     tituloHeader.addEventListener('touchstart', () => timerAdmin = setTimeout(abrirAdmin, 5000));
     tituloHeader.addEventListener('touchend', () => clearTimeout(timerAdmin));
+    tituloHeader.addEventListener('mousedown', () => timerAdmin = setTimeout(abrirAdmin, 5000));
+    tituloHeader.addEventListener('mouseup', () => clearTimeout(timerAdmin));
 
     function abrirAdmin() { document.getElementById('modalAdmin').style.display = "flex"; }
     function fecharAdmin() { document.getElementById('modalAdmin').style.display = "none"; }
@@ -184,6 +196,11 @@
                 setTimeout(() => { fecharAdmin(); carregarDados(); }, 2000);
             } else { status.innerText = "❌ Senha incorreta!"; }
         } catch (e) { status.innerText = "❌ Erro!"; }
+    }
+
+    function formatarNome(texto) {
+        if(!texto) return "";
+        return texto.toString().toLowerCase().replace(/(^\w|\s\w)/g, m => m.toUpperCase());
     }
 
     async function carregarDados() {
@@ -229,11 +246,11 @@
             corpo.innerHTML = `<div class="search-container"><input type="text" id="inputBusca" class="search-input" placeholder="🔍 Buscar..." oninput="filtrarGrupos()"></div>`;
             const estrutura = {}; 
             itens.forEach(item => {
-                const mat = (item["Matéria"] || "Geral");
-                const grp = (item["Nome do Grupo"] || "Sem Grupo");
+                const mat = formatarNome(item["Matéria"] || "Geral");
+                const grp = formatarNome(item["Nome do Grupo"] || "Sem Grupo");
                 if(!estrutura[mat]) estrutura[mat] = {};
                 if(!estrutura[mat][grp]) estrutura[mat][grp] = [];
-                if(item["Integrantes"]) estrutura[mat][grp].push(item["Integrantes"]);
+                if(item["Integrantes"]) estrutura[mat][grp].push(formatarNome(item["Integrantes"]));
             });
             for (let mat in estrutura) {
                 const matDet = document.createElement('details');
@@ -252,7 +269,19 @@
             itens.slice().reverse().forEach(item => {
                 const div = document.createElement('div');
                 div.style.padding = "15px 0"; div.style.borderBottom = "1px solid var(--shadow)";
-                div.innerHTML = `<b>${item.Matéria || item.Nome || item.Titulo || ''}</b><br><small style="color:#888">${item.Horário || item.Descrição || item.Mensagem || ''}</small>`;
+                if(nomeAba === "Avisos") {
+                    let dataFormatada = "";
+                    if (item.Data) {
+                        let d = item.Data.toString();
+                        if (d.includes("T")) {
+                            let partes = d.split("T")[0].split("-");
+                            dataFormatada = `${partes[2]}/${partes[1]}/${partes[0]}`;
+                        } else { dataFormatada = d.substring(0, 10); }
+                    }
+                    div.innerHTML = `<small style="color:#888">${dataFormatada}</small><br><b style="color:var(--p-med)">${item.Titulo || 'Aviso'}</b><p style="margin:5px 0; font-size:0.9em">${item.Mensagem || ''}</p>`;
+                } else {
+                    div.innerHTML = `<b>${item.Matéria || item.Nome || ''}</b><br><small style="color:#888">${item.Horário || item.Descrição || ''}</small>`;
+                }
                 corpo.appendChild(div);
             });
         }
@@ -279,17 +308,8 @@
         localStorage.setItem('theme', isDark ? 'light' : 'dark');
     }
 
-    // --- CARREGAMENTO INICIAL E SERVICE WORKER ---
     window.addEventListener('load', () => {
         carregarDados();
-
-        // Registro do Service Worker para habilitar Instalação
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js?v=3')
-                .then(reg => console.log('PWA Ativo'))
-                .catch(err => console.log('Erro SW', err));
-        }
-
         if (localStorage.getItem('theme') === 'dark') {
             document.documentElement.setAttribute('data-theme', 'dark');
             document.getElementById('theme-icon').innerText = '🌙';
