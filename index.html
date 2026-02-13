@@ -40,18 +40,26 @@
         .search-container { position: sticky; top: -26px; background: var(--card-bg); z-index: 10; padding: 10px 0; margin-bottom: 15px; border-bottom: 1px solid var(--shadow); }
         .search-input { width: 100%; height: 45px; padding: 0 15px; border-radius: 10px; border: none; background: var(--input-bg); color: var(--text-color); box-sizing: border-box; font-size: 16px; outline: none; -webkit-appearance: none; }
 
-        .materia-box { margin-bottom: 15px; border: 1px solid var(--shadow); border-radius: 10px; padding: 12px; background: rgba(0,123,255,0.03); }
-        .materia-titulo { font-weight: 800; color: var(--p-med); text-transform: uppercase; font-size: 0.8em; margin-bottom: 10px; display: block; letter-spacing: 0.5px; }
+        /* Estilo da Matéria Retrátil */
+        .materia-retratil { margin-bottom: 12px; border: 1px solid var(--shadow); border-radius: 12px; overflow: hidden; background: var(--card-bg); }
+        .materia-sumario { background: rgba(0,123,255,0.07); padding: 14px; font-weight: 800; color: var(--p-med); text-transform: uppercase; font-size: 0.85em; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .materia-sumario::after { content: '📁'; font-size: 1.1em; }
+        .materia-retratil[open] .materia-sumario { border-bottom: 1px solid var(--shadow); background: rgba(0,123,255,0.12); }
+        .materia-retratil[open] .materia-sumario::after { content: '📂'; }
+
+        .conteudo-grupos { padding: 10px; }
         
         .aviso-item { border-bottom: 1px solid var(--shadow); padding: 12px 0; }
         .aviso-titulo { font-weight: bold; color: var(--text-color); display: block; }
         
         .arquivo-btn { display: inline-flex; align-items: center; background: var(--p-med); color: white; padding: 8px 15px; border-radius: 8px; text-decoration: none; font-size: 0.85em; margin-top: 8px; font-weight: bold; }
         
-        summary { outline: none; list-style: none; display: flex !important; justify-content: space-between !important; align-items: center !important; width: 100%; padding: 5px 0; cursor: pointer; }
-        summary::-webkit-details-marker { display: none; }
+        /* Estilo do Grupo Interno */
+        .grupo-detalhe { border-bottom: 1px solid rgba(0,0,0,0.05); }
+        summary.grupo-sumario { outline: none; list-style: none; display: flex !important; justify-content: space-between !important; align-items: center !important; width: 100%; padding: 10px 5px; cursor: pointer; font-weight: 600; font-size: 0.95em; }
+        summary.grupo-sumario::-webkit-details-marker { display: none; }
         
-        ul.lista-integrantes { padding-left: 20px !important; margin: 10px 0 !important; list-style-type: circle; text-align: left !important; border-left: 2px solid var(--p-med); }
+        ul.lista-integrantes { padding-left: 20px !important; margin: 5px 0 15px 0 !important; list-style-type: circle; text-align: left !important; border-left: 2px solid var(--p-med); }
         
         #theme-toggle { position: fixed; bottom: 25px; right: 25px; z-index: 999; background: var(--card-bg); border: 2px solid var(--p-med); border-radius: 50%; width: 50px; height: 50px; display: none; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 4px 15px var(--shadow); cursor: pointer; }
     </style>
@@ -86,10 +94,6 @@
         <h3 id="modal-titulo" style="margin:0 0 10px 0; color:var(--p-med);">Título</h3>
         <div id="modal-corpo"></div>
     </div>
-</div>
-
-<div class="footer" style="margin-top: 30px; text-align: center;">
-    <a href="mailto:seuemail@gmail.com" style="background: var(--p-med); color: white; padding: 12px 25px; border-radius: 25px; text-decoration: none; font-weight: bold; display: inline-block; font-size: 14px;">📧 Sugerir Alteração</a>
 </div>
 
 <script>
@@ -149,16 +153,31 @@
 
     function filtrarGrupos() {
         const termo = document.getElementById('inputBusca').value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        const boxes = document.querySelectorAll('.materia-box');
-        boxes.forEach(box => {
-            let match = false;
-            box.querySelectorAll('details').forEach(det => {
-                if (det.innerText.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(termo)) {
-                    det.style.display = "block"; match = true;
-                    if (termo.length > 2) det.setAttribute('open', 'true');
-                } else { det.style.display = "none"; det.removeAttribute('open'); }
+        const materias = document.querySelectorAll('.materia-retratil');
+        
+        materias.forEach(matBox => {
+            let materiaTemMatch = false;
+            const grupos = matBox.querySelectorAll('.grupo-detalhe');
+            
+            grupos.forEach(grp => {
+                const textoInterno = grp.innerText.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                if (textoInterno.includes(termo)) {
+                    grp.style.display = "block";
+                    materiaTemMatch = true;
+                    if (termo.length > 2) grp.setAttribute('open', 'true');
+                } else {
+                    grp.style.display = "none";
+                    grp.removeAttribute('open');
+                }
             });
-            box.style.display = match ? "block" : "none";
+
+            if (materiaTemMatch) {
+                matBox.style.display = "block";
+                if (termo.length > 1) matBox.setAttribute('open', 'true');
+            } else {
+                matBox.style.display = "none";
+                if (termo.length === 0) matBox.removeAttribute('open');
+            }
         });
     }
 
@@ -182,23 +201,29 @@
                     if(!estrutura[mat][grp]) estrutura[mat][grp] = [];
                     if(item["Integrantes"]) estrutura[mat][grp].push(formatarNome(item["Integrantes"]));
                 });
+
                 for (let mat in estrutura) {
-                    const box = document.createElement('div'); box.className = 'materia-box';
-                    box.innerHTML = `<span class="materia-titulo">${mat}</span>`;
+                    const matDetails = document.createElement('details');
+                    matDetails.className = 'materia-retratil';
+                    matDetails.innerHTML = `<summary class="materia-sumario">${mat}</summary><div class="conteudo-grupos"></div>`;
+                    const containerGrupos = matDetails.querySelector('.conteudo-grupos');
+
                     for (let grp in estrutura[mat]) {
-                        const det = document.createElement('details');
-                        det.addEventListener('toggle', function() { if(this.open && !document.getElementById('inputBusca').value) corpo.querySelectorAll('details').forEach(d => { if(d !== this) d.removeAttribute('open'); }); });
-                        det.innerHTML = `<summary><span>${grp}</span><small style="color:#888;">${estrutura[mat][grp].length} ▾</small></summary>
-                                         <ul class="lista-integrantes">${estrutura[mat][grp].map(n => `<li style="font-size:0.85em; margin-bottom:4px;">${n}</li>`).join('')}</ul>`;
-                        box.appendChild(det);
+                        const grpDet = document.createElement('details');
+                        grpDet.className = 'grupo-detalhe';
+                        grpDet.innerHTML = `
+                            <summary class="grupo-sumario"><span>${grp}</span><small style="color:#888;">${estrutura[mat][grp].length} ▾</small></summary>
+                            <ul class="lista-integrantes">${estrutura[mat][grp].map(n => `<li>${n}</li>`).join('')}</ul>
+                        `;
+                        containerGrupos.appendChild(grpDet);
                     }
-                    corpo.appendChild(box);
+                    corpo.appendChild(matDetails);
                 }
             } else if(nomeAba === "Arquivos") {
                 itens.reverse().forEach(item => {
                     const div = document.createElement('div'); div.className = 'aviso-item';
-                    div.innerHTML = `<span class="aviso-titulo">${item.Nome || item.Título || 'Arquivo'}</span>
-                                     <small style="color:#888; display:block; margin:4px 0;">${item.Descrição || item.Descricao || ''}</small>
+                    div.innerHTML = `<span class="aviso-titulo">${item.Nome || 'Arquivo'}</span>
+                                     <small style="color:#888; display:block; margin:4px 0;">${item.Descrição || ''}</small>
                                      <a href="${item.Link}" target="_blank" class="arquivo-btn">📂 Abrir Arquivo</a>`;
                     corpo.appendChild(div);
                 });
