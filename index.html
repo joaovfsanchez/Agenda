@@ -146,12 +146,14 @@
             
             if (cacheRaw) {
                 const cacheAntigo = JSON.parse(cacheRaw);
-                if (cacheAntigo.Avisos && novosDados.Avisos && novosDados.Avisos.length > 0) {
-                    // ATENÇÃO: Se na planilha estiver "Título", coloque acento aqui embaixo também
+                
+                // Lógica de Notificação Ultra-Segura
+                if (cacheAntigo.Avisos && cacheAntigo.Avisos.length > 0 && novosDados.Avisos && novosDados.Avisos.length > 0) {
                     const ultimoNovo = novosDados.Avisos[novosDados.Avisos.length - 1].Titulo;
-                    const ultimoCache = cacheAntigo.Avisos[cacheAntigo.Avisos.length - 1]?.Titulo;
+                    const ultimoCache = cacheAntigo.Avisos[cacheAntigo.Avisos.length - 1].Titulo;
 
-                    if (ultimoCache && ultimoNovo !== ultimoCache) {
+                    // Só mostra se os dois existirem e forem diferentes
+                    if (ultimoNovo && ultimoCache && ultimoNovo !== ultimoCache) {
                         document.getElementById('badge-avisos').style.display = 'block';
                     }
                 }
@@ -187,18 +189,17 @@
                 div.className = 'aviso-item';
                 
                 if(nomeAba === "Avisos") {
-                    // Lógica para formatar a data de ISO para dd/mm/aaaa
+                    // Formatação de data brasileira dd/mm/aaaa
                     let dataFormatada = "";
                     if (item.Data) {
                         const d = new Date(item.Data);
-                        // Verifica se a data é válida antes de formatar
                         if (!isNaN(d.getTime())) {
                             const dia = String(d.getDate()).padStart(2, '0');
                             const mes = String(d.getMonth() + 1).padStart(2, '0');
                             const ano = d.getFullYear();
                             dataFormatada = `${dia}/${mes}/${ano}`;
                         } else {
-                            dataFormatada = item.Data; // Mantém o original se não for uma data padrão
+                            dataFormatada = item.Data;
                         }
                     }
 
@@ -207,7 +208,6 @@
                         <span class="aviso-titulo" style="font-size: 1.1em; margin-bottom: 5px;">${item.Titulo || 'Aviso'}</span>
                         <div style="font-size: 0.95em; line-height: 1.4;">${item.Mensagem || ''}</div>
                     `;
-                }
                 } else if(nomeAba === "Grade") {
                     div.innerHTML = `<span class="aviso-titulo">${item.Matéria || ''}</span><small>${item.Horário || ''} - ${item.Sala || ''}</small>`;
                 } else {
@@ -253,4 +253,3 @@
 </script>
 </body>
 </html>
-
