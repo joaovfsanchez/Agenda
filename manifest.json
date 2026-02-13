@@ -1,5 +1,5 @@
 {
-  "short_name": "Agenda Turma H",
+  "short_name": "Medicina H",
   "name": "Agenda Medicina - Turma H",
   "icons": [
     {
@@ -13,8 +13,8 @@
       "type": "image/png"
     }
   ],
-  "start_url": "./index.html",
+  "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#f4f7f6",
-  "theme_color": "#007bff"
+  "theme_color": "#007bff",
+  "background_color": "#ffffff"
 }
