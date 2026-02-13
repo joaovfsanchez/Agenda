@@ -250,15 +250,7 @@
         }
     }
 
-    function mostrarAba(nomeAba) {
-    const modal = document.getElementById('meuModal');
-    const corpo = document.getElementById('modal-corpo');
-    document.getElementById('modal-titulo').innerText = nomeAba;
-    corpo.innerHTML = "";
-    let itens = dadosApp[nomeAba] || [];
-
     if (nomeAba === "Arquivos") {
-        // Agrupar por "Nome" (ex: Guia Histologia, Guia Anatomia)
         const estrutura = {};
         itens.forEach(item => {
             const categoria = item.Nome || "Geral";
@@ -269,6 +261,7 @@
         for (let categoria in estrutura) {
             const det = document.createElement('details');
             det.className = 'materia-retratil';
+            
             // Lógica de fechar os outros ao abrir um
             det.addEventListener('toggle', function() {
                 if (this.open) {
@@ -282,19 +275,18 @@
                 <summary class="materia-sumario"><span>${categoria}</span></summary>
                 <div style="padding: 10px;">
                     ${estrutura[categoria].map(arq => `
-                        <a href="${arq.Link}" target="_blank" class="arquivo-item">
-                            <div>
-                                <strong>Abrir Material</strong><br>
-                                <small style="color:#888">${arq.Descrição || ''}</small>
+                        <a href="${arq.Link}" target="_blank" class="arquivo-item" style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--input-bg); border-radius: 10px; margin-bottom: 8px; text-decoration: none;">
+                            <div style="color: var(--text-color); font-size: 0.95em; font-weight: 500;">
+                                ${arq.Descrição || 'Sem descrição'}
                             </div>
-                            <span class="arquivo-link-icon">🔗</span>
+                            <span style="color: var(--p-med); margin-left: 10px;">🔗</span>
                         </a>
                     `).join('')}
                 </div>
             `;
             corpo.appendChild(det);
         }
-    } 
+    }
     else if (nomeAba === "Grupos") {
         // ... (mantenha sua lógica de grupos aqui, mas adicione a função de fechar os outros)
         // Dica: Adicione o mesmo eventListener de 'toggle' nos detalhes dos grupos
@@ -344,4 +336,5 @@
 </script>
 </body>
 </html>
+
 
