@@ -247,12 +247,25 @@
                 corpo.appendChild(matDet);
             }
         } else {
-            itens.reverse().forEach(item => {
+            itens.slice().reverse().forEach(item => {
                 const div = document.createElement('div');
-                div.style.padding = "15px 0"; div.style.borderBottom = "1px solid var(--shadow)";
+                div.style.padding = "15px 0"; 
+                div.style.borderBottom = "1px solid var(--shadow)";
+                
                 if(nomeAba === "Avisos") {
-                    div.innerHTML = `<small style="color:#888">${item.Data || ''}</small><br><b style="color:var(--p-med)">${item.Titulo || 'Aviso'}</b><p style="margin:5px 0; font-size:0.9em">${item.Mensagem || ''}</p>`;
+                    let dataFormatada = "";
+                    if (item.Data) {
+                        let d = item.Data.toString();
+                        if (d.includes("T")) {
+                            let partes = d.split("T")[0].split("-");
+                            dataFormatada = `${partes[2]}/${partes[1]}/${partes[0]}`;
+                        } else {
+                            dataFormatada = d.substring(0, 10);
+                        }
+                    }
+                    div.innerHTML = `<small style="color:#888">${dataFormatada}</small><br><b style="color:var(--p-med)">${item.Titulo || 'Aviso'}</b><p style="margin:5px 0; font-size:0.9em">${item.Mensagem || ''}</p>`;
                 } else {
+                    // Aqui é onde Grade, Arquivos, etc. são montados
                     div.innerHTML = `<b>${item.Matéria || item.Nome || ''}</b><br><small style="color:#888">${item.Horário || item.Descrição || ''}</small>`;
                 }
                 corpo.appendChild(div);
@@ -300,7 +313,22 @@ window.addEventListener('touchend', async () => {
     touchStart = 0;
     touchEnd = 0;
 });
-
+    function filtrarGrupos() {
+        const termo = document.getElementById('inputBusca').value.toLowerCase();
+        const itens = document.querySelectorAll('.grupo-detalhe');
+        
+        itens.forEach(item => {
+            const texto = item.innerText.toLowerCase();
+            item.style.display = texto.includes(termo) ? "block" : "none";
+            
+            // Se estiver filtrando, abre o grupo automaticamente para mostrar o resultado
+            if(termo.length > 0 && texto.includes(termo)) {
+                item.open = true;
+            } else if (termo.length === 0) {
+                item.open = false;
+            }
+        });
+    }
     function fecharModal() { document.getElementById('meuModal').style.display = "none"; }
     
     function toggleTheme() {
@@ -324,6 +352,7 @@ window.addEventListener('touchend', async () => {
 </script>
 </body>
 </html>
+
 
 
 
