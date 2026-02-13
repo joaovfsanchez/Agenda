@@ -271,8 +271,10 @@
 }
 
 // Função auxiliar para desenhar a lista (usada na abertura e na busca)
+// Função auxiliar para desenhar a lista (Corrigida para iniciar recolhida)
 function renderizarGrupos(lista) {
     const container = document.getElementById('container-grupos');
+    const termoBusca = document.getElementById('inputBusca') ? document.getElementById('inputBusca').value : "";
     container.innerHTML = "";
     
     if (lista.length === 0) {
@@ -289,8 +291,12 @@ function renderizarGrupos(lista) {
         let htmlGrupos = nomesG.map(ng => {
             const membros = gruposMat.filter(g => g["Nome do Grupo"] === ng)
                 .map(m => `<li>${m["Integrantes"]}</li>`).join('');
+            
+            // Se houver texto na busca, os grupos aparecem abertos (open), senão, fechados
+            const statusOpen = termoBusca.length > 0 ? "open" : "";
+
             return `
-                <details style="margin:5px 0; border:1px solid rgba(128,128,128,0.2); border-radius:10px;" open>
+                <details style="margin:5px 0; border:1px solid rgba(128,128,128,0.2); border-radius:10px;" ${statusOpen}>
                     <summary style="padding:10px; font-weight:bold; color:var(--p-med);">${ng}</summary>
                     <ul style="font-size:0.85em; color:#bbb; padding-bottom:10px; list-style-type: none; padding-left: 15px;">
                         ${membros}
@@ -384,4 +390,5 @@ function filtrarGrupos() {
 </script>
 </body>
 </html>
+
 
