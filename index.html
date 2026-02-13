@@ -13,35 +13,9 @@
 
     <link rel="apple-touch-icon" href="icon.png">
     <link rel="icon" type="image/png" href="icon.png">
-    <link rel="icon" sizes="192x192" href="icon.png">
-    <link rel="icon" sizes="512x512" href="icon.png">
     <link rel="manifest" href="manifest.json">
 
     <style>
- /* Estilo para a bolinha de notificação - Versão Compacta */
-.notification-badge {
-    position: absolute;
-    top: 5px;      /* Subi um pouco mais */
-    right: 15px;   /* Trouxe mais para o centro do card */
-    background-color: #ff3b30;
-    color: white;
-    font-size: 9px; /* Diminuí a fonte */
-    padding: 1px 5px; /* Reduzi o preenchimento */
-    border-radius: 8px;
-    font-weight: bold;
-    display: none; 
-    box-shadow: 0 0 5px rgba(255, 59, 48, 0.4);
-    animation: bounce 0.5s infinite alternate;
-    line-height: 1; /* Garante que o texto fique centralizado na bolinha */
-}
-
-@keyframes bounce {
-    from { transform: translateY(0); }
-    to { transform: translateY(-3px); }
-}
-
-/* Ajuste no Card para comportar a bolinha */
-.card { position: relative; }
         /* CONFIGURAÇÃO DE CORES (VARIÁVEIS) */
         :root { 
             --p-med: #007bff; 
@@ -52,13 +26,44 @@
             --shadow: rgba(0,0,0,0.1);
         }
 
-        /* CORES PARA O MODO ESCURO */
         [data-theme="dark"] {
             --bg: #121212;
             --card-bg: #1e1e1e;
             --text-color: #e0e0e0;
             --header-bg: #1e1e1e;
             --shadow: rgba(0,0,0,0.5);
+        }
+
+        /* Estilo para a bolinha de notificação - Versão Compacta */
+        .notification-badge {
+            position: absolute;
+            top: 5px;
+            right: 15px;
+            background-color: #ff3b30;
+            color: white;
+            font-size: 9px;
+            padding: 1px 5px;
+            border-radius: 8px;
+            font-weight: bold;
+            display: none; 
+            box-shadow: 0 0 5px rgba(255, 59, 48, 0.4);
+            animation: bounce 0.5s infinite alternate;
+            line-height: 1;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-3px); }
+        }
+
+        body { 
+            font-family: -apple-system, system-ui, sans-serif; 
+            background: var(--bg); 
+            margin: 0; padding: 20px; 
+            color: var(--text-color); 
+            -webkit-tap-highlight-color: transparent;
+            transition: background 0.3s, color 0.3s;
+            padding-bottom: 80px; /* Espaço para o botão não cobrir conteúdo */
         }
 
         /* Container da Splash */
@@ -81,39 +86,28 @@
             animation: entrarESurgir 1.2s ease-out forwards, pulsar 2s infinite 1.2s;
         }
 
-        .sub-text-splash {
-            font-family: sans-serif;
-            color: #888;
-            font-size: 12px;
-            margin-top: 5px;
+        /* Botão da Lâmpada - Canto Inferior Direito */
+        #theme-toggle {
+            position: fixed;
+            bottom: 25px;
+            right: 25px; 
+            z-index: 999;
+            background: var(--card-bg);
+            border: 2px solid var(--p-med);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            font-size: 22px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
         }
 
-       /* Botão da Lâmpada - Movido para o canto inferior direito */
-#theme-toggle {
-    position: fixed;
-    bottom: 25px; /* Margem do fundo */
-    right: 25px;  /* Margem da direita */
-    z-index: 999;
-    background: var(--card-bg);
-    border: 2px solid var(--p-med);
-    border-radius: 50%;
-    width: 50px;  /* Aumentei um pouquinho para facilitar o toque */
-    height: 50px;
-    cursor: pointer;
-    font-size: 22px;
-    display: none; /* Mantemos oculto durante a Splash */
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3); /* Sombra mais visível no modo escuro */
-    transition: transform 0.2s, background 0.3s;
-}
+        #theme-toggle:active { transform: scale(0.85); }
 
-/* Efeito de clique no celular */
-#theme-toggle:active { 
-    transform: scale(0.85); 
-}
-
-        /* Animações */
         @keyframes entrarESurgir {
             0% { opacity: 0; transform: scale(0.7); }
             100% { opacity: 1; transform: scale(1); }
@@ -122,16 +116,6 @@
             0% { transform: scale(1); }
             50% { transform: scale(1.05); }
             100% { transform: scale(1); }
-        }
-
-        /* Estilos Base */
-        body { 
-            font-family: -apple-system, system-ui, sans-serif; 
-            background: var(--bg); 
-            margin: 0; padding: 20px; 
-            color: var(--text-color); 
-            -webkit-tap-highlight-color: transparent;
-            transition: background 0.3s, color 0.3s;
         }
 
         .header { 
@@ -151,6 +135,7 @@
             box-shadow: 0 4px 6px var(--shadow); cursor: pointer; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
             font-weight: 600; transition: transform 0.1s, background 0.3s;
+            position: relative;
         }
         .card:active { transform: scale(0.95); }
         .card span { font-size: 1.5em; margin-bottom: 8px; }
@@ -174,7 +159,7 @@
 
 <div id="splash">
     <img src="logo_UCP.png?v=1" class="logo-animado" alt="UCP Logo">
-    <div class="sub-text-splash">Medicina - PJC</div>
+    <div style="font-family:sans-serif; color:#888; font-size:12px; margin-top:5px;">Medicina - PJC</div>
 </div>
 
 <div class="header">
@@ -186,9 +171,9 @@
     <div class="card" onclick="mostrarAba('Grade')"><span>📅</span>Grade</div>
     <div class="card" onclick="mostrarAba('Grupos')"><span>👥</span>Grupos</div>
     <div class="card" onclick="mostrarAba('Avisos'); limparNotificacao()">
-    <span id="badge-avisos" class="notification-badge">NOVO</span>
-    <span>🔔</span>Avisos
-</div>
+        <span id="badge-avisos" class="notification-badge">NOVO</span>
+        <span>🔔</span>Avisos
+    </div>
     <div class="card" onclick="mostrarAba('Links')"><span>📸</span>Fotos</div>
 </div>
 
@@ -208,11 +193,9 @@
     const URL_API = "https://script.google.com/macros/s/AKfycbxDt1R5Gpu2aDY5dts6aDQcigKLx28ZxjmXynrvOvmGmvwaG86xBQmOABbn_BsKsUNP7A/exec";
     let dadosApp = {};
 
-    // --- LÓGICA DO TEMA ESCURO ---
     function toggleTheme() {
         const html = document.documentElement;
         const themeIcon = document.getElementById('theme-icon');
-        
         if (html.getAttribute('data-theme') === 'dark') {
             html.removeAttribute('data-theme');
             themeIcon.innerText = '💡';
@@ -230,103 +213,20 @@
             const res = await fetch(URL_API);
             const novosDados = await res.json();
             
-            const cacheAntigo = JSON.parse(localStorage.getItem('cache_medicina'));
+            const cacheRaw = localStorage.getItem('cache_medicina');
+            const cacheAntigo = cacheRaw ? JSON.parse(cacheRaw) : null;
             
-            // --- NOVA LÓGICA DE NOTIFICAÇÃO (POR CONTEÚDO) ---
+            // Lógica de Notificação aprimorada
             if (cacheAntigo && cacheAntigo.Avisos && novosDados.Avisos && novosDados.Avisos.length > 0) {
-                
-                // Pegamos o último aviso da planilha (que é o mais novo)
-                const ultimoAvisoNovo = novosDados.Avisos[novosDados.Avisos.length - 1].Título;
-                
-                // Pegamos o último aviso que estava no cache
-                const ultimoAvisoCache = cacheAntigo.Avisos[cacheAntigo.Avisos.length - 1]?.Título;
+                const ultimoNovo = novosDados.Avisos[novosDados.Avisos.length - 1].Título;
+                const ultimoCache = cacheAntigo.Avisos[cacheAntigo.Avisos.length - 1]?.Título;
 
-                // Se o título do mais novo for diferente do que temos guardado, notifica!
-                if (ultimoAvisoNovo !== ultimoAvisoCache) {
+                // Só mostra se o título mudou E se não for a primeira vez do usuário
+                if (ultimoCache && ultimoNovo !== ultimoCache) {
                     document.getElementById('badge-avisos').style.display = 'block';
                 }
             }
 
             dadosApp = novosDados;
             localStorage.setItem('cache_medicina', JSON.stringify(dadosApp));
-            status.innerHTML = `<span class="status-online">● Atualizado: ${dadosApp.ultima_sincronizacao}</span>`;
-        } catch (e) {
-            const cache = localStorage.getItem('cache_medicina');
-            if(cache) {
-                dadosApp = JSON.parse(cache);
-                status.innerHTML = `<span>● Offline - Dados de: ${dadosApp.ultima_sincronizacao}</span>`;
-            }
-        }
-    }
-
-    // Função para sumir a bolinha quando o usuário clicar em Avisos
-    function limparNotificacao() {
-        const badge = document.getElementById('badge-avisos');
-        if(badge) badge.style.display = 'none';
-    }
-    function mostrarAba(nomeAba) {
-        const modal = document.getElementById('meuModal');
-        const titulo = document.getElementById('modal-titulo');
-        const corpo = document.getElementById('modal-corpo');
-        titulo.innerText = nomeAba;
-        corpo.innerHTML = "";
-
-        let itens = dadosApp[nomeAba] || [];
-        itens = [...itens].reverse(); // Inverte a ordem para os mais novos aparecerem primeiro
-
-        if(itens.length === 0) {
-            corpo.innerHTML = "<p>Nada cadastrado aqui ainda.</p>";
-        } else {
-            itens.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'aviso-item';
-                let conteudo = "";
-                if(nomeAba === "Avisos") {
-                    conteudo = `<span class="aviso-titulo">${item.Título}</span><span>${item.Mensagem}</span>`;
-                } else if(nomeAba === "Grade") {
-                    conteudo = `<span class="aviso-titulo">${item.Matéria}</span><small>${item.Horário} - ${item.Sala}</small>`;
-                } else {
-                    conteudo = Object.values(item).join(" - ");
-                }
-                div.innerHTML = conteudo;
-                corpo.appendChild(div);
-            });
-        }
-        modal.style.display = "flex";
-    }
-
-    function fecharModal() { document.getElementById('meuModal').style.display = "none"; }
-
-    // Inicialização
-    window.addEventListener('load', () => {
-        carregarDados();
-
-        // Aplicar tema salvo
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'dark') {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            document.getElementById('theme-icon').innerText = '🌙';
-        }
-
-        // Timer da Splash Screen
-        setTimeout(() => {
-            const splash = document.getElementById('splash');
-            const themeBtn = document.getElementById('theme-toggle');
-            
-            splash.style.opacity = '0';
-            
-            setTimeout(() => {
-                splash.style.display = 'none';
-                themeBtn.style.display = 'flex'; // Mostra a lâmpada só depois da Splash
-            }, 800); 
-        }, 2500);
-    });
-</script>
-</body>
-</html>
-
-
-
-
-
-
+            status.innerHTML = `<span class="status-online">● Atualizado: ${dadosApp.ultima_sincronizacao}</span>
