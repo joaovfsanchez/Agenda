@@ -152,36 +152,10 @@
             const res = await fetch(URL_API);
             const novosDados = await res.json();
             
-            const cacheRaw = localStorage.getItem('cache_medicina');
-            
-            // TRAVA 1: Se o cache estiver vazio, apenas salva e não mostra "NOVO"
-            if (!cacheRaw) {
-                dadosApp = novosDados;
-                localStorage.setItem('cache_medicina', JSON.stringify(dadosApp));
-                status.innerHTML = `<span class="status-online">● Atualizado: ${dadosApp.ultima_sincronizacao}</span>`;
-                return; 
-            }
-
-            const cacheAntigo = JSON.parse(cacheRaw);
-            
-            // TRAVA 2: Comparação rigorosa
-            if (cacheAntigo.Avisos && novosDados.Avisos) {
-                const ultimoItemCache = cacheAntigo.Avisos[cacheAntigo.Avisos.length - 1];
-                const ultimoItemNovo = novosDados.Avisos[novosDados.Avisos.length - 1];
-
-                if (ultimoItemCache && ultimoItemNovo) {
-                    const tituloCache = ultimoItemCache.Titulo || ultimoItemCache.Título;
-                    const tituloNovo = ultimoItemNovo.Titulo || ultimoItemNovo.Título;
-
-                    // Só mostra se os dois títulos existirem E forem diferentes
-                    if (tituloNovo && tituloCache && tituloNovo !== tituloCache) {
-                        document.getElementById('badge-avisos').style.display = 'block';
-                    }
-                }
-            }
-
+            // Apenas salva os dados no estado global e no cache
             dadosApp = novosDados;
             localStorage.setItem('cache_medicina', JSON.stringify(dadosApp));
+            
             status.innerHTML = `<span class="status-online">● Atualizado: ${dadosApp.ultima_sincronizacao}</span>`;
             
         } catch (e) {
@@ -192,7 +166,6 @@
             }
         }
     }
-
     function mostrarAba(nomeAba) {
         const modal = document.getElementById('meuModal');
         const corpo = document.getElementById('modal-corpo');
@@ -273,3 +246,4 @@
 </script>
 </body>
 </html>
+
