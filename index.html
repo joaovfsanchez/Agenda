@@ -155,52 +155,65 @@
         corpo.innerHTML = "";
         
         let itens = dadosApp[nomeAba] || [];
-        itens = [...itens].reverse();
-        
+
         if(itens.length === 0) {
             corpo.innerHTML = "<p>Nada cadastrado aqui ainda.</p>";
         } else {
-            itens.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'aviso-item';
+            // LÓGICA ESPECIAL PARA GRUPOS (AGRUPAMENTO POR NOME)
+            if(nomeAba === "Grupos") {
+                const gruposAgrupados = {};
                 
-                if(nomeAba === "Avisos") {
-                    // Formata a data para DD/MM/AAAA
-                    let dataFormatada = "";
-                    if (item.Data) {
-                        const d = new Date(item.Data);
-                        if (!isNaN(d.getTime())) {
-                            const dia = String(d.getDate()).padStart(2, '0');
-                            const mes = String(d.getMonth() + 1).padStart(2, '0');
-                            const ano = d.getFullYear();
-                            dataFormatada = `${dia}/${mes}/${ano}`;
-                        } else {
-                            dataFormatada = item.Data;
-                        }
+                // Organiza: cria um objeto onde a "chave" é o nome do grupo
+                itens.forEach(item => {
+                    const nomeG = item.Grupo || item.Nome_do_grupo;
+                    const integrante = item.Integrante || item.Nome;
+                    if(nomeG) {
+                        if(!gruposAgrupados[nomeG]) gruposAgrupados[nomeG] = [];
+                        if(integrante) gruposAgrupados[nomeG].push(integrante);
                     }
+                });
 
+                // Renderiza na tela
+                for (let nomeG in gruposAgrupados) {
+                    const div = document.createElement('div');
+                    div.className = 'aviso-item';
+                    const listaHTML = gruposAgrupados[nomeG].map(n => 
+                        `<li style="margin-bottom:2px; font-size:0.85em;">${n}</li>`
+                    ).join('');
+                    
                     div.innerHTML = `
-                        <small style="color:#888; display: block; margin-bottom: 2px;">${dataFormatada}</small>
-                        <span class="aviso-titulo" style="font-size: 1.1em; margin-bottom: 5px;">${item.Titulo || item.Título || 'Aviso'}</span>
-                        <div style="font-size: 0.95em; line-height: 1.4;">${item.Mensagem || ''}</div>
+                        <span class="aviso-titulo" style="color:var(--p-med);">${nomeG}</span>
+                        <ul style="margin:5px 0; padding-left:20px; text-align:left;">${listaHTML}</ul>
                     `;
-                } else if(nomeAba === "Grade") {
-                    div.innerHTML = `<span class="aviso-titulo">${item.Matéria || ''}</span><small>${item.Horário || ''} - ${item.Sala || ''}</small>`;
-                } else if(nomeAba === "Grupos") {
-                    // Lógica para transformar texto com ";" em lista de integrantes
-                    let integrantesHTML = "";
-                    if (item.Integrantes) {
-                        const lista = item.Integrantes.split(';'); 
-                        integrantesHTML = `<ul style="margin: 8px 0 0 0; padding-left: 20px; text-align: left; font-size: 0.9em; color: var(--text-color);">` + 
-                                          lista.map(nome => `<li style="margin-bottom: 4px;">${nome.trim()}</li>`).join('') + 
-                                          `</ul>`;
-                    }
-                    div.innerHTML = `<span class="aviso-titulo" style="color: var(--p-med); font-size: 1.1em;">${item.Nome_do_grupo || item.Grupo || 'Grupo'}</span>${integrantesHTML}`;
-                } else {
-                    div.innerHTML = Object.values(item).join(" - ");
+                    corpo.appendChild(div);
                 }
-                corpo.appendChild(div);
-            });
+            } 
+            // LÓGICA PARA AS OUTRAS ABAS (AVISOS E GRADE)
+            else {
+                const itensInvertidos = [...itens].reverse();
+                itensInvertidos.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'aviso-item';
+                    
+                    if(nomeAba === "Avisos") {
+                        let dF = "";
+                        if (item.Data) {
+                            const d = new Date(item.Data);
+                            dF = !isNaN(d.getTime()) ? `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}` : item.Data;
+                        }
+                        div.innerHTML = `
+                            <small style="color:#888; display:block;">${dF}</small>
+                            <span class="aviso-titulo">${item.Titulo || item.Título || 'Aviso'}</span>
+                            <div style="font-size:0.95em;">${item.Mensagem || ''}</div>
+                        `;
+                    } else if(nomeAba === "Grade") {
+                        div.innerHTML = `<span class="aviso-titulo">${item.Matéria || ''}</span><small>${item.Horário || ''} - ${item.Sala || ''}</small>`;
+                    } else {
+                        div.innerHTML = Object.values(item).join(" - ");
+                    }
+                    corpo.appendChild(div);
+                });
+            }
         }
         modal.style.display = "flex";
     }
@@ -238,5 +251,6 @@
 </script>
 </body>
 </html>
+
 
 
