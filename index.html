@@ -9,22 +9,17 @@
     <meta name="theme-color" content="#007bff">
 
     <style>
-        :root { --p-med: #007bff; --bg: #f4f7f6; --card-bg: #1e1e1e; --text-color: #e0e0e0; --shadow: rgba(0,0,0,0.5); --input-bg: #2d2d2d; }
+        :root { --p-med: #007bff; --bg: #121212; --card-bg: #1e1e1e; --text-color: #e0e0e0; --shadow: rgba(0,0,0,0.5); --input-bg: #2d2d2d; }
         [data-theme="light"] { --bg: #f4f7f6; --card-bg: #ffffff; --text-color: #333333; --shadow: rgba(0,0,0,0.1); --input-bg: #eeeeee; }
         
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: var(--text-color); transition: background 0.3s; padding-bottom: 60px; overscroll-behavior-y: contain; }
+        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: var(--text-color); transition: background 0.3s; padding-bottom: 60px; }
 
-        #refresh-indicator { position: fixed; top: -60px; left: 50%; transform: translateX(-50%); background: var(--p-med); color: white; padding: 10px 25px; border-radius: 30px; font-size: 14px; font-weight: bold; z-index: 10001; transition: top 0.3s; box-shadow: 0 4px 15px var(--shadow); }
+        /* Animação Splash */
+        #splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; transition: opacity 0.8s ease; }
+        .logo-pulsando { width: 120px; animation: pulsar 2s infinite ease-in-out; }
+        @keyframes pulsar { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
 
-        /* --- ESTILOS DA GRADE --- */
-        .grade-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--shadow); align-items: flex-start; }
-        .grade-hora { flex: 0 0 75px; font-size: 0.8em; font-weight: 800; color: var(--p-med); text-align: right; }
-        .grade-info { flex: 1; text-align: left; }
-        .grade-materia { font-weight: bold; font-size: 0.95em; display: block; color: var(--text-color); }
-
-        #splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; transition: opacity 0.8s; }
-        
         .header { text-align: center; margin-bottom: 20px; }
         #status-bar { font-size: 0.8em; color: #888; margin-top: 5px; }
         
@@ -33,39 +28,40 @@
         .card .icon { font-size: 1.8em; margin-bottom: 8px; }
         
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; padding: 15px; z-index: 2000; backdrop-filter: blur(4px); }
-        .modal-content { background: var(--card-bg); padding: 20px; border-radius: 20px; width: 100%; max-width: 400px; max-height: 85vh; overflow-y: auto; position: relative; }
+        .modal-content { background: var(--card-bg); padding: 20px; border-radius: 20px; width: 100%; max-width: 400px; max-height: 85vh; overflow-y: auto; position: relative; border: 1px solid rgba(255,255,255,0.1); }
         .close-btn { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 24px; color: var(--text-color); }
         
-        /* Retráteis */
-        .secao-retratil { margin-bottom: 10px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--shadow); overflow: hidden; }
-        .secao-titulo { background: rgba(0,123,255,0.1); color: var(--p-med); padding: 12px 15px; font-weight: 800; font-size: 0.8em; text-transform: uppercase; cursor: pointer; display: flex; justify-content: space-between; }
+        .secao-retratil { margin-bottom: 10px; border-radius: 12px; background: rgba(128,128,128,0.05); border: 1px solid var(--shadow); overflow: hidden; }
+        .secao-titulo { background: rgba(0,123,255,0.15); color: var(--p-med); padding: 12px 15px; font-weight: 800; font-size: 0.8em; text-transform: uppercase; cursor: pointer; display: flex; justify-content: space-between; }
 
-        .arquivo-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--input-bg); border-radius: 10px; margin-bottom: 8px; text-decoration: none; color: var(--text-color); }
-        
-        #theme-toggle { position: fixed; bottom: 25px; right: 25px; background: var(--card-bg); border: 2px solid var(--p-med); border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; z-index: 999; }
-        .footer-creditos { text-align: center; font-size: 11px; color: #888; margin-top: 50px; padding-bottom: 20px; cursor: pointer; }
+        .item-lista { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--input-bg); border-radius: 10px; margin: 8px 0; text-decoration: none; color: var(--text-color); border: 1px solid transparent; }
+        .grade-item { padding: 10px 0; border-bottom: 1px solid rgba(128,128,128,0.2); }
+        .grade-hora { color: var(--p-med); font-weight: bold; font-size: 0.85em; }
+
+        #theme-toggle { position: fixed; bottom: 25px; right: 25px; background: var(--card-bg); border: 2px solid var(--p-med); border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; z-index: 999; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .footer-creditos { text-align: center; font-size: 11px; color: #888; margin-top: 50px; padding-bottom: 20px; }
     </style>
 </head>
 <body data-theme="dark">
 
-<div id="refresh-indicator">🔄 Atualizando...</div>
-<button id="theme-toggle" onclick="toggleTheme()"><span id="theme-icon">🌙</span></button>
-
 <div id="splash">
-    <h2 style="color:#007bff">Medicina - UCP</h2>
+    <img src="logo_UCP.png" class="logo-pulsando" onerror="this.style.display='none'">
+    <h2 style="color:#007bff; margin-top: 15px;">Medicina - UCP</h2>
 </div>
+
+<button id="theme-toggle" onclick="toggleTheme()"><span id="theme-icon">🌙</span></button>
 
 <div class="header">
     <h2 style="margin:0;">Medicina - Turma H</h2>
-    <div id="status-bar">Carregando...</div>
+    <div id="status-bar">Carregando dados...</div>
 </div>
 
 <div class="grid-container">
     <div class="card" onclick="abrirGrade()"><span class="icon">📅</span><span>Grade</span></div>
     <div class="card" onclick="abrirGrupos()"><span class="icon">👥</span><span>Grupos</span></div>
-    <div class="card" onclick="mostrarAba('Avisos')"><span class="icon">🔔</span><span>Avisos</span></div>
+    <div class="card" onclick="abrirAvisos()"><span class="icon">🔔</span><span>Avisos</span></div>
     <div class="card" onclick="abrirArquivos()"><span class="icon">📄</span><span>Arquivos</span></div>
-    <div class="card" onclick="mostrarAba('Links')" style="grid-column: span 2; height: 80px; flex-direction: row; gap: 15px;">
+    <div class="card" onclick="abrirLinks()" style="grid-column: span 2; height: 80px; flex-direction: row; gap: 15px;">
         <span class="icon">💻</span><span>Aulas Online</span>
     </div>
 </div>
@@ -82,27 +78,23 @@
     <div class="modal-content">
         <button class="close-btn" onclick="fecharAdmin()">✕</button>
         <h3 style="color:#28a745;">Painel do Representante</h3>
-        <p>Funcionalidade em desenvolvimento via Google Sheets.</p>
+        <p style="font-size: 0.9em;">Acesso liberado, João!</p>
     </div>
 </div>
 
 <div class="footer-creditos" id="btnAdmin">Desenvolvido por João Vitor Fróis Sanchez</div>
 
 <script>
-// --- Copiar link da planilha ---
     const URL_API = "https://script.google.com/macros/s/AKfycbxDt1R5Gpu2aDY5dts6aDQcigKLx28ZxjmXynrvOvmGmvwaG86xBQmOABbn_BsKsUNP7A/exec";
     let dadosApp = {};
     let timerAdmin;
 
-    // --- ACESSO ADMIN (Segurar 5 segundos) ---
+    // --- ADMIN ---
     const btnAdmin = document.getElementById('btnAdmin');
-    btnAdmin.addEventListener('mousedown', startTimer);
-    btnAdmin.addEventListener('touchstart', startTimer);
-    btnAdmin.addEventListener('mouseup', clearTimer);
-    btnAdmin.addEventListener('touchend', clearTimer);
-
-    function startTimer() { timerAdmin = setTimeout(() => { document.getElementById('modalAdmin').style.display = 'flex'; }, 5000); }
-    function clearTimer() { clearTimeout(timerAdmin); }
+    btnAdmin.addEventListener('touchstart', () => timerAdmin = setTimeout(()=> document.getElementById('modalAdmin').style.display='flex', 5000));
+    btnAdmin.addEventListener('touchend', () => clearTimeout(timerAdmin));
+    btnAdmin.addEventListener('mousedown', () => timerAdmin = setTimeout(()=> document.getElementById('modalAdmin').style.display='flex', 5000));
+    btnAdmin.addEventListener('mouseup', () => clearTimeout(timerAdmin));
     function fecharAdmin() { document.getElementById('modalAdmin').style.display = 'none'; }
 
     // --- CARREGAMENTO ---
@@ -110,94 +102,100 @@
         try {
             const res = await fetch(`${URL_API}?t=${new Date().getTime()}`);
             dadosApp = await res.json();
-            localStorage.setItem('cache_h', JSON.stringify(dadosApp));
-            document.getElementById('status-bar').innerText = `Atualizado: ${dadosApp.ultima_sincronizacao || 'Agora'}`;
+            localStorage.setItem('cache_medicina_h', JSON.stringify(dadosApp));
+            document.getElementById('status-bar').innerText = `Atualizado: ${dadosApp.ultima_sincronizacao}`;
         } catch (e) {
-            dadosApp = JSON.parse(localStorage.getItem('cache_h') || "{}");
+            dadosApp = JSON.parse(localStorage.getItem('cache_medicina_h') || "{}");
             document.getElementById('status-bar').innerText = "Modo Offline";
         }
     }
 
-    // --- LÓGICA DA GRADE (POR DIA DA SEMANA) ---
+    // --- GRADE ---
     function abrirGrade() {
         const corpo = document.getElementById('modal-corpo');
         document.getElementById('modal-titulo').innerText = "Grade de Aulas";
         corpo.innerHTML = "";
-        
-        const ordemDias = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+        const ordem = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
         const itens = dadosApp["Grade"] || [];
         
-        ordemDias.forEach(dia => {
-            const aulasDia = itens.filter(a => a["Dia da Semana"] === dia);
-            if(aulasDia.length > 0) {
-                let htmlAulas = aulasDia.map(aula => `
+        ordem.forEach(dia => {
+            const aulas = itens.filter(a => a["Dia da Semana"] === dia);
+            if(aulas.length > 0) {
+                let html = aulas.map(a => `
                     <div class="grade-item">
-                        <div class="grade-hora">${aula.Horários || '---'}</div>
-                        <div class="grade-info">
-                            <b class="grade-materia">${aula.Matéria}</b>
-                            <small>${aula.Grupo || 'Turma H'}</small>
-                        </div>
+                        <div class="grade-hora">${a.Horários || '---'}</div>
+                        <div style="font-weight:bold;">${a.Matéria || 'Aula'}</div>
+                        <div style="font-size:0.8em; opacity:0.7;">${a.Grupo || 'Turma H'}</div>
                     </div>
                 `).join('');
-                corpo.innerHTML += `<details class="secao-retratil"><summary class="secao-titulo">${dia} <span>▼</span></summary><div style="padding:0 15px;">${htmlAulas}</div></details>`;
+                corpo.innerHTML += `<details class="secao-retratil"><summary class="secao-titulo">${dia} ▾</summary><div style="padding:10px 15px;">${html}</div></details>`;
             }
         });
         document.getElementById('meuModal').style.display = 'flex';
     }
 
-    // --- LÓGICA DE ARQUIVOS (POR MATÉRIA) ---
-    function abrirArquivos() {
-        const corpo = document.getElementById('modal-corpo');
-        document.getElementById('modal-titulo').innerText = "Arquivos";
-        corpo.innerHTML = "";
-        
-        const itens = dadosApp["Arquivos"] || [];
-        const categorias = [...new Set(itens.map(i => i.Nome))];
-
-        categorias.forEach(cat => {
-            const arqs = itens.filter(i => i.Nome === cat);
-            let htmlArqs = arqs.map(arq => `
-                <a href="${arq.Link}" target="_blank" class="arquivo-item">
-                    <span>${arq.Descrição || 'Ver Arquivo'}</span>
-                    <span>🔗</span>
-                </a>
-            `).join('');
-            corpo.innerHTML += `<details class="secao-retratil"><summary class="secao-titulo">${cat} <span>▼</span></summary><div style="padding:10px;">${htmlArqs}</div></details>`;
-        });
-        document.getElementById('meuModal').style.display = 'flex';
-    }
-
-    // --- LÓGICA DE GRUPOS (RECOLHIDOS) ---
+    // --- GRUPOS ---
     function abrirGrupos() {
         const corpo = document.getElementById('modal-corpo');
         document.getElementById('modal-titulo').innerText = "Grupos";
         corpo.innerHTML = "";
-        
         const itens = dadosApp["Grupos"] || [];
         const materias = [...new Set(itens.map(i => i["Matéria"]))];
 
         materias.forEach(mat => {
             const gruposMat = itens.filter(i => i["Matéria"] === mat);
-            const nomesGrupos = [...new Set(gruposMat.map(g => g["Nome do Grupo"]))];
-
-            let htmlGrupos = nomesGrupos.map(nomeG => {
-                const integrantes = gruposMat.filter(g => g["Nome do Grupo"] === nomeG).map(i => `<li>${i.Integrantes}</li>`).join('');
-                return `<details style="margin:5px 0; border:1px solid #444; border-radius:8px;">
-                            <summary style="padding:8px; cursor:pointer;">${nomeG}</summary>
-                            <ul style="padding-bottom:10px; font-size:0.9em;">${integrantes}</ul>
-                        </details>`;
+            const nomesG = [...new Set(gruposMat.map(g => g["Nome do Grupo"]))];
+            let html = nomesG.map(ng => {
+                const membros = gruposMat.filter(g => g["Nome do Grupo"] === ng).map(m => `<li>${m.Integrantes}</li>`).join('');
+                return `<details style="margin:5px 0; border:1px solid #444; border-radius:8px;"><summary style="padding:8px; cursor:pointer;">${ng}</summary><ul style="padding-bottom:10px; font-size:0.85em;">${membros}</ul></details>`;
             }).join('');
-
-            corpo.innerHTML += `<details class="secao-retratil"><summary class="secao-titulo">${mat} <span>▼</span></summary><div style="padding:10px;">${htmlGrupos}</div></details>`;
+            corpo.innerHTML += `<details class="secao-retratil"><summary class="secao-titulo">${mat} ▾</summary><div style="padding:10px;">${html}</div></details>`;
         });
         document.getElementById('meuModal').style.display = 'flex';
     }
 
-    function mostrarAba(aba) {
+    // --- ARQUIVOS ---
+    function abrirArquivos() {
         const corpo = document.getElementById('modal-corpo');
-        document.getElementById('modal-titulo').innerText = aba;
-        const itens = dadosApp[aba] || [];
-        corpo.innerHTML = itens.map(i => `<div class="arquivo-item"><b>${i.Materia || i.Titulo}</b><br>${i.Data || i.Mensagem}</div>`).join('');
+        document.getElementById('modal-titulo').innerText = "Arquivos";
+        corpo.innerHTML = "";
+        const itens = dadosApp["Arquivos"] || [];
+        const cats = [...new Set(itens.map(i => i.Nome))];
+        cats.forEach(c => {
+            const arqs = itens.filter(i => i.Nome === c);
+            let html = arqs.map(a => `<a href="${a.Link}" target="_blank" class="item-lista"><span>${a.Descrição}</span><span>🔗</span></a>`).join('');
+            corpo.innerHTML += `<details class="secao-retratil"><summary class="secao-titulo">${c} ▾</summary><div style="padding:5px 10px;">${html}</div></details>`;
+        });
+        document.getElementById('meuModal').style.display = 'flex';
+    }
+
+    // --- AVISOS ---
+    function abrirAvisos() {
+        const corpo = document.getElementById('modal-corpo');
+        document.getElementById('modal-titulo').innerText = "Avisos";
+        const itens = dadosApp["Avisos"] || [];
+        corpo.innerHTML = itens.slice().reverse().map(i => `
+            <div style="background:var(--input-bg); padding:15px; border-radius:12px; margin-bottom:10px; border-left:4px solid var(--p-med);">
+                <div style="font-size:0.75em; opacity:0.6; margin-bottom:5px;">${i["Carimbo de data/hora"] || ''}</div>
+                <div style="font-weight:bold; color:var(--p-med);">${i.Titulo || 'Importante'}</div>
+                <div style="font-size:0.9em; margin-top:5px;">${i.Mensagem}</div>
+            </div>
+        `).join('');
+        document.getElementById('meuModal').style.display = 'flex';
+    }
+
+    // --- LINKS/AULAS ONLINE ---
+    function abrirLinks() {
+        const corpo = document.getElementById('modal-corpo');
+        document.getElementById('modal-titulo').innerText = "Aulas Online";
+        const itens = dadosApp["Links"] || [];
+        corpo.innerHTML = itens.map(i => `
+            <div class="item-lista" style="flex-direction:column; align-items:flex-start;">
+                <b style="color:var(--p-med);">${i.Materia}</b>
+                <div style="font-size:0.8em; margin:5px 0;">${i.Data} às ${i.Horario}</div>
+                <a href="${i.Url}" target="_blank" style="background:var(--p-med); color:white; text-decoration:none; padding:8px 15px; border-radius:8px; width:100%; text-align:center; font-weight:bold; margin-top:10px;">Acessar Aula</a>
+            </div>
+        `).join('');
         document.getElementById('meuModal').style.display = 'flex';
     }
 
@@ -205,16 +203,23 @@
     
     function toggleTheme() {
         const body = document.body;
-        const novoTema = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-        body.setAttribute('data-theme', novoTema);
-        document.getElementById('theme-icon').innerText = novoTema === 'dark' ? '🌙' : '💡';
+        const novo = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        body.setAttribute('data-theme', novo);
+        document.getElementById('theme-icon').innerText = novo === 'dark' ? '🌙' : '💡';
+        localStorage.setItem('theme_preferido', novo);
     }
 
     window.onload = () => {
+        const salvo = localStorage.getItem('theme_preferido') || 'dark';
+        document.body.setAttribute('data-theme', salvo);
+        document.getElementById('theme-icon').innerText = salvo === 'dark' ? '🌙' : '💡';
         carregarDados();
-        setTimeout(() => { document.getElementById('splash').style.opacity = '0'; setTimeout(()=>document.getElementById('splash').style.display='none', 800); }, 1500);
+        setTimeout(() => { 
+            const s = document.getElementById('splash');
+            s.style.opacity = '0';
+            setTimeout(() => s.style.display = 'none', 800);
+        }, 2000);
     };
 </script>
 </body>
 </html>
-
