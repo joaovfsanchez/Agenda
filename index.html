@@ -212,25 +212,41 @@
             corpo.innerHTML = itens.map(i => {
                 const agora = new Date();
                 
-                // --- LÓGICA DE TRATAMENTO DE DATA ---
+                // 1. Limpeza dos dados vindos da planilha
+                // Remove espaços extras e garante que o horário tenha formato HH:MM
+                const strData = String(i["Data"]).split('T')[0]; // Pega apenas a parte da data YYYY-MM-DD
+                const strHora = String(i["Horário"]).trim();
+                
                 let dataAula;
-                if (i["Data"].includes('T') || !isNaN(Date.parse(i["Data"]))) {
-                    // Se o Google enviar formato ISO (2024-02-13T19:00:00)
-                    dataAula = new Date(i["Data"]);
-                } else {
-                    // Se enviar DD/MM/AAAA e HH:MM separados
-                    const [dia, mes, ano] = i["Data"].split('/');
-                    const [hora, minuto] = i["Horário"].split(':');
+
+                // 2. Tenta montar a data combinando os dois campos
+                if (strData.includes('/') && strHora.includes(':')) {
+                    // Formato DD/MM/AAAA + HH:MM
+                    const [dia, mes, ano] = strData.split('/');
+                    const [hora, minuto] = strHora.split(':');
                     dataAula = new Date(ano, mes - 1, dia, hora, minuto);
+                } else if (strData.includes('-') && strHora.includes(':')) {
+                    // Formato AAAA-MM-DD (Padrão Google) + HH:MM
+                    const [ano, mes, dia] = strData.split('-');
+                    const [hora, minuto] = strHora.split(':');
+                    dataAula = new Date(ano, mes - 1, dia, hora, minuto);
+                } else {
+                    // Fallback para qualquer outro formato
+                    dataAula = new Date(i["Data"]);
                 }
 
-                // Formatação para exibir: DD/MM/AAAA - HH:MM
-                const dataFormatada = dataAula.toLocaleDateString('pt-BR');
-                const horaFormatada = dataAula.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-                const exibicaoCompleta = `${dataFormatada} - ${horaFormatada}`;
+                // 3. Formatação para exibição amigável
+                const d = dataAula.getDate().toString().padStart(2, '0');
+                const m = (dataAula.getMonth() + 1).toString().padStart(2, '0');
+                const a = dataAula.getFullYear();
+                const hh = dataAula.getHours().toString().padStart(2, '0');
+                const mm = dataAula.getMinutes().toString().padStart(2, '0');
+                
+                const exibicaoCompleta = `${d}/${m}/${a} - ${hh}:${mm}`;
 
                 let statusHtml = "", btnCor = "#6c757d", textoBtn = "LINK INDISPONÍVEL";
 
+                // 4. Lógica de Status baseada no horário real
                 if (agora >= dataAula) {
                     statusHtml = '<span style="color:#28a745; font-size:0.7em; font-weight:bold;">● AO VIVO</span>';
                     btnCor = "#28a745"; 
@@ -249,13 +265,12 @@
                     <div style="margin: 5px 0; font-size:0.85em; opacity:0.8;">
                         🗓️ ${exibicaoCompleta}
                     </div>
-                    <a href="${i["Url"]}" target="_blank" style="background:${btnCor}; color:white; text-decoration:none; padding:12px; border-radius:10px; width:100%; text-align:center; font-weight:bold; margin-top:10px; display:block;">${textoBtn}</a>
+                    <a href="${i["Url"].startsWith('http') ? i["Url"] : 'https://' + i["Url"]}" target="_blank" style="background:${btnCor}; color:white; text-decoration:none; padding:12px; border-radius:10px; width:100%; text-align:center; font-weight:bold; margin-top:10px; display:block;">${textoBtn}</a>
                 </div>`;
             }).join('');
         }
         document.getElementById('meuModal').style.display = 'flex';
     }
-
     function fecharModal() { document.getElementById('meuModal').style.display = 'none'; }
 
     function toggleTheme() {
@@ -290,4 +305,5 @@
 </script>
 </body>
 </html>
+
 
