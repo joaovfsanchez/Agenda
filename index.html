@@ -94,16 +94,22 @@
         
         #theme-toggle { position: fixed; bottom: 25px; right: 25px; z-index: 999; background: var(--card-bg); border: 2px solid var(--p-med); border-radius: 50%; width: 50px; height: 50px; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 15px var(--shadow); }
         .footer-creditos {
-    text-align: center;
-    font-size: 11px;
-    color: #888;
-    padding-bottom: 40px; /* Espaço extra no final da página */
-    margin-top: 50px;     /* Isso empurra seu nome para longe do botão */
-    width: 100%;
-    font-style: italic;
-    opacity: 0.8;
-    cursor: default;
-}        
+            text-align: center;
+            font-size: 11px;
+            color: #888;
+            padding-bottom: 40px; 
+            margin-top: 50px;     
+            width: 100%;
+            font-style: italic;
+            opacity: 0.8;
+            cursor: default;
+        }
+
+        /* O NOME VAI FICANDO AZUL ENQUANTO VOCÊ SEGURA */
+        .footer-creditos:active {
+            transition: color 5s linear;
+            color: var(--p-med);
+        }    
         .admin-form input, .admin-form textarea { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid var(--shadow); background: var(--input-bg); color: var(--text-color); }
         .btn-postar { background: #28a745; color: white; border: none; padding: 15px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; }
     </style>
@@ -193,13 +199,30 @@
         touchStart = 0; touchEnd = 0;
     });
 
-    // --- SEGREDO NO NOME (5 SEGUNDOS) ---
+    // --- SEGREDO NO NOME (5 SEGUNDOS) - FUNCIONA EM CELULAR E PC ---
     const linkCreditos = document.getElementById('meuNomeSegredo');
-    linkCreditos.addEventListener('touchstart', () => {
-        timerAdmin = setTimeout(abrirAdmin, 5000);
-    });
-    linkCreditos.addEventListener('touchend', () => clearTimeout(timerAdmin));
 
+    // Função para iniciar o contador
+    const iniciarTimer = () => {
+        timerAdmin = setTimeout(abrirAdmin, 5000);
+    };
+
+    // Função para cancelar o contador
+    const cancelarTimer = () => {
+        clearTimeout(timerAdmin);
+    };
+
+    // Eventos para Celular (Touch)
+    linkCreditos.addEventListener('touchstart', (e) => {
+        // e.preventDefault(); // Opcional: evita comportamentos padrão do navegador
+        iniciarTimer();
+    });
+    linkCreditos.addEventListener('touchend', cancelarTimer);
+
+    // Eventos para Computador (Mouse)
+    linkCreditos.addEventListener('mousedown', iniciarTimer);
+    linkCreditos.addEventListener('mouseup', cancelarTimer);
+    linkCreditos.addEventListener('mouseleave', cancelarTimer); // Cancela se o mouse sair de cima do nome
     function abrirAdmin() { document.getElementById('modalAdmin').style.display = "flex"; }
     function fecharAdmin() { document.getElementById('modalAdmin').style.display = "none"; }
 
@@ -421,6 +444,7 @@
 </script>
 </body>
 </html>
+
 
 
 
