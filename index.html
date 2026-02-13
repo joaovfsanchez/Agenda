@@ -172,27 +172,33 @@
     }
 
    function verificarNovosAvisos() {
-        if (dadosApp.Avisos && dadosApp.Avisos.length > 0) {
-            const ultimoAvisoCeu = dadosApp.Avisos[dadosApp.Avisos.length - 1];
-            
-            // Tratamento: Pegamos o título e removemos qualquer espaço invisível
-            const tituloCeu = (ultimoAvisoCeu.Titulo || ultimoAvisoCeu.Título || "").toString().trim();
-            
-            const ultimoLido = localStorage.getItem('ultimo_aviso_lido');
+    if (dadosApp.Avisos && dadosApp.Avisos.length > 0) {
+        const ultimoAvisoCeu = dadosApp.Avisos[dadosApp.Avisos.length - 1];
+        
+        // Remove espaços e garante que seja string
+        const tituloCeu = (ultimoAvisoCeu.Titulo || ultimoAvisoCeu.Título || "").toString().trim();
+        const ultimoLido = localStorage.getItem('ultimo_aviso_lido');
 
-            // TRAVA DE SEGURANÇA: Se é a primeira vez que o app abre (não tem nada salvo),
-            // ele salva o título atual e não mostra a bolinha.
-            if (!ultimoLido) {
-                localStorage.setItem('ultimo_aviso_lido', tituloCeu);
-                return; 
-            }
+        // Se o título está vazio na planilha, nem processa
+        if (tituloCeu === "") return;
 
-            // Só mostra se o título for realmente diferente do salvo
-            if (tituloCeu !== "" && tituloCeu !== ultimoLido) {
-                document.getElementById('badge-avisos').style.display = 'block';
-            }
+        // SE É A PRIMEIRA VEZ (NÃO TEM NADA SALVO):
+        // Salvamos o título atual e não mostramos a bolinha.
+        if (!ultimoLido) {
+            localStorage.setItem('ultimo_aviso_lido', tituloCeu);
+            document.getElementById('badge-avisos').style.display = 'none';
+            return;
+        }
+
+        // SE O TÍTULO É DIFERENTE:
+        if (tituloCeu !== ultimoLido) {
+            document.getElementById('badge-avisos').style.display = 'block';
+        } else {
+            // SE É IGUAL: Garante que fique escondido
+            document.getElementById('badge-avisos').style.display = 'none';
         }
     }
+}
 
     function abrirAvisos() {
         mostrarAba('Avisos');
@@ -286,4 +292,5 @@
 </script>
 </body>
 </html>
+
 
