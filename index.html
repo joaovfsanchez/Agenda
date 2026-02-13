@@ -24,7 +24,7 @@
             padding: 20px; 
             color: var(--text-color); 
             transition: background 0.3s; 
-            padding-bottom: 100px;
+            padding-bottom: 60px;
             overscroll-behavior-y: contain; 
         }
 
@@ -73,17 +73,27 @@
         .materia-sumario::after { content: '📁'; font-size: 1.1em; }
         .materia-retratil[open] .materia-sumario::after { content: '📂'; }
 
+        /* ESTILO DO BOTÃO FORA DAS ABAS */
         .btn-sugestao {
-            display: block; width: 100%; margin-top: 20px; padding: 12px; background: transparent;
-            border: 1px dashed var(--p-med); color: var(--p-med); border-radius: 10px;
-            text-align: center; text-decoration: none; font-size: 0.85em; font-weight: 600;
+            display: block; 
+            width: 100%; 
+            margin: 30px auto 10px auto; 
+            padding: 12px; 
+            background: transparent;
+            border: 1px dashed var(--p-med); 
+            color: var(--p-med); 
+            border-radius: 10px;
+            text-align: center; 
+            text-decoration: none; 
+            font-size: 0.85em; 
+            font-weight: 600;
         }
 
         .arquivo-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--input-bg); border-radius: 10px; margin-bottom: 8px; text-decoration: none; color: var(--text-color); width: 100%; box-sizing: border-box; }
         ul.lista-integrantes { padding: 0 15px 15px 35px !important; margin: 0 !important; list-style-type: circle; border-left: 3px solid var(--p-med); margin-left: 15px !important; text-align: left; }
         
         #theme-toggle { position: fixed; bottom: 25px; right: 25px; z-index: 999; background: var(--card-bg); border: 2px solid var(--p-med); border-radius: 50%; width: 50px; height: 50px; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 15px var(--shadow); }
-        .footer-creditos { text-align: center; font-size: 11px; color: #888; padding: 30px 0; width: 100%; font-style: italic; opacity: 0.8; cursor: default; }
+        .footer-creditos { text-align: center; font-size: 11px; color: #888; padding-bottom: 30px; width: 100%; font-style: italic; opacity: 0.8; cursor: default; }
         
         .admin-form input, .admin-form textarea { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid var(--shadow); background: var(--input-bg); color: var(--text-color); }
         .btn-postar { background: #28a745; color: white; border: none; padding: 15px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; }
@@ -137,6 +147,11 @@
     </div>
 </div>
 
+<div style="padding: 0 10px;">
+    <a href="mailto:joaovfsanchez@gmail.com?subject=Sugestão de Alteração - App Medicine" class="btn-sugestao">
+        💡 Sugerir alteração no App
+    </a>
+</div>
 <div class="footer-creditos" id="meuNomeSegredo">Desenvolvido por João Vitor Fróis Sanchez</div>
 
 <script>
@@ -228,13 +243,6 @@
         }
     }
 
-    function gerarBotaoSugestao() {
-        return `
-            <a href="mailto:joaovfsanchez@gmail.com?subject=Sugestão de Alteração - App Medicine" class="btn-sugestao">
-                💡 Sugerir alteração nesta aba
-            </a>`;
-    }
-
     function mostrarAba(nomeAba) {
         const modal = document.getElementById('meuModal');
         const corpo = document.getElementById('modal-corpo');
@@ -257,7 +265,6 @@
                 const det = document.createElement('details');
                 det.className = 'materia-retratil';
                 
-                // FECHA O ANTERIOR AO ABRIR NOVO
                 det.addEventListener('toggle', function() {
                     if (this.open) {
                         corpo.querySelectorAll('.materia-retratil').forEach(o => { if (o !== this) o.open = false; });
@@ -299,7 +306,6 @@
                 det.innerHTML = `<summary class="materia-sumario"><span>${cat}</span></summary><div style="padding: 12px; box-sizing: border-box;">${conteudoInterno}</div>`;
                 corpo.appendChild(det);
             }
-            corpo.innerHTML += gerarBotaoSugestao();
         } else {
             itens.slice().reverse().forEach(item => {
                 const div = document.createElement('div');
@@ -307,7 +313,6 @@
                 div.innerHTML = `<div style="font-weight: bold; color: var(--p-med);">${item.Titulo || ''}</div><div style="font-size: 0.9em; color: var(--text-color); margin-top: 4px;">${item.Mensagem || ''}</div>`;
                 corpo.appendChild(div);
             });
-            corpo.innerHTML += gerarBotaoSugestao();
         }
         modal.style.display = "flex";
     }
@@ -332,7 +337,5 @@
         }, 1500);
     });
 </script>
-
 </body>
 </html>
-
