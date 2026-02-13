@@ -224,51 +224,68 @@
     }
 
     function abrirLinks() {
-        const corpo = document.getElementById('modal-corpo');
-        document.getElementById('modal-titulo').innerText = "Portal de Aulas Online";
-        const itens = dadosApp["Links"] || [];
-        
-        if (itens.length === 0) {
-            corpo.innerHTML = "<p style='text-align:center; opacity:0.5; padding:20px;'>Nenhum link agendado.</p>";
-        } else {
-            corpo.innerHTML = itens.map(i => {
-                const agora = new Date();
-                const [dia, mes, ano] = i["Data"].split('/');
-                const [hora, minuto] = i["Horário"].split(':');
-                const dataAula = new Date(ano, mes - 1, dia, hora, minuto);
-                
-                let statusHtml = "";
-                let btnCor = "#6c757d"; 
-                let textoBtn = "LINK INDISPONÍVEL";
-
-                if (agora >= dataAula) {
-                    statusHtml = '<span style="color:#28a745; font-size:0.7em;">● AO VIVO</span>';
-                    btnCor = "#28a745";
-                    textoBtn = "ACESSAR AULA AGORA";
-                } else {
-                    statusHtml = `<span style="color:#ffa500; font-size:0.7em;">⌛ AGENDADA</span>`;
-                    btnCor = "#007bff";
-                    textoBtn = "ABRIR LINK";
-                }
-
-                return `
-                    <div class="item-lista" style="flex-direction:column; align-items:flex-start; border-left: 5px solid ${btnCor};">
-                        <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
-                            <b style="color:var(--p-med); font-size:1.1em;">${i["Materia"]}</b>
-                            ${statusHtml}
-                        </div>
-                        <div style="margin: 5px 0; font-size:0.85em; opacity:0.8;">
-                            🗓️ ${i["Data"]} | ⏰ ${i["Horário"]}
-                        </div>
-                        <a href="${i["Url"]}" target="_blank" 
-                           style="background:${btnCor}; color:white; text-decoration:none; padding:12px; border-radius:10px; width:100%; text-align:center; font-weight:bold; margin-top:10px; display:block;">
-                           ${textoBtn}
-                        </a>
-                    </div>`;
-            }).join('');
+    const corpo = document.getElementById('modal-corpo');
+    document.getElementById('modal-titulo').innerText = "Teste de Aula Online";
+    
+    // CRIANDO DADO DE TESTE (Simulando que veio da planilha)
+    const agora = new Date();
+    const horaAjustada = agora.getHours();
+    const minutoAjustado = agora.getMinutes();
+    
+    const dadosTeste = [
+        {
+            "Materia": "Aula de Teste (AO VIVO)",
+            "Data": agora.toLocaleDateString('pt-BR'),
+            "Horário": `${horaAjustada}:${minutoAjustado}`, // Hora atual
+            "Url": "https://google.com"
+        },
+        {
+            "Materia": "Aula de Teste (AGENDADA)",
+            "Data": "25/12/2026",
+            "Horário": "14:00",
+            "Url": "https://google.com"
         }
-        document.getElementById('meuModal').style.display = 'flex';
-    }
+    ];
+
+    corpo.innerHTML = dadosTeste.map(i => {
+        const [dia, mes, ano] = i["Data"].split('/');
+        const [hora, minuto] = i["Horário"].split(':');
+        const dataAula = new Date(ano, mes - 1, dia, hora, minuto);
+        const tempoAgora = new Date();
+        
+        let statusHtml = "";
+        let btnCor = "#6c757d"; 
+        let textoBtn = "LINK INDISPONÍVEL";
+
+        // Se a hora da aula for igual ou menor que agora, fica VERDE
+        if (tempoAgora >= dataAula) {
+            statusHtml = '<span style="color:#28a745; font-size:0.7em; font-weight:bold;">● AO VIVO AGORA</span>';
+            btnCor = "#28a745";
+            textoBtn = "ENTRAR NA SALA VIRTUAL";
+        } else {
+            statusHtml = `<span style="color:#ffa500; font-size:0.7em; font-weight:bold;">⌛ AGENDADA</span>`;
+            btnCor = "#007bff";
+            textoBtn = "AGUARDAR INÍCIO";
+        }
+
+        return `
+            <div class="item-lista" style="flex-direction:column; align-items:flex-start; border-left: 6px solid ${btnCor}; margin-bottom:15px; background: rgba(255,255,255,0.05);">
+                <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
+                    <b style="color:var(--p-med); font-size:1.1em;">${i["Materia"]}</b>
+                    ${statusHtml}
+                </div>
+                <div style="margin: 8px 0; font-size:0.85em; opacity:0.8;">
+                    🗓️ Dia: ${i["Data"]} | ⏰ Início: ${i["Horário"]}
+                </div>
+                <a href="${i["Url"]}" target="_blank" 
+                   style="background:${btnCor}; color:white; text-decoration:none; padding:14px; border-radius:10px; width:100%; text-align:center; font-weight:bold; display:block; transition: 0.3s;">
+                   ${textoBtn}
+                </a>
+            </div>`;
+    }).join('');
+    
+    document.getElementById('meuModal').style.display = 'flex';
+}
 
     function fecharModal() { document.getElementById('meuModal').style.display = 'none'; }
     function toggleTheme() {
@@ -289,3 +306,4 @@
 </script>
 </body>
 </html>
+
