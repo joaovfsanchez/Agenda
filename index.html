@@ -258,7 +258,6 @@
     const corpo = document.getElementById('modal-corpo');
     document.getElementById('modal-titulo').innerText = "Grupos e Integrantes";
     
-    // Criar a estrutura com a barra de pesquisa
     corpo.innerHTML = `
         <div class="search-container">
             <input type="text" id="inputBusca" class="search-input" placeholder="🔍 Digite um nome ou matéria..." onkeyup="filtrarGrupos()">
@@ -285,8 +284,6 @@ function renderizarGrupos(lista) {
     materias.forEach(mat => {
         const gruposMat = lista.filter(i => i["Matéria"] === mat);
         const nomesG = [...new Set(gruposMat.map(g => g["Nome do Grupo"]))];
-        
-        // Se houver busca, as matérias e grupos expandem automaticamente
         const statusOpen = termoBusca.length > 0 ? "open" : "";
         
         let htmlGrupos = nomesG.map(ng => {
@@ -302,9 +299,9 @@ function renderizarGrupos(lista) {
                 </details>`;
         }).join('');
 
-        // Matéria como o "Recolhimento Principal"
+        // Adicionado o atributo name="grupos" para o efeito de fechar os outros
         container.innerHTML += `
-            <details class="secao-retratil" ${statusOpen}>
+            <details class="secao-retratil" name="grupos" ${statusOpen}>
                 <summary class="secao-titulo">
                     ${mat.toUpperCase()} <span>▾</span>
                 </summary>
@@ -313,6 +310,9 @@ function renderizarGrupos(lista) {
                 </div>
             </details>`;
     });
+
+    // Ativa o fechamento automático (Accordion)
+    setupAccordion("grupos");
 }
 
 // Lógica da Busca
@@ -391,6 +391,7 @@ function filtrarGrupos() {
 </script>
 </body>
 </html>
+
 
 
 
