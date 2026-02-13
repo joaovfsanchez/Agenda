@@ -118,42 +118,55 @@
 
     // --- GRADE ORGANIZADA POR DIA ---
     function abrirGrade() {
-        const corpo = document.getElementById('modal-corpo');
-        document.getElementById('modal-titulo').innerText = "Grade de Aulas";
-        corpo.innerHTML = "";
-        
-        const diasSemana = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
-        const itens = dadosApp["Grade"] || [];
-        
-        diasSemana.forEach(dia => {
-            // Filtro inteligente (ignora espaços e maiúsculas)
-            const aulas = itens.filter(a => {
-                const diaPlanilha = String(a["Dia da Semana"] || "").trim().toLowerCase();
-                return diaPlanilha === dia.toLowerCase();
-            });
-
-            if(aulas.length > 0) {
-                let htmlAulas = aulas.map(a => `
-                    <div class="grade-item">
-                        <div class="grade-hora">${a["Horários"] || '--:--'}</div>
-                        <div class="grade-info">
-                            <span class="grade-nome">${a["Matéria"]}</span>
-                            <span class="grade-grupo">👥 ${a["Grupo"] || 'Geral'}</span>
-                        </div>
-                    </div>
-                `).join('');
-
-                corpo.innerHTML += `
-                    <details class="secao-retratil">
-                        <summary class="secao-titulo">${dia} <span>▾</span></summary>
-                        <div>${htmlAulas}</div>
-                    </details>`;
-            }
+    const corpo = document.getElementById('modal-corpo');
+    document.getElementById('modal-titulo').innerText = "Grade de Aulas";
+    corpo.innerHTML = "";
+    
+    // Lista de busca simplificada
+    const diasSemana = [
+        { busca: "Segunda", exibicao: "Segunda-Feira" },
+        { busca: "Terça", exibicao: "Terça-Feira" },
+        { busca: "Quarta", exibicao: "Quarta-Feira" },
+        { busca: "Quinta", exibicao: "Quinta-Feira" },
+        { busca: "Sexta", exibicao: "Sexta-Feira" },
+        { busca: "Sábado", exibicao: "Sábado" }
+    ];
+    
+    const itens = dadosApp["Grade"] || [];
+    
+    diasSemana.forEach(dia => {
+        // Filtra verificando se o texto da planilha CONTÉM o nome do dia
+        const aulas = itens.filter(a => {
+            const diaPlanilha = String(a["Dia da Semana"] || "").toLowerCase();
+            return diaPlanilha.includes(dia.busca.toLowerCase());
         });
 
-        if(!corpo.innerHTML) corpo.innerHTML = "<p style='text-align:center; opacity:0.5;'>Nenhuma aula encontrada.</p>";
-        document.getElementById('meuModal').style.display = 'flex';
+        if(aulas.length > 0) {
+            let htmlAulas = aulas.map(a => `
+                <div class="grade-item">
+                    <div class="grade-hora" style="flex: 0 0 110px; font-size: 0.7em;">
+                        ${a["Horários"] || '--:--'}
+                    </div>
+                    <div class="grade-info">
+                        <span class="grade-nome">${a["Matéria"]}</span>
+                        <span class="grade-grupo">👥 ${a["Grupo"] || 'Geral'}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            corpo.innerHTML += `
+                <details class="secao-retratil">
+                    <summary class="secao-titulo">${dia.exibicao} <span>▾</span></summary>
+                    <div>${htmlAulas}</div>
+                </details>`;
+        }
+    });
+
+    if(!corpo.innerHTML) {
+        corpo.innerHTML = "<p style='text-align:center; opacity:0.5; padding:20px;'>Nenhuma aula encontrada para os próximos dias.</p>";
     }
+    document.getElementById('meuModal').style.display = 'flex';
+}
 
     // --- GRUPOS COM PESQUISA ---
     function abrirGrupos() {
@@ -264,3 +277,4 @@
 </script>
 </body>
 </html>
+
