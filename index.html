@@ -6,16 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="icon.png?v=2">
-    <link rel="icon" type="image/png" sizes="192x192" href="icon.png?v=2">
-    <link rel="manifest" href="manifest.json?v=2">
+    <link rel="apple-touch-icon" href="icon.png?v=3">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon.png?v=3">
+    <link rel="manifest" href="manifest.json?v=3">
     <meta name="theme-color" content="#007bff">
 
     <style>
         :root { --p-med: #007bff; --bg: #f4f7f6; --card-bg: #ffffff; --text-color: #333333; --header-bg: #ffffff; --shadow: rgba(0,0,0,0.1); --input-bg: #eeeeee; }
         [data-theme="dark"] { --bg: #121212; --card-bg: #1e1e1e; --text-color: #e0e0e0; --header-bg: #1e1e1e; --shadow: rgba(0,0,0,0.5); --input-bg: #2d2d2d; }
         
-        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: var(--text-color); transition: background 0.3s; padding-bottom: 100px; -webkit-font-smoothing: antialiased; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: var(--text-color); transition: background 0.3s; padding-bottom: 100px; }
         
         #splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; transition: opacity 0.8s; }
         .logo-animado { width: 180px; animation: pulsar 2s infinite; }
@@ -23,67 +25,59 @@
         
         .header { background: var(--header-bg); padding: 15px; border-radius: 12px; box-shadow: 0 2px 5px var(--shadow); margin-bottom: 20px; text-align: center; }
         #status-bar { font-size: 0.8em; margin-top: 5px; color: #888; height: 1.2em; }
-        .status-online { color: #5cb85c; font-weight: bold; }
         
-        /* Grid de Cards Corrigido */
+        /* Grid de Cards - Centralização Total */
         .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .card { 
             background: var(--card-bg); height: 110px; border-radius: 15px; 
             box-shadow: 0 4px 6px var(--shadow); cursor: pointer; position: relative; 
-            font-weight: 600; transition: transform 0.1s; border: none; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            -webkit-tap-highlight-color: transparent;
+            font-weight: 600; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; border: none;
         }
-        .card:active { transform: scale(0.95); }
-        .card .icon { font-size: 1.6em; margin-bottom: 5px; display: block; }
+        .card .icon { font-size: 1.8em; margin-bottom: 8px; line-height: 1; }
+        .card .label { font-size: 0.95em; }
         
-        /* Badge de Aviso */
         .notification-badge { 
             position: absolute; top: 12px; right: 12px; background: #ff3b30; 
             color: white; font-size: 9px; padding: 2px 6px; border-radius: 10px; 
-            font-weight: bold; z-index: 10;
+            font-weight: bold;
         }
         
-        /* Modal e Conteúdo */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); align-items: center; justify-content: center; padding: 20px; z-index: 2000; backdrop-filter: blur(4px); }
-        .modal-content { background: var(--card-bg); padding: 25px; border-radius: 20px; width: 100%; max-width: 400px; max-height: 85vh; overflow-y: auto; position: relative; box-sizing: border-box; }
-        .close-btn { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 20px; color: var(--text-color); cursor: pointer; padding: 5px; }
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); align-items: center; justify-content: center; padding: 15px; z-index: 2000; backdrop-filter: blur(4px); }
+        .modal-content { background: var(--card-bg); padding: 20px; border-radius: 20px; width: 100%; max-width: 400px; max-height: 85vh; overflow-y: auto; position: relative; }
+        .close-btn { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 20px; color: var(--text-color); cursor: pointer; }
         
         /* Busca */
-        .search-container { position: sticky; top: -26px; background: var(--card-bg); z-index: 10; padding: 10px 0; margin-bottom: 15px; border-bottom: 1px solid var(--shadow); }
-        .search-input { width: 100%; height: 45px; padding: 0 15px; border-radius: 10px; border: none; background: var(--input-bg); color: var(--text-color); font-size: 16px; -webkit-appearance: none; box-sizing: border-box; }
+        .search-container { position: sticky; top: -21px; background: var(--card-bg); z-index: 10; padding: 10px 0; margin-bottom: 15px; border-bottom: 1px solid var(--shadow); }
+        .search-input { width: 100%; height: 45px; padding: 0 15px; border-radius: 10px; border: none; background: var(--input-bg); color: var(--text-color); font-size: 16px; }
 
-        /* Estrutura de Matérias e Grupos - Alinhamento Forçado */
-        .materia-retratil { margin-bottom: 10px; border: 1px solid var(--shadow); border-radius: 12px; background: var(--card-bg); overflow: hidden; }
+        /* TRAVA DE SEGURANÇA NO ALINHAMENTO */
+        .materia-retratil { margin-bottom: 10px; border: 1px solid var(--shadow); border-radius: 12px; background: var(--card-bg); overflow: hidden; width: 100%; }
         
         summary { 
             display: grid !important; 
-            grid-template-columns: 1fr auto !important; 
+            grid-template-columns: 1fr 40px !important; /* Trava a coluna da direita em 40px */
             align-items: center !important; 
             width: 100% !important; 
-            padding: 14px !important; 
+            padding: 14px 15px !important; 
             cursor: pointer; 
             list-style: none;
-            box-sizing: border-box !important;
         }
         summary::-webkit-details-marker { display: none; }
 
-        .materia-sumario { background: rgba(0,123,255,0.07); font-weight: 800; color: var(--p-med); text-transform: uppercase; font-size: 0.8em; letter-spacing: 0.5px; }
-        .materia-sumario::after { content: '📁'; opacity: 0.5; }
-        .materia-retratil[open] .materia-sumario::after { content: '📂'; opacity: 1; }
+        .materia-sumario { background: rgba(0,123,255,0.07); font-weight: 800; color: var(--p-med); text-transform: uppercase; font-size: 0.8em; }
+        .materia-sumario::after { content: '📁'; text-align: right; }
+        .materia-retratil[open] .materia-sumario::after { content: '📂'; }
 
-        .grupo-detalhe { border-top: 1px solid rgba(0,0,0,0.05); }
-        .grupo-sumario { font-weight: 600; font-size: 0.9em; padding: 12px 15px !important; }
+        .grupo-detalhe { border-top: 1px solid rgba(0,0,0,0.05); width: 100%; }
+        .grupo-sumario { font-weight: 600; font-size: 0.9em; }
+        .grupo-sumario small { text-align: right; }
 
-        /* Lista de Integrantes - Proteção contra nomes longos */
-        ul.lista-integrantes { padding: 5px 15px 15px 35px !important; margin: 0 !important; list-style-type: circle; border-left: 3px solid var(--p-med); margin-left: 15px !important; }
-        ul.lista-integrantes li { 
-            font-size: 0.85em; margin-bottom: 4px; 
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; /* Corta nomes gigantes */
-            max-width: 100%;
-        }
+        ul.lista-integrantes { padding: 10px 15px 15px 40px !important; margin: 0 !important; list-style-type: circle; border-left: 3px solid var(--p-med); margin-left: 15px !important; }
+        ul.lista-integrantes li { font-size: 0.85em; margin-bottom: 5px; word-break: break-word; } /* Permite que o nome quebre linha se for gigante */
         
-        #theme-toggle { position: fixed; bottom: 25px; right: 25px; z-index: 999; background: var(--card-bg); border: 2px solid var(--p-med); border-radius: 50%; width: 50px; height: 50px; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 15px var(--shadow); cursor: pointer; }
+        #theme-toggle { position: fixed; bottom: 25px; right: 25px; z-index: 999; background: var(--card-bg); border: 2px solid var(--p-med); border-radius: 50%; width: 50px; height: 50px; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 15px var(--shadow); }
     </style>
 </head>
 <body>
@@ -101,13 +95,23 @@
 </div>
 
 <div class="grid-container">
-    <div class="card" onclick="mostrarAba('Grade')"><span class="icon">📅</span>Grade</div>
-    <div class="card" onclick="mostrarAba('Grupos')"><span class="icon">👥</span>Grupos</div>
+    <div class="card" onclick="mostrarAba('Grade')">
+        <span class="icon">📅</span>
+        <span class="label">Grade</span>
+    </div>
+    <div class="card" onclick="mostrarAba('Grupos')">
+        <span class="icon">👥</span>
+        <span class="label">Grupos</span>
+    </div>
     <div class="card" onclick="abrirAvisos()">
         <span id="badge-avisos" class="notification-badge" style="display:none">NOVO</span>
-        <span class="icon">🔔</span>Avisos
+        <span class="icon">🔔</span>
+        <span class="label">Avisos</span>
     </div>
-    <div class="card" onclick="mostrarAba('Arquivos')"><span class="icon">📄</span>Arquivos</div>
+    <div class="card" onclick="mostrarAba('Arquivos')">
+        <span class="icon">📄</span>
+        <span class="label">Arquivos</span>
+    </div>
 </div>
 
 <div id="meuModal" class="modal">
@@ -132,7 +136,7 @@
             const res = await fetch(URL_API);
             dadosApp = await res.json();
             localStorage.setItem('cache_medicina', JSON.stringify(dadosApp));
-            document.getElementById('status-bar').innerHTML = `<span class="status-online">● Atualizado: ${dadosApp.ultima_sincronizacao}</span>`;
+            document.getElementById('status-bar').innerHTML = `<span style="color:#5cb85c; font-weight:bold">● Atualizado: ${dadosApp.ultima_sincronizacao}</span>`;
             verificarNovosAvisos();
         } catch (e) {
             const cache = localStorage.getItem('cache_medicina');
@@ -207,10 +211,8 @@
                 div.style.borderBottom = "1px solid var(--shadow)";
                 if(nomeAba === "Avisos") {
                     div.innerHTML = `<small style="color:#888">${item.Data || ''}</small><br><b style="color:var(--p-med)">${item.Titulo || 'Aviso'}</b><p style="margin:5px 0; font-size:0.9em">${item.Mensagem || ''}</p>`;
-                } else if(nomeAba === "Arquivos") {
-                    div.innerHTML = `<b>${item.Nome || 'Arquivo'}</b><br><a href="${item.Link}" target="_blank" style="display:inline-block; margin-top:8px; color:var(--p-med); text-decoration:none; font-weight:bold;">📂 Abrir Arquivo</a>`;
                 } else {
-                    div.innerHTML = `<b>${item.Matéria || ''}</b><br><small style="color:#888">${item.Horário || ''} - ${item.Sala || ''}</small>`;
+                    div.innerHTML = `<b>${item.Matéria || item.Nome || ''}</b><br><small style="color:#888">${item.Horário || item.Descrição || ''}</small>`;
                 }
                 corpo.appendChild(div);
             });
