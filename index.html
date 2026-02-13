@@ -212,44 +212,46 @@
             corpo.innerHTML = itens.map(i => {
                 const agora = new Date();
                 
-                // 1. TRATAMENTO SEGURO DA DATA E HORA
-                let dataAula;
+                // 1. FORÇAR TRATAMENTO COMO TEXTO
+                let strData = String(i["Data"]); // Vem 14/02/2026
+                let strHora = String(i["Horário"]); // Vem 19:00
                 
-                try {
-                    // Tenta converter o que vier (seja objeto, ISO string ou texto)
-                    let dataBruta = i["Data"];
-                    let horaBruta = String(i["Horário"] || "00:00").trim();
+                let dataAula;
 
-                    // Se a data vier como ISO (Ex: 2026-02-13T03:00:00.000Z)
-                    if (String(dataBruta).includes('T')) {
-                        dataAula = new Date(dataBruta);
-                        // Ajusta o horário com o que está na coluna Horário
-                        const [h, m] = horaBruta.split(':');
+                // Se a data vier no formato BR (DD/MM/AAAA)
+                if (strData.includes('/')) {
+                    const partesData = strData.split('/');
+                    const partesHora = strHora.split(':');
+                    
+                    // Atenção: o mês no JS começa em 0 (Janeiro = 0, Fevereiro = 1)
+                    dataAula = new Date(
+                        parseInt(partesData[2]), // Ano
+                        parseInt(partesData[1]) - 1, // Mês
+                        parseInt(partesData[0]), // Dia
+                        parseInt(partesHora[0] || 0), // Hora
+                        parseInt(partesHora[1] || 0)  // Minuto
+                    );
+                } else {
+                    // Caso o Google mande formato ISO ou outro, tenta o padrão
+                    dataAula = new Date(i["Data"]);
+                    if (strHora.includes(':')) {
+                        const [h, m] = strHora.split(':');
                         dataAula.setHours(parseInt(h), parseInt(m), 0);
-                    } 
-                    // Se vier como texto DD/MM/AAAA
-                    else if (String(dataBruta).includes('/')) {
-                        const [d, mes, a] = String(dataBruta).split('/');
-                        const [h, m] = horaBruta.split(':');
-                        dataAula = new Date(a, mes - 1, d, h, m);
                     }
-                    else {
-                        dataAula = new Date(dataBruta);
-                    }
-                } catch (e) {
-                    dataAula = new Date(); // Fallback para não travar
                 }
 
-                // Se mesmo assim falhou (NaN), evita o erro visual
-                if (isNaN(dataAula.getTime())) dataAula = new Date();
-
-                // 2. FORMATAÇÃO PARA EXIBIÇÃO
-                const exibicaoCompleta = dataAula.toLocaleDateString('pt-BR') + " - " + 
-                                       dataAula.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
-
-                let statusHtml = "", btnCor = "#6c757d", textoBtn = "LINK INDISPONÍVEL";
+                // 2. FORMATAÇÃO MANUAL (Garante que apareça exatamente o que você quer)
+                const dia = String(dataAula.getDate()).padStart(2, '0');
+                const mes = String(dataAula.getMonth() + 1).padStart(2, '0');
+                const ano = dataAula.getFullYear();
+                const hora = String(dataAula.getHours()).padStart(2, '0');
+                const min = String(dataAula.getMinutes()).padStart(2, '0');
+                
+                const exibicaoCompleta = `${dia}/${mes}/${ano} - ${hora}:${min}`;
 
                 // 3. LÓGICA DE STATUS
+                let statusHtml = "", btnCor = "#6c757d", textoBtn = "LINK INDISPONÍVEL";
+
                 if (agora >= dataAula) {
                     statusHtml = '<span style="color:#28a745; font-size:0.7em; font-weight:bold;">● AO VIVO</span>';
                     btnCor = "#28a745"; 
@@ -260,6 +262,12 @@
                     textoBtn = "ABRIR LINK";
                 }
 
+                // Ajuste de URL para garantir que funcione se não tiver http
+                let linkFinal = i["Url"] || "#";
+                if (linkFinal !== "#" && !linkFinal.startsWith('http')) {
+                    linkFinal = 'https://' + linkFinal;
+                }
+
                 return `<div class="item-lista" style="flex-direction:column; align-items:flex-start; border-left: 5px solid ${btnCor};">
                     <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
                         <b style="color:var(--p-med); font-size:1.1em;">${i["Materia"] || "Aula"}</b>
@@ -268,12 +276,13 @@
                     <div style="margin: 5px 0; font-size:0.85em; opacity:0.8;">
                         🗓️ ${exibicaoCompleta}
                     </div>
-                    <a href="${i["Url"].startsWith('http') ? i["Url"] : 'https://' + i["Url"]}" target="_blank" style="background:${btnCor}; color:white; text-decoration:none; padding:12px; border-radius:10px; width:100%; text-align:center; font-weight:bold; margin-top:10px; display:block;">${textoBtn}</a>
+                    <a href="${linkFinal}" target="_blank" style="background:${btnCor}; color:white; text-decoration:none; padding:12px; border-radius:10px; width:100%; text-align:center; font-weight:bold; margin-top:10px; display:block;">${textoBtn}</a>
                 </div>`;
             }).join('');
         }
         document.getElementById('meuModal').style.display = 'flex';
     }
+    
     
     function fecharModal() { document.getElementById('meuModal').style.display = 'none'; }
 
@@ -309,6 +318,7 @@
 </script>
 </body>
 </html>
+
 
 
 
