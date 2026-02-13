@@ -25,57 +25,63 @@
         #status-bar { font-size: 0.8em; margin-top: 5px; color: #888; height: 1.2em; }
         .status-online { color: #5cb85c; font-weight: bold; }
         
-        /* Grid de Cards */
+        /* Grid de Cards Corrigido */
         .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .card { 
-            background: var(--card-bg); padding: 20px; border-radius: 15px; 
-            text-align: center; box-shadow: 0 4px 6px var(--shadow); 
-            cursor: pointer; position: relative; font-weight: 600; 
-            transition: transform 0.1s; border: none; -webkit-tap-highlight-color: transparent;
+            background: var(--card-bg); height: 110px; border-radius: 15px; 
+            box-shadow: 0 4px 6px var(--shadow); cursor: pointer; position: relative; 
+            font-weight: 600; transition: transform 0.1s; border: none; 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
+            -webkit-tap-highlight-color: transparent;
         }
         .card:active { transform: scale(0.95); }
-        .card span.icon { display: block; font-size: 1.5em; margin-bottom: 8px; }
+        .card .icon { font-size: 1.6em; margin-bottom: 5px; display: block; }
         
-        /* Badge Novo Corrigido */
+        /* Badge de Aviso */
         .notification-badge { 
-            position: absolute; top: 10px; right: 10px; background: #ff3b30; 
+            position: absolute; top: 12px; right: 12px; background: #ff3b30; 
             color: white; font-size: 9px; padding: 2px 6px; border-radius: 10px; 
-            display: none; font-weight: bold; z-index: 5;
+            font-weight: bold; z-index: 10;
         }
         
-        /* Modal */
+        /* Modal e Conteúdo */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); align-items: center; justify-content: center; padding: 20px; z-index: 2000; backdrop-filter: blur(4px); }
-        .modal-content { background: var(--card-bg); padding: 25px; border-radius: 20px; width: 100%; max-width: 400px; max-height: 85vh; overflow-y: auto; position: relative; }
-        .close-btn { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 20px; color: var(--text-color); cursor: pointer; padding: 5px; z-index: 100; }
+        .modal-content { background: var(--card-bg); padding: 25px; border-radius: 20px; width: 100%; max-width: 400px; max-height: 85vh; overflow-y: auto; position: relative; box-sizing: border-box; }
+        .close-btn { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 20px; color: var(--text-color); cursor: pointer; padding: 5px; }
         
         /* Busca */
         .search-container { position: sticky; top: -26px; background: var(--card-bg); z-index: 10; padding: 10px 0; margin-bottom: 15px; border-bottom: 1px solid var(--shadow); }
-        .search-input { width: 100%; height: 45px; padding: 0 15px; border-radius: 10px; border: none; background: var(--input-bg); color: var(--text-color); box-sizing: border-box; font-size: 16px; -webkit-appearance: none; }
+        .search-input { width: 100%; height: 45px; padding: 0 15px; border-radius: 10px; border: none; background: var(--input-bg); color: var(--text-color); font-size: 16px; -webkit-appearance: none; box-sizing: border-box; }
 
-        /* Estilo das Matérias e Grupos (Centralização Focada) */
+        /* Estrutura de Matérias e Grupos - Alinhamento Forçado */
         .materia-retratil { margin-bottom: 10px; border: 1px solid var(--shadow); border-radius: 12px; background: var(--card-bg); overflow: hidden; }
         
         summary { 
             display: grid !important; 
-            grid-template-columns: 1fr auto; 
-            align-items: center; 
-            width: 100%; 
-            padding: 14px; 
+            grid-template-columns: 1fr auto !important; 
+            align-items: center !important; 
+            width: 100% !important; 
+            padding: 14px !important; 
             cursor: pointer; 
             list-style: none;
-            box-sizing: border-box;
+            box-sizing: border-box !important;
         }
         summary::-webkit-details-marker { display: none; }
 
-        .materia-sumario { background: rgba(0,123,255,0.07); font-weight: 800; color: var(--p-med); text-transform: uppercase; font-size: 0.85em; }
+        .materia-sumario { background: rgba(0,123,255,0.07); font-weight: 800; color: var(--p-med); text-transform: uppercase; font-size: 0.8em; letter-spacing: 0.5px; }
         .materia-sumario::after { content: '📁'; opacity: 0.5; }
         .materia-retratil[open] .materia-sumario::after { content: '📂'; opacity: 1; }
 
         .grupo-detalhe { border-top: 1px solid rgba(0,0,0,0.05); }
-        .grupo-sumario { font-weight: 600; font-size: 0.95em; padding: 12px 15px; }
-        
-        ul.lista-integrantes { padding: 5px 15px 15px 40px !important; margin: 0 !important; list-style-type: circle; border-left: 3px solid var(--p-med); margin-left: 15px !important; }
+        .grupo-sumario { font-weight: 600; font-size: 0.9em; padding: 12px 15px !important; }
+
+        /* Lista de Integrantes - Proteção contra nomes longos */
+        ul.lista-integrantes { padding: 5px 15px 15px 35px !important; margin: 0 !important; list-style-type: circle; border-left: 3px solid var(--p-med); margin-left: 15px !important; }
+        ul.lista-integrantes li { 
+            font-size: 0.85em; margin-bottom: 4px; 
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; /* Corta nomes gigantes */
+            max-width: 100%;
+        }
         
         #theme-toggle { position: fixed; bottom: 25px; right: 25px; z-index: 999; background: var(--card-bg); border: 2px solid var(--p-med); border-radius: 50%; width: 50px; height: 50px; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 15px var(--shadow); cursor: pointer; }
     </style>
@@ -98,7 +104,7 @@
     <div class="card" onclick="mostrarAba('Grade')"><span class="icon">📅</span>Grade</div>
     <div class="card" onclick="mostrarAba('Grupos')"><span class="icon">👥</span>Grupos</div>
     <div class="card" onclick="abrirAvisos()">
-        <span id="badge-avisos" class="notification-badge">NOVO</span>
+        <span id="badge-avisos" class="notification-badge" style="display:none">NOVO</span>
         <span class="icon">🔔</span>Avisos
     </div>
     <div class="card" onclick="mostrarAba('Arquivos')"><span class="icon">📄</span>Arquivos</div>
@@ -122,19 +128,15 @@
     }
 
     async function carregarDados() {
-        const status = document.getElementById('status-bar');
         try {
             const res = await fetch(URL_API);
             dadosApp = await res.json();
             localStorage.setItem('cache_medicina', JSON.stringify(dadosApp));
-            status.innerHTML = `<span class="status-online">● Atualizado: ${dadosApp.ultima_sincronizacao}</span>`;
+            document.getElementById('status-bar').innerHTML = `<span class="status-online">● Atualizado: ${dadosApp.ultima_sincronizacao}</span>`;
             verificarNovosAvisos();
         } catch (e) {
             const cache = localStorage.getItem('cache_medicina');
-            if(cache) {
-                dadosApp = JSON.parse(cache);
-                status.innerHTML = `<span>● Modo Offline</span>`;
-            }
+            if(cache) dadosApp = JSON.parse(cache);
         }
     }
 
@@ -142,8 +144,9 @@
         if (dadosApp.Avisos && dadosApp.Avisos.length > 0) {
             const ultimoAviso = dadosApp.Avisos[dadosApp.Avisos.length - 1];
             const idAvisoAtual = btoa(unescape(encodeURIComponent((ultimoAviso.Titulo || "") + (ultimoAviso.Mensagem || ""))));
-            const ultimoLido = localStorage.getItem('ultimo_id_aviso_lido');
-            document.getElementById('badge-avisos').style.display = (idAvisoAtual !== ultimoLido) ? 'block' : 'none';
+            if(localStorage.getItem('ultimo_id_aviso_lido') !== idAvisoAtual) {
+                document.getElementById('badge-avisos').style.display = 'block';
+            }
         }
     }
 
@@ -151,8 +154,7 @@
         mostrarAba('Avisos');
         if (dadosApp.Avisos && dadosApp.Avisos.length > 0) {
             const ultimoAviso = dadosApp.Avisos[dadosApp.Avisos.length - 1];
-            const idAvisoAtual = btoa(unescape(encodeURIComponent((ultimoAviso.Titulo || "") + (ultimoAviso.Mensagem || ""))));
-            localStorage.setItem('ultimo_id_aviso_lido', idAvisoAtual);
+            localStorage.setItem('ultimo_id_aviso_lido', btoa(unescape(encodeURIComponent((ultimoAviso.Titulo || "") + (ultimoAviso.Mensagem || "")))));
             document.getElementById('badge-avisos').style.display = 'none';
         }
     }
@@ -180,11 +182,8 @@
                 matDet.className = 'materia-retratil';
                 matDet.innerHTML = `<summary class="materia-sumario"><span>${mat}</span></summary><div class="container-grupos"></div>`;
                 
-                // Auto-recolhimento Matérias
                 matDet.addEventListener('toggle', function() {
-                    if(this.open) {
-                        document.querySelectorAll('.materia-retratil').forEach(m => { if(m !== this) m.removeAttribute('open'); });
-                    }
+                    if(this.open) document.querySelectorAll('.materia-retratil').forEach(m => { if(m !== this) m.removeAttribute('open'); });
                 });
 
                 const container = matDet.querySelector('.container-grupos');
@@ -194,11 +193,8 @@
                     grpDet.innerHTML = `<summary class="grupo-sumario"><span>${grp}</span><small style="color:#888;">${estrutura[mat][grp].length} ▾</small></summary>
                                         <ul class="lista-integrantes">${estrutura[mat][grp].map(n => `<li>${n}</li>`).join('')}</ul>`;
                     
-                    // Auto-recolhimento Grupos
                     grpDet.addEventListener('toggle', function() {
-                        if(this.open) {
-                            container.querySelectorAll('.grupo-detalhe').forEach(g => { if(g !== this) g.removeAttribute('open'); });
-                        }
+                        if(this.open) container.querySelectorAll('.grupo-detalhe').forEach(g => { if(g !== this) g.removeAttribute('open'); });
                     });
                     container.appendChild(grpDet);
                 }
@@ -207,14 +203,14 @@
         } else {
             itens.reverse().forEach(item => {
                 const div = document.createElement('div');
-                div.style.padding = "12px 0";
+                div.style.padding = "15px 0";
                 div.style.borderBottom = "1px solid var(--shadow)";
                 if(nomeAba === "Avisos") {
-                    div.innerHTML = `<small style="color:#888">${item.Data || ''}</small><br><b>${item.Titulo || 'Aviso'}</b><p style="margin:5px 0; font-size:0.9em">${item.Mensagem || ''}</p>`;
+                    div.innerHTML = `<small style="color:#888">${item.Data || ''}</small><br><b style="color:var(--p-med)">${item.Titulo || 'Aviso'}</b><p style="margin:5px 0; font-size:0.9em">${item.Mensagem || ''}</p>`;
                 } else if(nomeAba === "Arquivos") {
-                    div.innerHTML = `<b>${item.Nome || 'Arquivo'}</b><br><a href="${item.Link}" target="_blank" style="color:var(--p-med); text-decoration:none; font-weight:bold;">📂 Abrir Link</a>`;
+                    div.innerHTML = `<b>${item.Nome || 'Arquivo'}</b><br><a href="${item.Link}" target="_blank" style="display:inline-block; margin-top:8px; color:var(--p-med); text-decoration:none; font-weight:bold;">📂 Abrir Arquivo</a>`;
                 } else {
-                    div.innerHTML = `<b>${item.Matéria || ''}</b><br><small>${item.Horário || ''} - ${item.Sala || ''}</small>`;
+                    div.innerHTML = `<b>${item.Matéria || ''}</b><br><small style="color:#888">${item.Horário || ''} - ${item.Sala || ''}</small>`;
                 }
                 corpo.appendChild(div);
             });
