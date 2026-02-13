@@ -82,10 +82,12 @@
         .card:active { transform: scale(0.95); }
         .card span { display: block; font-size: 1.5em; margin-bottom: 8px; }
 
+        /* AQUI: Garantindo que ela comece escondida */
         .notification-badge {
             position: absolute; top: 8px; right: 12px;
             background: #ff3b30; color: white; font-size: 9px;
-            padding: 2px 6px; border-radius: 10px; display: none;
+            padding: 2px 6px; border-radius: 10px; 
+            display: none; 
             animation: bounce 0.5s infinite alternate;
         }
         @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-3px); } }
@@ -124,22 +126,10 @@
     <div class="card" onclick="mostrarAba('Grade')"><span>📅</span>Grade</div>
     <div class="card" onclick="mostrarAba('Grupos')"><span>👥</span>Grupos</div>
     <div class="card" onclick="mostrarAba('Avisos'); limparNotificacao()">
-        <span id="badge-avisos" class="notification-badge">NOVO</span>
+        <span id="badge-avisos" class="notification-badge" style="display: none;">NOVO</span>
         <span>🔔</span>Avisos
     </div>
     <div class="card" onclick="mostrarAba('Links')"><span>📸</span>Fotos</div>
-</div>
-
-<div id="meuModal" class="modal">
-    <div class="modal-content">
-        <button class="close-btn" onclick="fecharModal()">✕</button>
-        <h3 id="modal-titulo" style="margin-top:0">Título</h3>
-        <div id="modal-corpo">Carregando...</div>
-    </div>
-</div>
-
-<div class="footer">
-    <a href="mailto:seuemail@gmail.com" class="btn-email">📧 Sugerir Alteração</a>
 </div>
 
 <script>
@@ -151,13 +141,9 @@
         try {
             const res = await fetch(URL_API);
             const novosDados = await res.json();
-            
-            // Apenas salva os dados no estado global e no cache
             dadosApp = novosDados;
             localStorage.setItem('cache_medicina', JSON.stringify(dadosApp));
-            
             status.innerHTML = `<span class="status-online">● Atualizado: ${dadosApp.ultima_sincronizacao}</span>`;
-            
         } catch (e) {
             const cache = localStorage.getItem('cache_medicina');
             if(cache) {
@@ -166,6 +152,9 @@
             }
         }
     }
+
+    // ... (restante das funções mostrarAba, fecharModal, toggleTheme iguais) ...
+
     function mostrarAba(nomeAba) {
         const modal = document.getElementById('meuModal');
         const corpo = document.getElementById('modal-corpo');
@@ -246,4 +235,3 @@
 </script>
 </body>
 </html>
-
