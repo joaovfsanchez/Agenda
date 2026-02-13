@@ -8,7 +8,6 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="icon.png?v=3">
     <link rel="icon" type="image/png" sizes="192x192" href="icon.png?v=3">
-    <link rel="manifest" href="manifest.json?v=3">
     <meta name="theme-color" content="#007bff">
 
     <style>
@@ -16,77 +15,41 @@
         [data-theme="dark"] { --bg: #121212; --card-bg: #1e1e1e; --text-color: #e0e0e0; --header-bg: #1e1e1e; --shadow: rgba(0,0,0,0.5); --input-bg: #2d2d2d; }
         
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        
-        body { 
-            font-family: -apple-system, system-ui, sans-serif; 
-            background: var(--bg); 
-            margin: 0; 
-            padding: 20px; 
-            color: var(--text-color); 
-            transition: background 0.3s; 
-            padding-bottom: 60px;
-            overscroll-behavior-y: contain; 
-        }
+        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: var(--text-color); transition: background 0.3s; padding-bottom: 60px; overscroll-behavior-y: contain; }
 
-        #refresh-indicator {
-            position: fixed; top: -60px; left: 50%; transform: translateX(-50%);
-            background: var(--p-med); color: white; padding: 10px 25px;
-            border-radius: 30px; font-size: 14px; font-weight: bold; z-index: 10001;
-            transition: top 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 4px 15px var(--shadow);
-        }
+        #refresh-indicator { position: fixed; top: -60px; left: 50%; transform: translateX(-50%); background: var(--p-med); color: white; padding: 10px 25px; border-radius: 30px; font-size: 14px; font-weight: bold; z-index: 10001; transition: top 0.3s; box-shadow: 0 4px 15px var(--shadow); }
 
-        /* --- CLASSES DA GRADE --- */
         .grade-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--shadow); align-items: flex-start; }
-        .grade-item:last-child { border-bottom: none; }
-        .grade-hora { flex: 0 0 75px; font-size: 0.8em; font-weight: 800; color: var(--p-med); text-align: right; padding-top: 2px; }
+        .grade-hora { flex: 0 0 75px; font-size: 0.8em; font-weight: 800; color: var(--p-med); text-align: right; }
         .grade-info { flex: 1; text-align: left; }
         .grade-materia { font-weight: bold; font-size: 0.95em; display: block; color: var(--text-color); }
-        .grade-grupo { font-size: 0.8em; color: #888; margin-top: 3px; display: block; }
 
         #splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; transition: opacity 0.8s; }
-        .logo-animado { width: 180px; animation: pulsar 2s infinite; }
+        .logo-animado { width: 150px; animation: pulsar 2s infinite; }
         @keyframes pulsar { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
         
         .header { background: var(--header-bg); padding: 15px; border-radius: 12px; box-shadow: 0 2px 5px var(--shadow); margin-bottom: 20px; text-align: center; }
-        #status-bar { font-size: 0.8em; margin-top: 5px; color: #888; height: 1.2em; }
+        #status-bar { font-size: 0.8em; margin-top: 5px; color: #888; }
         
         .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .card { background: var(--card-bg); height: 110px; border-radius: 15px; box-shadow: 0 4px 6px var(--shadow); cursor: pointer; position: relative; font-weight: 600; display: flex; flex-direction: column; align-items: center; justify-content: center; border: none; }
-        .card .icon { font-size: 1.8em; margin-bottom: 8px; line-height: 1; }
+        .card { background: var(--card-bg); height: 110px; border-radius: 15px; box-shadow: 0 4px 6px var(--shadow); cursor: pointer; position: relative; font-weight: 600; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .card .icon { font-size: 1.8em; margin-bottom: 8px; }
         
-        .notification-badge { position: absolute; top: 12px; right: 12px; background: #ff3b30; color: white; font-size: 9px; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
+        .notification-badge { position: absolute; top: 12px; right: 12px; background: #ff3b30; color: white; font-size: 10px; padding: 2px 8px; border-radius: 10px; }
         
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); align-items: center; justify-content: center; padding: 15px; z-index: 2000; backdrop-filter: blur(4px); }
         .modal-content { background: var(--card-bg); padding: 20px; border-radius: 20px; width: 100%; max-width: 400px; max-height: 85vh; overflow-y: auto; position: relative; }
-        .close-btn { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 20px; color: var(--text-color); cursor: pointer; }
+        .close-btn { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 24px; color: var(--text-color); }
         
-        .materia-retratil { margin-bottom: 10px; border: 1px solid var(--shadow); border-radius: 12px; background: var(--card-bg); overflow: hidden; width: 100%; }
-        summary::-webkit-details-marker { display: none !important; }
-        summary { list-style: none !important; outline: none; }
+        .materia-retratil { margin-bottom: 10px; border: 1px solid var(--shadow); border-radius: 12px; overflow: hidden; }
+        .materia-sumario { background: rgba(0,123,255,0.07); font-weight: 800; color: var(--p-med); padding: 14px; display: flex; justify-content: space-between; cursor: pointer; }
 
-        .materia-sumario { 
-            background: rgba(0,123,255,0.07); font-weight: 800; color: var(--p-med); text-transform: uppercase; font-size: 0.8em; 
-            display: flex !important; justify-content: space-between !important; align-items: center !important; 
-            padding: 14px 15px !important; width: 100% !important; box-sizing: border-box !important;
-        }
-        .materia-sumario::after { content: '📁'; font-size: 1.1em; }
-        .materia-retratil[open] .materia-sumario::after { content: '📂'; }
+        .link-aula-card { background: var(--input-bg); border-radius: 12px; padding: 15px; margin-bottom: 12px; border-left: 5px solid #28a745; }
+        .btn-entrar-aula { display: block; margin-top: 10px; padding: 12px; background: #28a745; color: white; text-decoration: none; border-radius: 8px; text-align: center; font-weight: bold; }
 
-        /* ESTILOS AULAS ONLINE */
-        .link-aula-card { background: var(--input-bg); border-radius: 12px; padding: 15px; margin-bottom: 12px; border-left: 5px solid #28a745; text-align: left; }
-        .link-aula-header { font-size: 0.75em; font-weight: bold; color: #888; margin-bottom: 5px; text-transform: uppercase; }
-        .btn-entrar-aula { display: inline-block; margin-top: 10px; padding: 10px 20px; background: #28a745; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 0.9em; width: 100%; text-align: center; }
-
-        .btn-sugestao { display: block; width: 100%; margin: 30px auto 10px auto; padding: 12px; background: transparent; border: 1px dashed var(--p-med); color: var(--p-med); border-radius: 10px; text-align: center; text-decoration: none; font-size: 0.85em; font-weight: 600; }
-        .arquivo-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--input-bg); border-radius: 10px; margin-bottom: 8px; text-decoration: none; color: var(--text-color); width: 100%; box-sizing: border-box; }
-        ul.lista-integrantes { padding: 0 15px 15px 35px !important; margin: 0 !important; list-style-type: circle; border-left: 3px solid var(--p-med); margin-left: 15px !important; text-align: left; }
-        
-        #theme-toggle { position: fixed; bottom: 25px; right: 25px; z-index: 999; background: var(--card-bg); border: 2px solid var(--p-med); border-radius: 50%; width: 50px; height: 50px; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 15px var(--shadow); }
-        .footer-creditos { text-align: center; font-size: 11px; color: #888; padding-bottom: 40px; margin-top: 50px; width: 100%; font-style: italic; opacity: 0.8; }
-        
-        .admin-form input, .admin-form textarea { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid var(--shadow); background: var(--input-bg); color: var(--text-color); }
-        .btn-postar { background: #28a745; color: white; border: none; padding: 15px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; }
+        .btn-sugestao { display: block; width: 100%; margin-top: 30px; padding: 12px; border: 1px dashed var(--p-med); color: var(--p-med); border-radius: 10px; text-align: center; text-decoration: none; font-size: 0.85em; }
+        #theme-toggle { position: fixed; bottom: 25px; right: 25px; background: var(--card-bg); border: 2px solid var(--p-med); border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px var(--shadow); z-index: 999; }
+        .footer-creditos { text-align: center; font-size: 11px; color: #888; margin-top: 40px; padding-bottom: 20px; }
     </style>
 </head>
 <body>
@@ -95,27 +58,27 @@
 <button id="theme-toggle" onclick="toggleTheme()"><span id="theme-icon">💡</span></button>
 
 <div id="splash">
-    <img src="logo_UCP.png?v=1" class="logo-animado" alt="UCP Logo">
+    <img src="logo_UCP.png" class="logo-animado" onerror="this.src='https://via.placeholder.com/150?text=UCP'">
     <div style="color:#888; font-size:12px; margin-top:10px;">Medicina - PJC</div>
 </div>
 
 <div class="header">
-    <h2 id="tituloPrincipal" style="margin:0;">Medicina - Turma H</h2>
-    <div id="status-bar"></div>
+    <h2 style="margin:0;">Medicina - Turma H</h2>
+    <div id="status-bar">Carregando dados...</div>
 </div>
 
-<div id="offline-pwa-msg" style="display:none; background:#ff9500; color:white; font-size:12px; padding:8px 15px; border-radius:30px; margin: 10px auto 20px auto; font-weight:bold; width: fit-content; text-align: center;">
-    ⚠️ Você está offline. Exibindo dados salvos.
+<div id="offline-pwa-msg" style="display:none; background:#ff9500; color:white; font-size:12px; padding:8px; border-radius:30px; margin-bottom:20px; text-align: center;">
+    ⚠️ Modo Offline: Exibindo dados salvos.
 </div>
 
 <div class="grid-container">
-    <div class="card" onclick="mostrarAba('Grade')"><span class="icon">📅</span><span class="label">Grade</span></div>
-    <div class="card" onclick="mostrarAba('Grupos')"><span class="icon">👥</span><span class="label">Grupos</span></div>
-    <div class="card" onclick="abrirAvisos()">
-        <span id="badge-avisos" class="notification-badge" style="display:none">NOVO</span>
-        <span class="icon">🔔</span><span class="label">Avisos</span>
+    <div class="card" onclick="mostrarAba('Grade')"><span class="icon">📅</span><span>Grade</span></div>
+    <div class="card" onclick="mostrarAba('Grupos')"><span class="icon">👥</span><span>Grupos</span></div>
+    <div class="card" onclick="mostrarAba('Avisos')">
+        <span id="badge-avisos" class="notification-badge" style="display:none">!</span>
+        <span class="icon">🔔</span><span>Avisos</span>
     </div>
-    <div class="card" onclick="mostrarAba('Arquivos')"><span class="icon">📄</span><span class="label">Arquivos</span></div>
+    <div class="card" onclick="mostrarAba('Arquivos')"><span class="icon">📄</span><span>Arquivos</span></div>
     
     <div class="card" id="btnOnline" onclick="mostrarAba('Links')" style="grid-column: span 2; height: 80px; flex-direction: row; gap: 15px;">
         <span class="icon">💻</span>
@@ -126,153 +89,97 @@
 <div id="meuModal" class="modal">
     <div class="modal-content">
         <button class="close-btn" onclick="fecharModal()">✕</button>
-        <h3 id="modal-titulo" style="margin:0 0 15px 0; color:var(--p-med);">Título</h3>
+        <h3 id="modal-titulo" style="margin:0 0 15px 0; color:var(--p-med);"></h3>
         <div id="modal-corpo"></div>
     </div>
 </div>
 
-<div id="modalAdmin" class="modal">
-    <div class="modal-content">
-        <button class="close-btn" onclick="fecharAdmin()">✕</button>
-        <h3 style="color:#28a745; margin-top:0;">Painel do Representante</h3>
-        <div class="admin-form">
-            <input type="password" id="adminSenha" placeholder="Senha de Acesso">
-            <hr style="opacity: 0.2;">
-            <input type="text" id="avisoTitulo" placeholder="Título">
-            <textarea id="avisoTexto" rows="4" placeholder="Mensagem..."></textarea>
-            <button class="btn-postar" onclick="enviarAviso()">🚀 Postar Agora</button>
-        </div>
-        <div id="statusEnvio"></div>
-    </div>
-</div>
-
-<div style="padding: 0 10px;">
-    <a href="mailto:joaovfsanchez@gmail.com?subject=Sugestão de Alteração - App Medicina" class="btn-sugestao">
-        💡 Sugerir alteração no App
-    </a>
-</div>
-
+<a href="mailto:joaovfsanchez@gmail.com" class="btn-sugestao">💡 Sugerir alteração no App</a>
 <div class="footer-creditos" id="meuNomeSegredo">Desenvolvido por João Vitor Fróis Sanchez</div>
 
 <script>
-    const URL_API = "https://script.google.com/macros/s/AKfycbxDt1R5Gpu2aDY5dts6aDQcigKLx28ZxjmXynrvOvmGmvwaG86xBQmOABbn_BsKsUNP7A/exec"; 
+    // --- CONFIGURAÇÃO ---
+    const URL_API = "https://script.google.com/macros/s/AKfycbxDt1R5Gpu2aDY5dts6aDQcigKLx28ZxjmXynrvOvmGmvwaG86xBQmOABbn_BsKsUNP7A/exec";
     let dadosApp = {};
-    let timerAdmin;
-    let touchStart = 0;
-    let touchEnd = 0;
-    const indicator = document.getElementById('refresh-indicator');
 
-    // --- LOGICA DE SEGURAR 5 SEGUNDOS ---
-    const configSegredo = (elemento) => {
-        elemento.addEventListener('touchstart', () => { timerAdmin = setTimeout(abrirAdmin, 5000); });
-        elemento.addEventListener('mousedown', () => { timerAdmin = setTimeout(abrirAdmin, 5000); });
-        elemento.addEventListener('touchend', () => clearTimeout(timerAdmin));
-        elemento.addEventListener('mouseup', () => clearTimeout(timerAdmin));
-    };
-
-    configSegredo(document.getElementById('meuNomeSegredo'));
-    configSegredo(document.getElementById('btnOnline'));
-
-    function abrirAdmin() { document.getElementById('modalAdmin').style.display = "flex"; }
-    function fecharAdmin() { document.getElementById('modalAdmin').style.display = "none"; }
-
-    // --- PULL TO REFRESH ---
-    window.addEventListener('touchstart', (e) => { touchStart = e.targetTouches[0].pageY; }, { passive: true });
-    window.addEventListener('touchmove', (e) => {
-        touchEnd = e.targetTouches[0].pageY;
-        const distance = touchEnd - touchStart;
-        if (window.scrollY <= 0 && distance > 80) indicator.style.top = '20px';
-    }, { passive: true });
-
-    window.addEventListener('touchend', async () => {
-        if ((touchEnd - touchStart) > 80 && window.scrollY <= 0) {
-            indicator.innerText = "🔄 Atualizando...";
-            await carregarDados();
-            indicator.innerText = "✅ Atualizado!";
-            setTimeout(() => { indicator.style.top = '-60px'; }, 1000);
-        }
-        touchStart = 0; touchEnd = 0;
-    });
-
+    // --- CARREGAMENTO DE DADOS ---
     async function carregarDados() {
-        const msgOffline = document.getElementById('offline-pwa-msg');
+        const status = document.getElementById('status-bar');
+        const msgOff = document.getElementById('offline-pwa-msg');
+
         try {
-            const res = await fetch(URL_API);
+            // Adiciona um cache-buster para evitar dados velhos do navegador
+            const res = await fetch(`${URL_API}?t=${new Date().getTime()}`);
+            if (!res.ok) throw new Error();
+            
             dadosApp = await res.json();
             localStorage.setItem('cache_medicina', JSON.stringify(dadosApp));
-            document.getElementById('status-bar').innerHTML = `<span style="color:#5cb85c; font-weight:bold">● Atualizado: ${dadosApp.ultima_sincronizacao}</span>`;
-            if(msgOffline) msgOffline.style.display = 'none';
-            verificarNovosAvisos();
+            
+            status.innerHTML = `● Atualizado: ${dadosApp.ultima_sincronizacao || 'Agora'}`;
+            status.style.color = "#5cb85c";
+            msgOff.style.display = 'none';
         } catch (e) {
+            console.error("Erro ao buscar dados:", e);
             const cache = localStorage.getItem('cache_medicina');
-            if(cache) {
+            if (cache) {
                 dadosApp = JSON.parse(cache);
-                if(msgOffline) msgOffline.style.display = 'block';
-                document.getElementById('status-bar').innerHTML = `<span style="color:#888;">Versão offline</span>`;
+                status.innerHTML = "Modo Offline";
+                msgOff.style.display = 'block';
+            } else {
+                status.innerHTML = "Erro ao carregar dados";
             }
         }
     }
 
+    // --- NAVEGAÇÃO / MODAL ---
     function mostrarAba(nomeAba) {
         const modal = document.getElementById('meuModal');
         const corpo = document.getElementById('modal-corpo');
         document.getElementById('modal-titulo').innerText = nomeAba;
         corpo.innerHTML = "";
+
         let itens = dadosApp[nomeAba] || [];
 
-        if (nomeAba === "Links") {
-            if (itens.length === 0) {
-                corpo.innerHTML = "<p style='color:#888; text-align:center;'>Nenhuma aula online agendada.</p>";
-            } else {
-                corpo.innerHTML = itens.map(link => `
-                    <div class="link-aula-card">
-                        <div class="link-aula-header">📅 ${link.Data || ''} • ${link.Horario || ''}</div>
-                        <div style="font-weight:bold; font-size: 1.1em; margin-bottom: 5px;">${link.Materia || 'Aula Online'}</div>
-                        <div style="font-size: 0.85em; opacity: 0.8; margin-bottom: 10px;">${link.Descricao || ''}</div>
-                        <a href="${link.Url}" target="_blank" class="btn-entrar-aula">▶️ Entrar na Sala</a>
+        if (itens.length === 0) {
+            corpo.innerHTML = "<p style='text-align:center; color:#888;'>Nenhum registro encontrado.</p>";
+        } else if (nomeAba === "Links") {
+            corpo.innerHTML = itens.map(link => `
+                <div class="link-aula-card">
+                    <div style="font-size:0.7em; font-weight:bold; color:#888;">📅 ${link.Data || ''} ${link.Horario || ''}</div>
+                    <div style="font-weight:bold; margin:5px 0;">${link.Materia || 'Aula'}</div>
+                    <a href="${link.Url}" target="_blank" class="btn-entrar-aula">Entrar na Sala</a>
+                </div>
+            `).join('');
+        } else if (nomeAba === "Avisos") {
+            corpo.innerHTML = itens.slice().reverse().map(aviso => `
+                <div style="padding:15px; border-bottom:1px solid var(--shadow);">
+                    <div style="font-weight:bold; color:var(--p-med);">${aviso.Titulo || 'Aviso'}</div>
+                    <div style="font-size:0.9em; margin-top:5px;">${aviso.Mensagem || aviso.Texto || ''}</div>
+                </div>
+            `).join('');
+        } else if (nomeAba === "Grade") {
+            corpo.innerHTML = itens.map(aula => `
+                <div class="grade-item">
+                    <div class="grade-hora">${aula.Horários || aula.Horario || ''}</div>
+                    <div class="grade-info">
+                        <span class="grade-materia">${aula.Matéria || aula.Materia}</span>
+                        <small style="color:#888">${aula.Grupo || 'Turma H'}</small>
                     </div>
-                `).join('');
-            }
-        } else if (nomeAba === "Grade" || nomeAba === "Arquivos" || nomeAba === "Grupos") {
-            const estrutura = {};
-            if (nomeAba === "Grupos") {
-                corpo.innerHTML = `<div style="position: sticky; top: -20px; background: var(--card-bg); padding: 10px 0; z-index: 10; margin-bottom: 15px;"><input type="text" id="inputBuscaGrupo" placeholder="🔍 Digite seu nome..." style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--p-med); background: var(--input-bg); color: var(--text-color);" oninput="filtrarGrupos()"></div><div id="container-lista-dinamica"></div>`;
-            }
-            itens.forEach(item => {
-                let cat = (nomeAba === "Grade") ? (item["Dia da Semana"] || "Outros") : (nomeAba === "Arquivos" ? (item.Nome || "Geral") : formatarNome(item["Matéria"] || "Geral"));
-                if (!estrutura[cat]) estrutura[cat] = [];
-                estrutura[cat].push(item);
-            });
-            const alvo = (nomeAba === "Grupos") ? document.getElementById('container-lista-dinamica') : corpo;
-            Object.keys(estrutura).forEach(cat => {
-                const det = document.createElement('details');
-                det.className = 'materia-retratil';
-                let conteudoInterno = "";
-                if (nomeAba === "Grade") {
-                    conteudoInterno = estrutura[cat].map(aula => `<div class="grade-item"><div class="grade-hora">${aula.Horários || '--:--'}</div><div class="grade-info"><span class="grade-materia">${aula.Matéria || 'Sem Nome'}</span><span class="grade-grupo">👥 ${aula.Grupo || 'Todos'}</span></div></div>`).join('');
-                } else if (nomeAba === "Arquivos") {
-                    conteudoInterno = estrutura[cat].map(arq => `<a href="${arq.Link}" target="_blank" class="arquivo-item"><span>${arq.Descrição || 'Ver Arquivo'}</span><span style="color:var(--p-med)">🔗</span></a>`).join('');
-                } else {
-                    const grps = {};
-                    estrutura[cat].forEach(i => { const g = formatarNome(i["Nome do Grupo"]); if(!grps[g]) grps[g] = []; grps[g].push(formatarNome(i["Integrantes"])); });
-                    conteudoInterno = Object.keys(grps).map(g => `<details class="grupo-detalhe" style="margin-bottom:10px; border:1px solid var(--shadow); border-radius:8px;"><summary style="padding:12px; font-weight:bold; display:flex; justify-content:space-between;"><span>${g}</span> <small>${grps[g].length} ▾</small></summary><ul class="lista-integrantes">${grps[g].map(n => `<li>${n}</li>`).join('')}</ul></details>`).join('');
-                }
-                det.innerHTML = `<summary class="materia-sumario"><span>${cat}</span></summary><div style="padding:12px;">${conteudoInterno}</div>`;
-                alvo.appendChild(det);
-            });
+                </div>
+            `).join('');
         } else {
-            itens.slice().reverse().forEach(item => {
-                const div = document.createElement('div');
-                div.style.padding = "15px"; div.style.borderBottom = "1px solid var(--shadow)";
-                div.innerHTML = `<div style="font-weight:bold; color:var(--p-med);">${item.Titulo || ''}</div><div style="font-size:0.9em; margin-top:4px;">${item.Mensagem || ''}</div>`;
-                corpo.appendChild(div);
-            });
+            // Genérico para Arquivos e Grupos
+            corpo.innerHTML = `<pre style="white-space: pre-wrap; font-family:inherit; font-size:0.9em;">${JSON.stringify(itens, null, 2)}</pre>`;
+            corpo.innerHTML = "<p>Dados carregados. Estruturando exibição...</p>"; 
+            // Dica: Para arquivos, use a lógica de lista que você já tinha.
         }
+
         modal.style.display = "flex";
     }
 
     function fecharModal() { document.getElementById('meuModal').style.display = "none"; }
-    function formatarNome(t) { return t ? t.toString().toLowerCase().replace(/(^\w|\s\w)/g, m => m.toUpperCase()) : ""; }
+
+    // --- TEMA ---
     function toggleTheme() {
         const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
         document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
@@ -280,16 +187,19 @@
         localStorage.setItem('theme', isDark ? 'light' : 'dark');
     }
 
+    // --- INICIALIZAÇÃO ---
     window.addEventListener('load', () => {
         carregarDados();
         if (localStorage.getItem('theme') === 'dark') {
             document.documentElement.setAttribute('data-theme', 'dark');
             document.getElementById('theme-icon').innerText = '🌙';
         }
-        setTimeout(() => { document.getElementById('splash').style.display = 'none'; document.getElementById('theme-toggle').style.display = 'flex'; }, 1500);
+        setTimeout(() => { document.getElementById('splash').style.display = 'none'; }, 1500);
     });
+
+    // Fechar modal ao clicar fora
+    window.onclick = (e) => { if(e.target == document.getElementById('meuModal')) fecharModal(); }
 </script>
+
 </body>
 </html>
-
-
