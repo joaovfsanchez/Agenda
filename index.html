@@ -8,14 +8,10 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Agenda Turma H">
     <meta name="theme-color" content="#007bff">
 
-    <link rel="apple-touch-icon" href="icon.png">
-    <link rel="icon" type="image/png" href="icon.png">
-    <link rel="manifest" href="manifest.json">
-
     <style>
+        /* CONFIGURAÇÃO DE CORES */
         :root { 
             --p-med: #007bff; 
             --bg: #f4f7f6; 
@@ -33,27 +29,7 @@
             --shadow: rgba(0,0,0,0.5);
         }
 
-        .notification-badge {
-            position: absolute;
-            top: 5px;
-            right: 15px;
-            background-color: #ff3b30;
-            color: white;
-            font-size: 9px;
-            padding: 1px 5px;
-            border-radius: 8px;
-            font-weight: bold;
-            display: none; 
-            box-shadow: 0 0 5px rgba(255, 59, 48, 0.4);
-            animation: bounce 0.5s infinite alternate;
-            line-height: 1;
-        }
-
-        @keyframes bounce {
-            from { transform: translateY(0); }
-            to { transform: translateY(-3px); }
-        }
-
+        /* Estilos Base */
         body { 
             font-family: -apple-system, system-ui, sans-serif; 
             background: var(--bg); 
@@ -61,95 +37,84 @@
             color: var(--text-color); 
             -webkit-tap-highlight-color: transparent;
             transition: background 0.3s, color 0.3s;
-            padding-bottom: 80px;
+            padding-bottom: 100px;
         }
 
+        /* Splash Screen */
         #splash {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background-color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            transition: opacity 0.8s ease-out;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 10000; transition: opacity 0.8s ease-out;
         }
+        .logo-animado { width: 180px; animation: pulsar 2s infinite; }
+        @keyframes pulsar { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
 
-        .logo-animado {
-            width: 180px;
-            margin-bottom: 20px;
-            animation: entrarESurgir 1.2s ease-out forwards, pulsar 2s infinite 1.2s;
-        }
-
+        /* Botão Flutuante Lâmpada */
         #theme-toggle {
-            position: fixed;
-            bottom: 25px;
-            right: 25px; 
-            z-index: 999;
-            background: var(--card-bg);
-            border: 2px solid var(--p-med);
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            cursor: pointer;
-            font-size: 22px;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            position: fixed; bottom: 25px; right: 25px; z-index: 999;
+            background: var(--card-bg); border: 2px solid var(--p-med);
+            border-radius: 50%; width: 50px; height: 50px;
+            display: none; align-items: center; justify-content: center;
+            font-size: 22px; cursor: pointer; box-shadow: 0 4px 15px var(--shadow);
         }
 
-        @keyframes entrarESurgir {
-            0% { opacity: 0; transform: scale(0.7); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-        @keyframes pulsar {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
+        /* Header e Status */
         .header { 
-            background: var(--header-bg); 
-            padding: 15px; border-radius: 12px; 
-            box-shadow: 0 2px 5px var(--shadow); 
-            margin-bottom: 20px; text-align: center; 
+            background: var(--header-bg); padding: 15px; border-radius: 12px; 
+            box-shadow: 0 2px 5px var(--shadow); margin-bottom: 20px; text-align: center; 
         }
+        #status-bar { font-size: 0.8em; margin-top: 5px; color: #888; }
+        .status-online { color: #5cb85c; font-weight: bold; }
 
-        #status-bar { font-size: 0.8em; margin-top: 5px; }
-        .status-online { color: #5cb85c; }
-        
+        /* Grid de Cards */
         .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        
         .card { 
             background: var(--card-bg); padding: 20px; border-radius: 15px; text-align: center; 
-            box-shadow: 0 4px 6px var(--shadow); cursor: pointer; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            box-shadow: 0 4px 6px var(--shadow); cursor: pointer; position: relative;
             font-weight: 600; transition: transform 0.1s;
-            position: relative;
         }
         .card:active { transform: scale(0.95); }
-        .card span { font-size: 1.5em; margin-bottom: 8px; }
+        .card span { display: block; font-size: 1.5em; margin-bottom: 8px; }
 
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); align-items: center; justify-content: center; padding: 20px; z-index: 1000; }
-        .modal-content { background: var(--card-bg); padding: 25px; border-radius: 20px; width: 100%; max-width: 400px; max-height: 80%; overflow-y: auto; position: relative; color: var(--text-color); }
-        
-        .close-btn { background: var(--bg); color: var(--text-color); border: none; padding: 10px; border-radius: 50%; position: absolute; top: 10px; right: 10px; cursor: pointer; }
+        /* Badge de Notificação */
+        .notification-badge {
+            position: absolute; top: 8px; right: 12px;
+            background: #ff3b30; color: white; font-size: 9px;
+            padding: 2px 6px; border-radius: 10px; display: none;
+            animation: bounce 0.5s infinite alternate;
+        }
+        @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-3px); } }
+
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); align-items: center; justify-content: center; padding: 20px; z-index: 2000; }
+        .modal-content { background: var(--card-bg); padding: 25px; border-radius: 20px; width: 100%; max-width: 400px; max-height: 80%; overflow-y: auto; position: relative; }
+        .close-btn { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 20px; color: var(--text-color); cursor: pointer; }
+
+        /* Itens do Modal */
         .aviso-item { border-bottom: 1px solid var(--shadow); padding: 12px 0; }
-        .aviso-titulo { font-weight: bold; color: var(--p-med); display: block; }
+        .aviso-titulo { font-weight: bold; color: var(--p-med); display: block; margin-bottom: 4px; }
+
+        /* BOTÃO SUGERIR ALTERAÇÃO - ESTILO VOLTOU! */
+        .footer { margin-top: 30px; text-align: center; }
+        .btn-email { 
+            background: var(--p-med); color: white !important; 
+            padding: 12px 25px; border-radius: 25px; 
+            text-decoration: none; display: inline-block; 
+            font-weight: bold; box-shadow: 0 4px 10px rgba(0,123,255,0.3);
+            transition: transform 0.2s;
+        }
+        .btn-email:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
 
-<button id="theme-toggle" onclick="toggleTheme()">
-    <span id="theme-icon">💡</span>
-</button>
+<button id="theme-toggle" onclick="toggleTheme()"><span id="theme-icon">💡</span></button>
 
 <div id="splash">
     <img src="logo_UCP.png?v=1" class="logo-animado" alt="UCP Logo">
-    <div style="font-family:sans-serif; color:#888; font-size:12px; margin-top:5px;">Medicina - PJC</div>
+    <div style="color:#888; font-size:12px; margin-top:10px;">Medicina - PJC</div>
 </div>
 
 <div class="header">
@@ -170,32 +135,19 @@
 <div id="meuModal" class="modal">
     <div class="modal-content">
         <button class="close-btn" onclick="fecharModal()">✕</button>
-        <h3 id="modal-titulo">Título</h3>
+        <h3 id="modal-titulo" style="margin-top:0">Título</h3>
         <div id="modal-corpo">Carregando...</div>
     </div>
 </div>
 
-<div class="footer" style="text-align:center; margin-top:20px;">
+<div class="footer">
     <a href="mailto:seuemail@gmail.com" class="btn-email">📧 Sugerir Alteração</a>
 </div>
 
 <script>
-    const URL_API = "SUA_URL_DO_APPS_SCRIPT_AQUI";
+    // COLOQUE SUA URL AQUI PARA FUNCIONAR
+    const URL_API = "https://script.google.com/macros/s/AKfycbxDt1R5Gpu2aDY5dts6aDQcigKLx28ZxjmXynrvOvmGmvwaG86xBQmOABbn_BsKsUNP7A/exec";
     let dadosApp = {};
-
-    function toggleTheme() {
-        const html = document.documentElement;
-        const themeIcon = document.getElementById('theme-icon');
-        if (html.getAttribute('data-theme') === 'dark') {
-            html.removeAttribute('data-theme');
-            themeIcon.innerText = '💡';
-            localStorage.setItem('theme', 'light');
-        } else {
-            html.setAttribute('data-theme', 'dark');
-            themeIcon.innerText = '🌙';
-            localStorage.setItem('theme', 'dark');
-        }
-    }
 
     async function carregarDados() {
         const status = document.getElementById('status-bar');
@@ -206,7 +158,7 @@
             const cacheRaw = localStorage.getItem('cache_medicina');
             const cacheAntigo = cacheRaw ? JSON.parse(cacheRaw) : null;
             
-            // Lógica de Notificação por Título
+            // Lógica de Notificação
             if (cacheAntigo && cacheAntigo.Avisos && novosDados.Avisos && novosDados.Avisos.length > 0) {
                 const ultimoNovo = novosDados.Avisos[novosDados.Avisos.length - 1].Título;
                 const ultimoCache = cacheAntigo.Avisos[cacheAntigo.Avisos.length - 1]?.Título;
@@ -228,16 +180,10 @@
         }
     }
 
-    function limparNotificacao() {
-        const badge = document.getElementById('badge-avisos');
-        if(badge) badge.style.display = 'none';
-    }
-
     function mostrarAba(nomeAba) {
         const modal = document.getElementById('meuModal');
-        const titulo = document.getElementById('modal-titulo');
         const corpo = document.getElementById('modal-corpo');
-        titulo.innerText = nomeAba;
+        document.getElementById('modal-titulo').innerText = nomeAba;
         corpo.innerHTML = "";
 
         let itens = dadosApp[nomeAba] || [];
@@ -249,15 +195,13 @@
             itens.forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'aviso-item';
-                let conteudo = "";
                 if(nomeAba === "Avisos") {
-                    conteudo = `<span class="aviso-titulo">${item.Título || 'Sem título'}</span><span>${item.Mensagem || ''}</span>`;
+                    div.innerHTML = `<span class="aviso-titulo">${item.Título || 'Aviso'}</span>${item.Mensagem || ''}`;
                 } else if(nomeAba === "Grade") {
-                    conteudo = `<span class="aviso-titulo">${item.Matéria || ''}</span><small>${item.Horário || ''} - ${item.Sala || ''}</small>`;
+                    div.innerHTML = `<span class="aviso-titulo">${item.Matéria || ''}</span><small>${item.Horário || ''} - ${item.Sala || ''}</small>`;
                 } else {
-                    conteudo = Object.values(item).join(" - ");
+                    div.innerHTML = Object.values(item).join(" - ");
                 }
-                div.innerHTML = conteudo;
                 corpo.appendChild(div);
             });
         }
@@ -265,19 +209,29 @@
     }
 
     function fecharModal() { document.getElementById('meuModal').style.display = "none"; }
+    function limparNotificacao() { document.getElementById('badge-avisos').style.display = 'none'; }
+
+    function toggleTheme() {
+        const html = document.documentElement;
+        const icon = document.getElementById('theme-icon');
+        if (html.getAttribute('data-theme') === 'dark') {
+            html.removeAttribute('data-theme');
+            icon.innerText = '💡';
+            localStorage.setItem('theme', 'light');
+        } else {
+            html.setAttribute('data-theme', 'dark');
+            icon.innerText = '🌙';
+            localStorage.setItem('theme', 'dark');
+        }
+    }
 
     window.addEventListener('load', () => {
         carregarDados();
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'dark') {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            document.getElementById('theme-icon').innerText = '🌙';
-        }
+        if (localStorage.getItem('theme') === 'dark') toggleTheme();
         setTimeout(() => {
-            const splash = document.getElementById('splash');
-            splash.style.opacity = '0';
+            document.getElementById('splash').style.opacity = '0';
             setTimeout(() => {
-                splash.style.display = 'none';
+                document.getElementById('splash').style.display = 'none';
                 document.getElementById('theme-toggle').style.display = 'flex';
             }, 800);
         }, 2500);
