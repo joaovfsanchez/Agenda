@@ -35,7 +35,24 @@
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; padding: 15px; z-index: 2000; backdrop-filter: blur(8px); }
         .modal-content { background: var(--card-bg); padding: 20px; border-radius: 25px; width: 100%; max-width: 450px; max-height: 85vh; overflow-y: auto; position: relative; border: 1px solid rgba(0,123,255,0.3); }
         .close-btn { position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 28px; color: var(--text-color); }
-        
+        .search-container {
+    position: sticky;
+    top: -20px; /* Gruda no topo do modal */
+    background: var(--card-bg);
+    padding: 10px 0;
+    z-index: 10;
+    margin-bottom: 10px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid var(--p-med);
+    background: var(--input-bg);
+    color: var(--text-color);
+    outline: none;
+}
         /* Listas e Grade */
         .secao-retratil { margin-bottom: 12px; border-radius: 15px; background: rgba(255,255,255,0.03); border: 1px solid var(--shadow); overflow: hidden; }
         .secao-titulo { background: rgba(0,123,255,0.12); color: var(--p-med); padding: 14px 18px; font-weight: 800; font-size: 0.85em; text-transform: uppercase; cursor: pointer; display: flex; justify-content: space-between; align-items: center; list-style: none; }
@@ -238,21 +255,73 @@
     }
 
     function abrirGrupos() {
-        const corpo = document.getElementById('modal-corpo');
-        document.getElementById('modal-titulo').innerText = "Grupos";
-        corpo.innerHTML = "";
-        const lista = dadosApp["Grupos"] || [];
-        [...new Set(lista.map(i => i["Matéria"]))].forEach(mat => {
-            const gruposMat = lista.filter(i => i["Matéria"] === mat);
-            let html = [...new Set(gruposMat.map(g => g["Nome do Grupo"]))].map(ng => {
-                const membros = gruposMat.filter(g => g["Nome do Grupo"] === ng).map(m => `<li>${m["Integrantes"]}</li>`).join('');
-                return `<details style="margin:5px 0; border:1px solid rgba(128,128,128,0.2); border-radius:10px;"><summary style="padding:10px;">${ng}</summary><ul style="font-size:0.85em; color:#bbb;">${membros}</ul></details>`;
-            }).join('');
-            corpo.innerHTML += `<details class="secao-retratil" name="gps"><summary class="secao-titulo">${mat} <span>▾</span></summary><div style="padding:10px;">${html}</div></details>`;
-        });
-        document.getElementById('meuModal').style.display = 'flex';
-        setupAccordion("gps");
+    const corpo = document.getElementById('modal-corpo');
+    document.getElementById('modal-titulo').innerText = "Grupos e Integrantes";
+    
+    // Criar a estrutura com a barra de pesquisa
+    corpo.innerHTML = `
+        <div class="search-container">
+            <input type="text" id="inputBusca" class="search-input" placeholder="🔍 Digite um nome ou matéria..." onkeyup="filtrarGrupos()">
+        </div>
+        <div id="container-grupos"></div>
+    `;
+
+    renderizarGrupos(dadosApp["Grupos"] || []);
+    document.getElementById('meuModal').style.display = 'flex';
+}
+
+// Função auxiliar para desenhar a lista (usada na abertura e na busca)
+function renderizarGrupos(lista) {
+    const container = document.getElementById('container-grupos');
+    container.innerHTML = "";
+    
+    if (lista.length === 0) {
+        container.innerHTML = "<p style='text-align:center; opacity:0.5;'>Nenhum resultado encontrado.</p>";
+        return;
     }
+
+    const materias = [...new Set(lista.map(i => i["Matéria"]))];
+    
+    materias.forEach(mat => {
+        const gruposMat = lista.filter(i => i["Matéria"] === mat);
+        const nomesG = [...new Set(gruposMat.map(g => g["Nome do Grupo"]))];
+        
+        let htmlGrupos = nomesG.map(ng => {
+            const membros = gruposMat.filter(g => g["Nome do Grupo"] === ng)
+                .map(m => `<li>${m["Integrantes"]}</li>`).join('');
+            return `
+                <details style="margin:5px 0; border:1px solid rgba(128,128,128,0.2); border-radius:10px;" open>
+                    <summary style="padding:10px; font-weight:bold; color:var(--p-med);">${ng}</summary>
+                    <ul style="font-size:0.85em; color:#bbb; padding-bottom:10px; list-style-type: none; padding-left: 15px;">
+                        ${membros}
+                    </ul>
+                </details>`;
+        }).join('');
+
+        container.innerHTML += `
+            <div class="secao-busca">
+                <div style="background:rgba(0,123,255,0.1); padding:8px 15px; border-radius:8px; margin-top:15px; font-size:0.8em; font-weight:bold; color:var(--p-med);">
+                    ${mat.toUpperCase()}
+                </div>
+                ${htmlGrupos}
+            </div>`;
+    });
+}
+
+// Lógica da Busca
+function filtrarGrupos() {
+    const termo = document.getElementById('inputBusca').value.toLowerCase();
+    const todosGrupos = dadosApp["Grupos"] || [];
+    
+    // Filtra se o termo está na Matéria, no Nome do Grupo ou nos Integrantes
+    const filtrados = todosGrupos.filter(g => 
+        String(g["Matéria"]).toLowerCase().includes(termo) ||
+        String(g["Nome do Grupo"]).toLowerCase().includes(termo) ||
+        String(g["Integrantes"]).toLowerCase().includes(termo)
+    );
+    
+    renderizarGrupos(filtrados);
+}
 
     function abrirLinks() {
         const corpo = document.getElementById('modal-corpo');
@@ -315,3 +384,4 @@
 </script>
 </body>
 </html>
+
