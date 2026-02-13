@@ -212,68 +212,32 @@
             corpo.innerHTML = itens.map(i => {
                 const agora = new Date();
                 
-                // 1. CAPTURA DOS TEXTOS (Limpando espaços e possíveis ISO strings)
-                let txtData = String(i["Data"]).trim();
-                let txtHora = String(i["Horário"]).trim();
+                // Como agora o script manda texto exato: "14/02/2026" e "19:00"
+                const [d, m, a] = i["Data"].split('/');
+                const [hh, mm] = i["Horário"].split(':');
+                const dataAula = new Date(a, m - 1, d, hh, mm);
 
-                // Se o Google mandou uma data completa (ISO), pegamos só a parte da data
-                if (txtData.includes('T')) txtData = txtData.split('T')[0];
+                const exibicaoCompleta = `${i["Data"]} - ${i["Horário"]}`;
 
-                let dataAula;
-
-                // 2. ANALISAR FORMATO DD/MM/AAAA OU AAAA-MM-DD
-                if (txtData.includes('/')) {
-                    const [d, m, a] = txtData.split('/');
-                    const [hh, mm] = txtHora.split(':');
-                    dataAula = new Date(a, m - 1, d, hh || 0, mm || 0);
-                } 
-                else if (txtData.includes('-')) {
-                    const [a, m, d] = txtData.split('-');
-                    const [hh, mm] = txtHora.split(':');
-                    dataAula = new Date(a, m - 1, d, hh || 0, mm || 0);
-                }
-                else {
-                    // Se o Google mandou um número serial, o JS vai errar feio aqui.
-                    // Tentamos tratar o erro para não mostrar datas de maio/setembro
-                    dataAula = new Date(i["Data"]);
-                }
-
-                // 3. FORMATAÇÃO FINAL PARA EXIBIÇÃO (Forçando o que veio da planilha)
-                // Se o processamento acima falhar, usamos o texto bruto da planilha
-                const exibicaoData = (txtData.includes('/') || txtData.includes('-')) ? 
-                    dataAula.toLocaleDateString('pt-BR') : txtData;
-                
-                const exibicaoHora = txtHora.includes(':') ? txtHora : "00:00";
-                
-                const exibicaoCompleta = `${exibicaoData} - ${exibicaoHora}`;
-
-                // 4. LÓGICA DE STATUS E CORES
                 let statusHtml = "", btnCor = "#6c757d", textoBtn = "LINK INDISPONÍVEL";
 
-                if (isNaN(dataAula.getTime())) {
-                    textoBtn = "ERRO NA DATA";
-                } else if (agora >= dataAula) {
+                if (agora >= dataAula) {
                     statusHtml = '<span style="color:#28a745; font-size:0.7em; font-weight:bold;">● AO VIVO</span>';
-                    btnCor = "#28a745"; 
-                    textoBtn = "ACESSAR AULA AGORA";
+                    btnCor = "#28a745"; textoBtn = "ACESSAR AULA AGORA";
                 } else {
                     statusHtml = `<span style="color:#ffa500; font-size:0.7em; font-weight:bold;">⌛ AGENDADA</span>`;
-                    btnCor = "#007bff"; 
-                    textoBtn = "ABRIR LINK";
+                    btnCor = "#007bff"; textoBtn = "ABRIR LINK";
                 }
 
-                let linkFinal = i["Url"] || "#";
-                if (linkFinal !== "#" && !linkFinal.startsWith('http')) linkFinal = 'https://' + linkFinal;
+                let url = i["Url"].startsWith('http') ? i["Url"] : 'https://' + i["Url"];
 
                 return `<div class="item-lista" style="flex-direction:column; align-items:flex-start; border-left: 5px solid ${btnCor};">
                     <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
-                        <b style="color:var(--p-med); font-size:1.1em;">${i["Materia"] || "Aula"}</b>
+                        <b style="color:var(--p-med); font-size:1.1em;">${i["Materia"]}</b>
                         ${statusHtml}
                     </div>
-                    <div style="margin: 5px 0; font-size:0.85em; opacity:0.8;">
-                        🗓️ ${exibicaoCompleta}
-                    </div>
-                    <a href="${linkFinal}" target="_blank" style="background:${btnCor}; color:white; text-decoration:none; padding:12px; border-radius:10px; width:100%; text-align:center; font-weight:bold; margin-top:10px; display:block;">${textoBtn}</a>
+                    <div style="margin: 5px 0; font-size:0.85em; opacity:0.8;">🗓️ ${exibicaoCompleta}</div>
+                    <a href="${url}" target="_blank" style="background:${btnCor}; color:white; text-decoration:none; padding:12px; border-radius:10px; width:100%; text-align:center; font-weight:bold; margin-top:10px; display:block;">${textoBtn}</a>
                 </div>`;
             }).join('');
         }
@@ -315,6 +279,7 @@
 </script>
 </body>
 </html>
+
 
 
 
