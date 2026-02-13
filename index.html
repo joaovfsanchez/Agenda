@@ -44,9 +44,10 @@
         .grade-nome { font-weight: bold; font-size: 0.95em; display: block; color: var(--text-color); }
         .grade-grupo { font-size: 0.75em; opacity: 0.6; }
 
-        .item-lista { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--input-bg); border-radius: 12px; margin: 8px 0; text-decoration: none; color: var(--text-color); }
-        .arquivo-nome { font-weight: bold; flex: 1; text-align: left; padding-right: 10px; }
-        .link-vazio { color: #ffa500; font-size: 0.8em; font-style: italic; font-weight: normal; }
+        /* Arquivos - Forçando alinhamento à esquerda */
+        .item-lista { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--input-bg); border-radius: 12px; margin: 8px 0; text-decoration: none; color: var(--text-color); width: 100%; }
+        .arquivo-nome { font-weight: bold; text-align: left; flex: 1; display: block; }
+        .link-vazio { color: #ffa500; font-size: 0.75em; font-style: italic; font-weight: normal; margin-left: 10px; white-space: nowrap; }
         
         .search-box { width: 100%; padding: 12px 15px; border-radius: 10px; border: 1px solid var(--p-med); background: var(--input-bg); color: var(--text-color); margin-bottom: 15px; }
 
@@ -119,16 +120,28 @@
         }
     }
 
-    // --- GRADE (FECHA UM AO ABRIR OUTRO) ---
+    // --- GRADE (ORDENADA POR DIA DA SEMANA) ---
     function abrirGrade() {
         const corpo = document.getElementById('modal-corpo');
         document.getElementById('modal-titulo').innerText = "Grade de Aulas";
         corpo.innerHTML = "";
         
         const itens = dadosApp["Grade"] || [];
-        const diasUnicos = [...new Set(itens.map(a => a["Dia da Semana"]))];
+        
+        // Referência de ordem para o código saber quem vem primeiro
+        const ordemReferencia = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
 
-        diasUnicos.forEach(dia => {
+        // Pegamos os dias que existem na planilha
+        const diasDaPlanilha = [...new Set(itens.map(a => a["Dia da Semana"]))];
+
+        // Ordenamos os dias da planilha baseados na nossa lista de referência
+        diasDaPlanilha.sort((a, b) => {
+            const indexA = ordemReferencia.findIndex(dia => a.includes(dia));
+            const indexB = ordemReferencia.findIndex(dia => b.includes(dia));
+            return indexA - indexB;
+        });
+
+        diasDaPlanilha.forEach(dia => {
             const aulas = itens.filter(a => a["Dia da Semana"] === dia);
             let htmlAulas = aulas.map(a => `
                 <div class="grade-item">
@@ -149,7 +162,7 @@
         document.getElementById('meuModal').style.display = 'flex';
     }
 
-    // --- GRUPOS (FECHADOS POR PADRÃO + SANFONA) ---
+    // --- GRUPOS ---
     function abrirGrupos() {
         const corpo = document.getElementById('modal-corpo');
         document.getElementById('modal-titulo').innerText = "Grupos";
@@ -195,22 +208,22 @@
         renderizarGrupos(filtrados);
     }
 
-    // --- ARQUIVOS (NOME À ESQUERDA + AGUARDANDO LINK) ---
+    // --- ARQUIVOS (TEXTO FIXO À ESQUERDA) ---
     function abrirArquivos() {
         const corpo = document.getElementById('modal-corpo');
         document.getElementById('modal-titulo').innerText = "Arquivos";
         corpo.innerHTML = "";
         const itens = dadosApp["Arquivos"] || [];
-        const nomes = [...new Set(itens.map(i => i["Nome"]))];
+        const nomesMaterias = [...new Set(itens.map(i => i["Nome"]))];
 
-        nomes.forEach(n => {
+        nomesMaterias.forEach(n => {
             const links = itens.filter(i => i["Nome"] === n);
             let html = links.map(a => {
                 const temLink = a["Links"] && String(a["Links"]).includes("http");
                 if(temLink) {
                     return `<a href="${a["Links"]}" target="_blank" class="item-lista">
                                 <span class="arquivo-nome">${a["Descrição"]}</span>
-                                <span>🔗</span>
+                                <span style="font-size: 1.2em;">📂</span>
                             </a>`;
                 } else {
                     return `<div class="item-lista">
@@ -224,24 +237,24 @@
         document.getElementById('meuModal').style.display = 'flex';
     }
 
-    // --- AVISOS (INVERTIDO + DATA COMPACTA) ---
+    // --- AVISOS (DATA CINZA EM CIMA, TÍTULO PEQUENO, QUEBRA DE LINHA) ---
     function abrirAvisos() {
         const corpo = document.getElementById('modal-corpo');
         document.getElementById('modal-titulo').innerText = "Avisos";
         const itens = dadosApp["Avisos"] || [];
         
         corpo.innerHTML = itens.slice().reverse().map(i => {
-            // Pega apenas o DD/MM da data
             const dataPura = String(i["Data"] || "");
             const dataCompacta = dataPura.length > 5 ? dataPura.substring(0, 5) : dataPura;
+            
+            // Substitui quebras de linha manuais por <br>
+            const mensagemFormatada = String(i["Mensagem"] || "").replace(/\n/g, '<br>');
 
             return `
-            <div style="background:rgba(0,123,255,0.05); padding:15px; border-radius:12px; margin-bottom:10px; border-left: 4px solid var(--p-med);">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div style="font-weight:bold; color:var(--p-med);">${i["Titulo"]}</div>
-                    <small style="opacity:0.5;">${dataCompacta}</small>
-                </div>
-                <div style="font-size:0.9em; margin-top:6px;">${i["Mensagem"]}</div>
+            <div style="background:rgba(0,123,255,0.05); padding:15px; border-radius:12px; margin-bottom:12px; border-left: 4px solid var(--p-med);">
+                <div style="font-size: 0.7em; color: #888; margin-bottom: 2px;">${dataCompacta}</div>
+                <div style="font-weight: 800; color: var(--p-med); font-size: 0.85em; margin-bottom: 8px; text-transform: uppercase;">${i["Titulo"]}</div>
+                <div style="font-size: 1em; line-height: 1.4; white-space: pre-wrap;">${mensagemFormatada}</div>
             </div>`;
         }).join('');
         document.getElementById('meuModal').style.display = 'flex';
