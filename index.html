@@ -15,45 +15,52 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: var(--text-color); transition: background 0.3s; padding-bottom: 60px; }
 
-        /* Animação Splash */
+        /* Splash e Logo */
         #splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; transition: opacity 0.8s ease; }
-        .logo-pulsando { width: 120px; animation: pulsar 2s infinite ease-in-out; }
-        @keyframes pulsar { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
+        .logo-pulsando { width: 150px; animation: pulsar 2s infinite ease-in-out; }
+        @keyframes pulsar { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
 
         .header { text-align: center; margin-bottom: 20px; }
         #status-bar { font-size: 0.8em; color: #888; margin-top: 5px; }
         
+        /* Grid Principal */
         .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .card { background: var(--card-bg); height: 110px; border-radius: 15px; box-shadow: 0 4px 6px var(--shadow); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 600; }
+        .card { background: var(--card-bg); height: 110px; border-radius: 15px; box-shadow: 0 4px 6px var(--shadow); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 600; border: 1px solid rgba(255,255,255,0.05); }
         .card .icon { font-size: 1.8em; margin-bottom: 8px; }
         
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; padding: 15px; z-index: 2000; backdrop-filter: blur(4px); }
-        .modal-content { background: var(--card-bg); padding: 20px; border-radius: 20px; width: 100%; max-width: 400px; max-height: 85vh; overflow-y: auto; position: relative; border: 1px solid rgba(255,255,255,0.1); }
-        .close-btn { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 24px; color: var(--text-color); }
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; padding: 15px; z-index: 2000; backdrop-filter: blur(8px); }
+        .modal-content { background: var(--card-bg); padding: 20px; border-radius: 25px; width: 100%; max-width: 450px; max-height: 85vh; overflow-y: auto; position: relative; border: 1px solid rgba(0,123,255,0.3); }
+        .close-btn { position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 28px; color: var(--text-color); }
         
-        .secao-retratil { margin-bottom: 10px; border-radius: 12px; background: rgba(128,128,128,0.05); border: 1px solid var(--shadow); overflow: hidden; }
-        .secao-titulo { background: rgba(0,123,255,0.15); color: var(--p-med); padding: 12px 15px; font-weight: 800; font-size: 0.8em; text-transform: uppercase; cursor: pointer; display: flex; justify-content: space-between; }
+        /* Estilos de Lista e Grade */
+        .secao-retratil { margin-bottom: 12px; border-radius: 15px; background: rgba(255,255,255,0.03); border: 1px solid var(--shadow); overflow: hidden; }
+        .secao-titulo { background: rgba(0,123,255,0.12); color: var(--p-med); padding: 14px 18px; font-weight: 800; font-size: 0.85em; text-transform: uppercase; cursor: pointer; display: flex; justify-content: space-between; }
 
-        .item-lista { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--input-bg); border-radius: 10px; margin: 8px 0; text-decoration: none; color: var(--text-color); border: 1px solid transparent; }
-        .grade-item { padding: 10px 0; border-bottom: 1px solid rgba(128,128,128,0.2); }
-        .grade-hora { color: var(--p-med); font-weight: bold; font-size: 0.85em; }
+        .grade-item { display: grid; grid-template-columns: 80px 1fr; gap: 10px; padding: 12px 0; border-bottom: 1px solid rgba(128,128,128,0.1); }
+        .grade-hora { color: var(--p-med); font-weight: 800; font-size: 0.85em; text-align: right; }
+        .grade-nome { font-weight: bold; font-size: 0.95em; }
 
-        #theme-toggle { position: fixed; bottom: 25px; right: 25px; background: var(--card-bg); border: 2px solid var(--p-med); border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; z-index: 999; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .footer-creditos { text-align: center; font-size: 11px; color: #888; margin-top: 50px; padding-bottom: 20px; }
+        .item-lista { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--input-bg); border-radius: 12px; margin: 8px 0; text-decoration: none; color: var(--text-color); }
+        
+        /* Pesquisa */
+        .search-box { width: 100%; padding: 12px 15px; border-radius: 10px; border: 1px solid var(--p-med); background: var(--input-bg); color: var(--text-color); margin-bottom: 15px; }
+
+        #theme-toggle { position: fixed; bottom: 25px; right: 25px; background: var(--card-bg); border: 2px solid var(--p-med); border-radius: 50%; width: 55px; height: 55px; display: flex; align-items: center; justify-content: center; z-index: 999; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
     </style>
 </head>
 <body data-theme="dark">
 
 <div id="splash">
-    <img src="logo_UCP.png" class="logo-pulsando" onerror="this.style.display='none'">
-    <h2 style="color:#007bff; margin-top: 15px;">Medicina - UCP</h2>
+    <img src="logo_UCP.png" class="logo-pulsando" onerror="this.src='https://via.placeholder.com/150?text=MED+UCP'">
+    <h2 style="color:#007bff; margin-top: 15px; font-weight: 900;">MEDICINA - UCP</h2>
 </div>
 
 <button id="theme-toggle" onclick="toggleTheme()"><span id="theme-icon">🌙</span></button>
 
 <div class="header">
-    <h2 style="margin:0;">Medicina - Turma H</h2>
-    <div id="status-bar">Carregando dados...</div>
+    <h2 style="margin:0; letter-spacing: -1px;">Medicina - Turma H</h2>
+    <div id="status-bar">Sincronizando...</div>
 </div>
 
 <div class="grid-container">
@@ -61,7 +68,7 @@
     <div class="card" onclick="abrirGrupos()"><span class="icon">👥</span><span>Grupos</span></div>
     <div class="card" onclick="abrirAvisos()"><span class="icon">🔔</span><span>Avisos</span></div>
     <div class="card" onclick="abrirArquivos()"><span class="icon">📄</span><span>Arquivos</span></div>
-    <div class="card" onclick="abrirLinks()" style="grid-column: span 2; height: 80px; flex-direction: row; gap: 15px;">
+    <div class="card" onclick="abrirLinks()" style="grid-column: span 2; height: 85px; flex-direction: row; gap: 15px;">
         <span class="icon">💻</span><span>Aulas Online</span>
     </div>
 </div>
@@ -69,7 +76,7 @@
 <div id="meuModal" class="modal">
     <div class="modal-content">
         <button class="close-btn" onclick="fecharModal()">✕</button>
-        <h3 id="modal-titulo" style="margin-bottom:20px; color:var(--p-med);"></h3>
+        <h3 id="modal-titulo" style="margin-bottom:20px; color:var(--p-med); padding-right: 30px;"></h3>
         <div id="modal-corpo"></div>
     </div>
 </div>
@@ -78,42 +85,44 @@
     <div class="modal-content">
         <button class="close-btn" onclick="fecharAdmin()">✕</button>
         <h3 style="color:#28a745;">Painel do Representante</h3>
-        <p style="font-size: 0.9em;">Acesso liberado, João!</p>
+        <p>Acesso Identificado: <b>João Sanchez</b></p>
+        <hr style="opacity: 0.1;">
+        <p style="font-size: 0.85em; line-height: 1.5;">Aqui você poderá gerenciar as notificações push no futuro.</p>
     </div>
 </div>
 
-<div class="footer-creditos" id="btnAdmin">Desenvolvido por João Vitor Fróis Sanchez</div>
+<div class="footer-creditos" id="btnAdmin" style="text-align: center; font-size: 11px; color: #888; margin-top: 40px; cursor: pointer;">
+    Desenvolvido por João Vitor Fróis Sanchez
+</div>
 
 <script>
     const URL_API = "https://script.google.com/macros/s/AKfycbxDt1R5Gpu2aDY5dts6aDQcigKLx28ZxjmXynrvOvmGmvwaG86xBQmOABbn_BsKsUNP7A/exec";
     let dadosApp = {};
     let timerAdmin;
 
-    // --- ADMIN ---
+    // --- ADMIN (Segurar 5 seg) ---
     const btnAdmin = document.getElementById('btnAdmin');
-    btnAdmin.addEventListener('touchstart', () => timerAdmin = setTimeout(()=> document.getElementById('modalAdmin').style.display='flex', 5000));
-    btnAdmin.addEventListener('touchend', () => clearTimeout(timerAdmin));
-    btnAdmin.addEventListener('mousedown', () => timerAdmin = setTimeout(()=> document.getElementById('modalAdmin').style.display='flex', 5000));
-    btnAdmin.addEventListener('mouseup', () => clearTimeout(timerAdmin));
+    ['touchstart', 'mousedown'].forEach(evt => btnAdmin.addEventListener(evt, () => timerAdmin = setTimeout(() => document.getElementById('modalAdmin').style.display='flex', 5000)));
+    ['touchend', 'mouseup', 'mouseleave'].forEach(evt => btnAdmin.addEventListener(evt, () => clearTimeout(timerAdmin)));
     function fecharAdmin() { document.getElementById('modalAdmin').style.display = 'none'; }
 
-    // --- CARREGAMENTO ---
+    // --- DADOS ---
     async function carregarDados() {
         try {
             const res = await fetch(`${URL_API}?t=${new Date().getTime()}`);
             dadosApp = await res.json();
-            localStorage.setItem('cache_medicina_h', JSON.stringify(dadosApp));
+            localStorage.setItem('med_h_cache', JSON.stringify(dadosApp));
             document.getElementById('status-bar').innerText = `Atualizado: ${dadosApp.ultima_sincronizacao}`;
         } catch (e) {
-            dadosApp = JSON.parse(localStorage.getItem('cache_medicina_h') || "{}");
-            document.getElementById('status-bar').innerText = "Modo Offline";
+            dadosApp = JSON.parse(localStorage.getItem('med_h_cache') || "{}");
+            document.getElementById('status-bar').innerText = "Offline - Usando Cache";
         }
     }
 
     // --- GRADE ---
     function abrirGrade() {
         const corpo = document.getElementById('modal-corpo');
-        document.getElementById('modal-titulo').innerText = "Grade de Aulas";
+        document.getElementById('modal-titulo').innerText = "Grade Semanal";
         corpo.innerHTML = "";
         const ordem = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
         const itens = dadosApp["Grade"] || [];
@@ -123,48 +132,64 @@
             if(aulas.length > 0) {
                 let html = aulas.map(a => `
                     <div class="grade-item">
-                        <div class="grade-hora">${a.Horários || '---'}</div>
-                        <div style="font-weight:bold;">${a.Matéria || 'Aula'}</div>
-                        <div style="font-size:0.8em; opacity:0.7;">${a.Grupo || 'Turma H'}</div>
+                        <div class="grade-hora">${a["Horários"] || '--:--'}</div>
+                        <div>
+                            <div class="grade-nome">${a["Matéria"]}</div>
+                            <div style="font-size:0.75em; opacity:0.6;">${a["Grupo"] || 'Geral'}</div>
+                        </div>
                     </div>
                 `).join('');
-                corpo.innerHTML += `<details class="secao-retratil"><summary class="secao-titulo">${dia} ▾</summary><div style="padding:10px 15px;">${html}</div></details>`;
+                corpo.innerHTML += `<details class="secao-retratil"><summary class="secao-titulo">${dia} <span>▾</span></summary><div style="padding:5px 15px;">${html}</div></details>`;
             }
         });
         document.getElementById('meuModal').style.display = 'flex';
     }
 
-    // --- GRUPOS ---
+    // --- GRUPOS (COM PESQUISA) ---
     function abrirGrupos() {
         const corpo = document.getElementById('modal-corpo');
-        document.getElementById('modal-titulo').innerText = "Grupos";
-        corpo.innerHTML = "";
-        const itens = dadosApp["Grupos"] || [];
-        const materias = [...new Set(itens.map(i => i["Matéria"]))];
+        document.getElementById('modal-titulo').innerText = "Grupos de Estudo";
+        corpo.innerHTML = `<input type="text" class="search-box" id="inputBusca" placeholder="🔍 Buscar aluno ou grupo..." onkeyup="filtrarGrupos()">
+                           <div id="container-grupos"></div>`;
+        renderizarGrupos(dadosApp["Grupos"] || []);
+        document.getElementById('meuModal').style.display = 'flex';
+    }
+
+    function renderizarGrupos(lista) {
+        const container = document.getElementById('container-grupos');
+        container.innerHTML = "";
+        const materias = [...new Set(lista.map(i => i["Matéria"]))];
 
         materias.forEach(mat => {
-            const gruposMat = itens.filter(i => i["Matéria"] === mat);
+            const gruposMat = lista.filter(i => i["Matéria"] === mat);
             const nomesG = [...new Set(gruposMat.map(g => g["Nome do Grupo"]))];
             let html = nomesG.map(ng => {
-                const membros = gruposMat.filter(g => g["Nome do Grupo"] === ng).map(m => `<li>${m.Integrantes}</li>`).join('');
-                return `<details style="margin:5px 0; border:1px solid #444; border-radius:8px;"><summary style="padding:8px; cursor:pointer;">${ng}</summary><ul style="padding-bottom:10px; font-size:0.85em;">${membros}</ul></details>`;
+                const membros = gruposMat.filter(g => g["Nome do Grupo"] === ng).map(m => `<li>${m["Integrantes"]}</li>`).join('');
+                return `<details style="margin:5px 0; border:1px solid rgba(128,128,128,0.2); border-radius:10px;"><summary style="padding:10px; cursor:pointer; font-size:0.9em;">${ng}</summary><ul style="padding-bottom:10px; font-size:0.85em; color:#bbb;">${membros}</ul></details>`;
             }).join('');
-            corpo.innerHTML += `<details class="secao-retratil"><summary class="secao-titulo">${mat} ▾</summary><div style="padding:10px;">${html}</div></details>`;
+            container.innerHTML += `<details class="secao-retratil" open><summary class="secao-titulo">${mat} <span>▾</span></summary><div style="padding:10px;">${html}</div></details>`;
         });
-        document.getElementById('meuModal').style.display = 'flex';
+    }
+
+    function filtrarGrupos() {
+        const termo = document.getElementById('inputBusca').value.toLowerCase();
+        const filtrados = dadosApp["Grupos"].filter(g => 
+            g["Integrantes"].toLowerCase().includes(termo) || g["Nome do Grupo"].toLowerCase().includes(termo)
+        );
+        renderizarGrupos(filtrados);
     }
 
     // --- ARQUIVOS ---
     function abrirArquivos() {
         const corpo = document.getElementById('modal-corpo');
-        document.getElementById('modal-titulo').innerText = "Arquivos";
+        document.getElementById('modal-titulo').innerText = "Arquivos e Materiais";
         corpo.innerHTML = "";
         const itens = dadosApp["Arquivos"] || [];
-        const cats = [...new Set(itens.map(i => i.Nome))];
+        const cats = [...new Set(itens.map(i => i["Nome"]))];
         cats.forEach(c => {
-            const arqs = itens.filter(i => i.Nome === c);
-            let html = arqs.map(a => `<a href="${a.Link}" target="_blank" class="item-lista"><span>${a.Descrição}</span><span>🔗</span></a>`).join('');
-            corpo.innerHTML += `<details class="secao-retratil"><summary class="secao-titulo">${c} ▾</summary><div style="padding:5px 10px;">${html}</div></details>`;
+            const arqs = itens.filter(i => i["Nome"] === c);
+            let html = arqs.map(a => `<a href="${a["Links"]}" target="_blank" class="item-lista"><div><b>${a["Descrição"]}</b></div><span>🔗</span></a>`).join('');
+            corpo.innerHTML += `<details class="secao-retratil"><summary class="secao-titulo">${c} <span>▾</span></summary><div style="padding:5px 10px;">${html}</div></details>`;
         });
         document.getElementById('meuModal').style.display = 'flex';
     }
@@ -172,28 +197,29 @@
     // --- AVISOS ---
     function abrirAvisos() {
         const corpo = document.getElementById('modal-corpo');
-        document.getElementById('modal-titulo').innerText = "Avisos";
+        document.getElementById('modal-titulo').innerText = "Quadro de Avisos";
         const itens = dadosApp["Avisos"] || [];
         corpo.innerHTML = itens.slice().reverse().map(i => `
-            <div style="background:var(--input-bg); padding:15px; border-radius:12px; margin-bottom:10px; border-left:4px solid var(--p-med);">
-                <div style="font-size:0.75em; opacity:0.6; margin-bottom:5px;">${i["Carimbo de data/hora"] || ''}</div>
-                <div style="font-weight:bold; color:var(--p-med);">${i.Titulo || 'Importante'}</div>
-                <div style="font-size:0.9em; margin-top:5px;">${i.Mensagem}</div>
+            <div style="background:rgba(0,123,255,0.05); padding:18px; border-radius:15px; margin-bottom:12px; border:1px solid rgba(0,123,255,0.2);">
+                <div style="font-size:0.7em; opacity:0.5; margin-bottom:8px;">📅 ${i["Data"]}</div>
+                <div style="font-weight:bold; color:var(--p-med); font-size:1.1em;">${i["Titulo"]}</div>
+                <div style="font-size:0.92em; margin-top:8px; line-height:1.4;">${i["Mensagem"]}</div>
             </div>
         `).join('');
         document.getElementById('meuModal').style.display = 'flex';
     }
 
-    // --- LINKS/AULAS ONLINE ---
+    // --- LINKS AULAS ---
     function abrirLinks() {
         const corpo = document.getElementById('modal-corpo');
-        document.getElementById('modal-titulo').innerText = "Aulas Online";
+        document.getElementById('modal-titulo').innerText = "Aulas Online / Links";
         const itens = dadosApp["Links"] || [];
         corpo.innerHTML = itens.map(i => `
-            <div class="item-lista" style="flex-direction:column; align-items:flex-start;">
-                <b style="color:var(--p-med);">${i.Materia}</b>
-                <div style="font-size:0.8em; margin:5px 0;">${i.Data} às ${i.Horario}</div>
-                <a href="${i.Url}" target="_blank" style="background:var(--p-med); color:white; text-decoration:none; padding:8px 15px; border-radius:8px; width:100%; text-align:center; font-weight:bold; margin-top:10px;">Acessar Aula</a>
+            <div class="item-lista" style="flex-direction:column; align-items:flex-start; border-left: 4px solid #28a745;">
+                <b style="color:var(--p-med); font-size:1.1em;">${i["Materia"]}</b>
+                <div style="font-size:0.85em; margin:8px 0;">🗓️ ${i["Data"]} às ${i["Horário"]}</div>
+                <div style="font-size:0.8em; opacity:0.7; margin-bottom:12px;">${i["Descicao"] || ''}</div>
+                <a href="${i["Url"]}" target="_blank" style="background:#28a745; color:white; text-decoration:none; padding:12px; border-radius:10px; width:100%; text-align:center; font-weight:bold;">ACESSAR AULA</a>
             </div>
         `).join('');
         document.getElementById('meuModal').style.display = 'flex';
@@ -202,25 +228,23 @@
     function fecharModal() { document.getElementById('meuModal').style.display = 'none'; }
     
     function toggleTheme() {
-        const body = document.body;
-        const novo = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-        body.setAttribute('data-theme', novo);
+        const novo = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        document.body.setAttribute('data-theme', novo);
         document.getElementById('theme-icon').innerText = novo === 'dark' ? '🌙' : '💡';
-        localStorage.setItem('theme_preferido', novo);
+        localStorage.setItem('med_h_theme', novo);
     }
 
     window.onload = () => {
-        const salvo = localStorage.getItem('theme_preferido') || 'dark';
-        document.body.setAttribute('data-theme', salvo);
-        document.getElementById('theme-icon').innerText = salvo === 'dark' ? '🌙' : '💡';
+        const t = localStorage.getItem('med_h_theme') || 'dark';
+        document.body.setAttribute('data-theme', t);
+        document.getElementById('theme-icon').innerText = t === 'dark' ? '🌙' : '💡';
         carregarDados();
         setTimeout(() => { 
             const s = document.getElementById('splash');
             s.style.opacity = '0';
             setTimeout(() => s.style.display = 'none', 800);
-        }, 2000);
+        }, 2200);
     };
 </script>
 </body>
 </html>
-
