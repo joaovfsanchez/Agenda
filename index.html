@@ -56,13 +56,47 @@
         .search-container { position: sticky; top: -21px; background: var(--card-bg); z-index: 10; padding: 10px 0; margin-bottom: 15px; border-bottom: 1px solid var(--shadow); }
         .search-input { width: 100%; height: 45px; padding: 0 15px; border-radius: 10px; border: none; background: var(--input-bg); color: var(--text-color); font-size: 16px; }
 
+        /* AJUSTE DAS GUIAS (MATÉRIAS E ARQUIVOS) */
         .materia-retratil { margin-bottom: 10px; border: 1px solid var(--shadow); border-radius: 12px; background: var(--card-bg); overflow: hidden; width: 100%; }
-        summary { display: grid !important; grid-template-columns: 1fr 40px !important; align-items: center !important; width: 100% !important; padding: 14px 15px !important; cursor: pointer; list-style: none; }
-        .materia-sumario { background: rgba(0,123,255,0.07); font-weight: 800; color: var(--p-med); text-transform: uppercase; font-size: 0.8em; }
-        .materia-sumario::after { content: '📁'; text-align: right; }
+        
+        /* Limpa seta nativa do iPhone */
+        summary::-webkit-details-marker { display: none !important; }
+        summary { list-style: none !important; outline: none; }
+
+        .materia-sumario { 
+            background: rgba(0,123,255,0.07); 
+            font-weight: 800; 
+            color: var(--p-med); 
+            text-transform: uppercase; 
+            font-size: 0.8em; 
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            padding: 14px 15px !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        .materia-sumario::after { content: '📁'; font-size: 1.1em; }
         .materia-retratil[open] .materia-sumario::after { content: '📂'; }
 
-        ul.lista-integrantes { padding: 10px 15px 15px 40px !important; margin: 0 !important; list-style-type: circle; border-left: 3px solid var(--p-med); margin-left: 15px !important; }
+        .arquivo-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: var(--input-bg);
+            border-radius: 10px;
+            margin-bottom: 8px;
+            text-decoration: none;
+            color: var(--text-color);
+            width: 100%;
+            box-sizing: border-box;
+            transition: transform 0.1s;
+        }
+        .arquivo-item:active { transform: scale(0.98); }
+
+        ul.lista-integrantes { padding: 0 15px 15px 35px !important; margin: 0 !important; list-style-type: circle; border-left: 3px solid var(--p-med); margin-left: 15px !important; text-align: left; }
+        ul.lista-integrantes li { font-size: 0.85em; margin-bottom: 5px; }
         
         #theme-toggle { position: fixed; bottom: 25px; right: 25px; z-index: 999; background: var(--card-bg); border: 2px solid var(--p-med); border-radius: 50%; width: 50px; height: 50px; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 15px var(--shadow); }
 
@@ -227,8 +261,6 @@
             for (let cat in estrutura) {
                 const det = document.createElement('details');
                 det.className = 'materia-retratil';
-                det.style.width = "100%"; // Garante largura total
-                
                 det.addEventListener('toggle', function() {
                     if (this.open) document.querySelectorAll('.materia-retratil').forEach(d => { if (d !== this) d.open = false; });
                 });
@@ -236,7 +268,7 @@
                 let conteudoInterno = "";
                 if(nomeAba === "Arquivos") {
                     conteudoInterno = estrutura[cat].map(arq => `
-                        <a href="${arq.Link}" target="_blank" class="arquivo-item" style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--input-bg); border-radius: 10px; margin-bottom: 8px; text-decoration: none; color: inherit; width: 100%; box-sizing: border-box;">
+                        <a href="${arq.Link}" target="_blank" class="arquivo-item">
                             <div style="font-size: 0.95em; font-weight: 500; text-align: left; flex: 1; padding-right: 10px; word-break: break-word;">
                                 ${arq.Descrição || 'Ver Arquivo'}
                             </div>
@@ -251,21 +283,18 @@
                     });
                     conteudoInterno = Object.keys(grps).map(g => `
                         <details class="grupo-detalhe" style="margin-bottom:10px; border:1px solid var(--shadow); border-radius:8px; width: 100%;">
-                            <summary style="padding:12px; font-size:0.9em; font-weight:bold; cursor:pointer; display: flex; justify-content: space-between; align-items: center;">
-                                <span style="text-align: left;">${g}</span>
-                                <small style="color: #888;">${grps[g].length} ▾</small>
+                            <summary style="padding:12px; font-size:0.9em; font-weight:bold; cursor:pointer; display: flex; justify-content: space-between; align-items: center; text-align: left;">
+                                <span>${g}</span>
+                                <small style="color: #888; margin-left:10px;">${grps[g].length} ▾</small>
                             </summary>
-                            <ul class="lista-integrantes" style="font-size:0.85em; list-style:circle; padding: 0 15px 15px 35px; margin: 0; text-align: left;">
-                                ${grps[g].map(n => `<li style="margin-bottom: 5px;">${n}</li>`).join('')}
-                            </ul>
+                            <ul class="lista-integrantes">${grps[g].map(n => `<li>${n}</li>`).join('')}</ul>
                         </details>`).join('');
                 }
 
-                det.innerHTML = `<summary class="materia-sumario"><span>${cat}</span></summary><div style="padding: 12px; display: block; width: 100%; box-sizing: border-box;">${conteudoInterno}</div>`;
+                det.innerHTML = `<summary class="materia-sumario"><span>${cat}</span></summary><div style="padding: 12px; box-sizing: border-box;">${conteudoInterno}</div>`;
                 corpo.appendChild(det);
             }
         } else {
-            // Lógica para Grade e Avisos
             itens.slice().reverse().forEach(item => {
                 const div = document.createElement('div');
                 div.style.padding = "15px"; 
@@ -318,4 +347,3 @@
 <div class="footer-creditos">Desenvolvido por João Vitor Fróis Sanchez</div>
 </body>
 </html>
-
