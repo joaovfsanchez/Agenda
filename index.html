@@ -171,36 +171,42 @@
         }
     }
 
-    function verificarNovosAvisos() {
+   function verificarNovosAvisos() {
         if (dadosApp.Avisos && dadosApp.Avisos.length > 0) {
             const ultimoAvisoCeu = dadosApp.Avisos[dadosApp.Avisos.length - 1];
-            const tituloCeu = ultimoAvisoCeu.Titulo || ultimoAvisoCeu.Título;
             
-            // Pega o ID (Título) que está salvo como "lido" no celular
+            // Tratamento: Pegamos o título e removemos qualquer espaço invisível
+            const tituloCeu = (ultimoAvisoCeu.Titulo || ultimoAvisoCeu.Título || "").toString().trim();
+            
             const ultimoLido = localStorage.getItem('ultimo_aviso_lido');
 
-            // Se o título da planilha for diferente do que ele leu por último, mostra a bolinha
-            if (tituloCeu && tituloCeu !== ultimoLido) {
+            // TRAVA DE SEGURANÇA: Se é a primeira vez que o app abre (não tem nada salvo),
+            // ele salva o título atual e não mostra a bolinha.
+            if (!ultimoLido) {
+                localStorage.setItem('ultimo_aviso_lido', tituloCeu);
+                return; 
+            }
+
+            // Só mostra se o título for realmente diferente do salvo
+            if (tituloCeu !== "" && tituloCeu !== ultimoLido) {
                 document.getElementById('badge-avisos').style.display = 'block';
             }
         }
     }
 
     function abrirAvisos() {
-        // 1. Abre a aba normalmente
         mostrarAba('Avisos');
         
-        // 2. Esconde a bolinha
+        // Esconde a bolinha imediatamente ao clicar
         document.getElementById('badge-avisos').style.display = 'none';
 
-        // 3. Marca como LIDO: Salva o título do último aviso disponível
+        // Salva o título atual como lido (limpando espaços)
         if (dadosApp.Avisos && dadosApp.Avisos.length > 0) {
             const ultimoAvisoCeu = dadosApp.Avisos[dadosApp.Avisos.length - 1];
-            const tituloCeu = ultimoAvisoCeu.Titulo || ultimoAvisoCeu.Título;
+            const tituloCeu = (ultimoAvisoCeu.Titulo || ultimoAvisoCeu.Título || "").toString().trim();
             localStorage.setItem('ultimo_aviso_lido', tituloCeu);
         }
     }
-
     function mostrarAba(nomeAba) {
         const modal = document.getElementById('meuModal');
         const corpo = document.getElementById('modal-corpo');
@@ -280,3 +286,4 @@
 </script>
 </body>
 </html>
+
