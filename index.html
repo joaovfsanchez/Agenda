@@ -12,8 +12,8 @@
     <meta name="theme-color" content="#007bff">
 
     <style>
-        :root { --p-med: #007bff; --bg: #f4f7f6; --card-bg: #ffffff; --text-color: #333333; --header-bg: #ffffff; --shadow: rgba(0,0,0,0.1); }
-        [data-theme="dark"] { --bg: #121212; --card-bg: #1e1e1e; --text-color: #e0e0e0; --header-bg: #1e1e1e; --shadow: rgba(0,0,0,0.5); }
+        :root { --p-med: #007bff; --bg: #f4f7f6; --card-bg: #ffffff; --text-color: #333333; --header-bg: #ffffff; --shadow: rgba(0,0,0,0.1); --input-bg: #eeeeee; }
+        [data-theme="dark"] { --bg: #121212; --card-bg: #1e1e1e; --text-color: #e0e0e0; --header-bg: #1e1e1e; --shadow: rgba(0,0,0,0.5); --input-bg: #2d2d2d; }
         
         body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: var(--text-color); transition: background 0.3s; padding-bottom: 100px; -webkit-font-smoothing: antialiased; }
         
@@ -34,9 +34,13 @@
         @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-3px); } }
         
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); align-items: center; justify-content: center; padding: 20px; z-index: 2000; backdrop-filter: blur(4px); }
-        .modal-content { background: var(--card-bg); padding: 25px; border-radius: 20px; width: 100%; max-width: 400px; max-height: 80vh; overflow-y: auto; position: relative; text-align: left; }
+        .modal-content { background: var(--card-bg); padding: 25px; border-radius: 20px; width: 100%; max-width: 400px; max-height: 85vh; overflow-y: auto; position: relative; text-align: left; }
         .close-btn { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 20px; color: var(--text-color); cursor: pointer; padding: 5px; }
         
+        /* Pesquisa */
+        .search-container { position: sticky; top: -26px; background: var(--card-bg); z-index: 10; padding: 10px 0; margin-bottom: 15px; border-bottom: 1px solid var(--shadow); }
+        .search-input { width: 100%; padding: 12px; border-radius: 10px; border: none; background: var(--input-bg); color: var(--text-color); box-sizing: border-box; font-size: 16px; outline: none; }
+
         .materia-box { margin-bottom: 15px; border: 1px solid var(--shadow); border-radius: 10px; padding: 12px; background: rgba(0,123,255,0.03); }
         .materia-titulo { font-weight: 800; color: var(--p-med); text-transform: uppercase; font-size: 0.8em; margin-bottom: 10px; display: block; letter-spacing: 0.5px; }
         
@@ -78,7 +82,7 @@
 <div id="meuModal" class="modal">
     <div class="modal-content">
         <button class="close-btn" onclick="fecharModal()">✕</button>
-        <h3 id="modal-titulo" style="margin:0 0 20px 0; color:var(--p-med);">Título</h3>
+        <h3 id="modal-titulo" style="margin:0 0 10px 0; color:var(--p-med);">Título</h3>
         <div id="modal-corpo"></div>
     </div>
 </div>
@@ -98,28 +102,21 @@
 
     async function carregarDados() {
         const status = document.getElementById('status-bar');
-        
-        // 1. Tenta carregar do cache primeiro para sumir a bolinha rápido
         const cache = localStorage.getItem('cache_medicina');
         if(cache) {
             dadosApp = JSON.parse(cache);
             verificarNovosAvisos();
             status.innerHTML = `<span style="color:#888">Sincronizando...</span>`;
-        } else {
-            status.innerHTML = `<span style="color:#888">Buscando dados...</span>`;
         }
 
         try {
             const res = await fetch(URL_API);
-            const novosDados = await res.json();
-            dadosApp = novosDados;
+            dadosApp = await res.json();
             localStorage.setItem('cache_medicina', JSON.stringify(dadosApp));
             status.innerHTML = `<span class="status-online">● Atualizado: ${dadosApp.ultima_sincronizacao}</span>`;
             verificarNovosAvisos();
         } catch (e) {
-            if(dadosApp.ultima_sincronizacao) {
-                status.innerHTML = `<span style="color:#eead2d">● Offline - ${dadosApp.ultima_sincronizacao}</span>`;
-            }
+            if(dadosApp.ultima_sincronizacao) status.innerHTML = `<span style="color:#eead2d">● Offline - ${dadosApp.ultima_sincronizacao}</span>`;
         }
     }
 
@@ -129,11 +126,9 @@
             const idAvisoAtual = btoa(unescape(encodeURIComponent((ultimoAviso.Titulo || "") + (ultimoAviso.Mensagem || ""))));
             const ultimoLido = localStorage.getItem('ultimo_id_aviso_lido');
             
-            // Se já leu este aviso, esconde a bolinha
             if (ultimoLido && idAvisoAtual === ultimoLido) {
                 document.getElementById('badge-avisos').style.display = 'none';
             } else if (!ultimoLido) {
-                // Primeira vez abrindo o app
                 localStorage.setItem('ultimo_id_aviso_lido', idAvisoAtual);
                 document.getElementById('badge-avisos').style.display = 'none';
             } else {
@@ -152,6 +147,31 @@
         }
     }
 
+    function filtrarGrupos() {
+        const termo = document.getElementById('inputBusca').value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        const boxes = document.querySelectorAll('.materia-box');
+        
+        boxes.forEach(box => {
+            let materiaTemMatch = false;
+            const detalhes = box.querySelectorAll('details');
+            
+            detalhes.forEach(det => {
+                const textoGrupo = det.innerText.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                if (textoGrupo.includes(termo)) {
+                    det.style.display = "block";
+                    materiaTemMatch = true;
+                    // Se estiver pesquisando, abre o grupo automaticamente
+                    if (termo.length > 2) det.setAttribute('open', 'true');
+                } else {
+                    det.style.display = "none";
+                    det.removeAttribute('open');
+                }
+            });
+            
+            box.style.display = materiaTemMatch ? "block" : "none";
+        });
+    }
+
     function mostrarAba(nomeAba) {
         const modal = document.getElementById('meuModal');
         const corpo = document.getElementById('modal-corpo');
@@ -163,6 +183,13 @@
             corpo.innerHTML = "<p style='text-align:center; color:#888;'>Nada cadastrado aqui ainda.</p>";
         } else {
             if(nomeAba === "Grupos") {
+                // Adiciona Barra de Busca
+                corpo.innerHTML = `
+                    <div class="search-container">
+                        <input type="text" id="inputBusca" class="search-input" placeholder="🔍 Buscar nome ou grupo..." oninput="filtrarGrupos()">
+                    </div>
+                `;
+
                 const estrutura = {}; 
                 itens.forEach(item => {
                     const materia = formatarNome(item["Matéria"] || "Geral");
@@ -180,7 +207,9 @@
                     for (let grp in estrutura[mat]) {
                         const det = document.createElement('details');
                         det.addEventListener('toggle', function() {
-                            if (this.open) {
+                            // Só ativa o auto-recolhimento se o usuário não estiver pesquisando
+                            const termo = document.getElementById('inputBusca').value;
+                            if (this.open && termo.length === 0) {
                                 corpo.querySelectorAll('details').forEach(d => { if (d !== this) d.removeAttribute('open'); });
                             }
                         });
