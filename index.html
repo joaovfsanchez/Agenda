@@ -17,8 +17,8 @@
 
         /* Splash e Logo */
         #splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; transition: opacity 0.8s ease; }
-        .logo-pulsando { width: 150px; animation: pulsar 2s infinite ease-in-out; }
-        @keyframes pulsar { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        .logo-pulsando { width: 120px; animation: pulsar 2s infinite ease-in-out; }
+        @keyframes pulsar { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } }
 
         .header { text-align: center; margin-bottom: 20px; }
         #status-bar { font-size: 0.8em; color: #888; margin-top: 5px; }
@@ -33,17 +33,15 @@
         .modal-content { background: var(--card-bg); padding: 20px; border-radius: 25px; width: 100%; max-width: 450px; max-height: 85vh; overflow-y: auto; position: relative; border: 1px solid rgba(0,123,255,0.3); }
         .close-btn { position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 28px; color: var(--text-color); }
         
-        /* Estilos de Lista e Grade */
+        /* Grade e Listas */
         .secao-retratil { margin-bottom: 12px; border-radius: 15px; background: rgba(255,255,255,0.03); border: 1px solid var(--shadow); overflow: hidden; }
         .secao-titulo { background: rgba(0,123,255,0.12); color: var(--p-med); padding: 14px 18px; font-weight: 800; font-size: 0.85em; text-transform: uppercase; cursor: pointer; display: flex; justify-content: space-between; }
 
-        .grade-item { display: grid; grid-template-columns: 80px 1fr; gap: 10px; padding: 12px 0; border-bottom: 1px solid rgba(128,128,128,0.1); }
-        .grade-hora { color: var(--p-med); font-weight: 800; font-size: 0.85em; text-align: right; }
-        .grade-nome { font-weight: bold; font-size: 0.95em; }
+        .grade-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(128,128,128,0.1); }
+        .grade-hora { flex: 0 0 65px; color: var(--p-med); font-weight: 800; font-size: 0.85em; text-align: center; background: rgba(0,123,255,0.1); padding: 4px; border-radius: 6px; }
+        .grade-nome { font-weight: bold; font-size: 0.95em; display: block; }
 
         .item-lista { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--input-bg); border-radius: 12px; margin: 8px 0; text-decoration: none; color: var(--text-color); }
-        
-        /* Pesquisa */
         .search-box { width: 100%; padding: 12px 15px; border-radius: 10px; border: 1px solid var(--p-med); background: var(--input-bg); color: var(--text-color); margin-bottom: 15px; }
 
         #theme-toggle { position: fixed; bottom: 25px; right: 25px; background: var(--card-bg); border: 2px solid var(--p-med); border-radius: 50%; width: 55px; height: 55px; display: flex; align-items: center; justify-content: center; z-index: 999; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
@@ -86,8 +84,7 @@
         <button class="close-btn" onclick="fecharAdmin()">✕</button>
         <h3 style="color:#28a745;">Painel do Representante</h3>
         <p>Acesso Identificado: <b>João Sanchez</b></p>
-        <hr style="opacity: 0.1;">
-        <p style="font-size: 0.85em; line-height: 1.5;">Aqui você poderá gerenciar as notificações push no futuro.</p>
+        <p style="font-size: 0.85em; opacity: 0.7;">Painel de gestão da Turma H.</p>
     </div>
 </div>
 
@@ -106,16 +103,16 @@
     ['touchend', 'mouseup', 'mouseleave'].forEach(evt => btnAdmin.addEventListener(evt, () => clearTimeout(timerAdmin)));
     function fecharAdmin() { document.getElementById('modalAdmin').style.display = 'none'; }
 
-    // --- DADOS ---
+    // --- CARREGAR DADOS ---
     async function carregarDados() {
         try {
             const res = await fetch(`${URL_API}?t=${new Date().getTime()}`);
             dadosApp = await res.json();
             localStorage.setItem('med_h_cache', JSON.stringify(dadosApp));
-            document.getElementById('status-bar').innerText = `Atualizado: ${dadosApp.ultima_sincronizacao}`;
+            document.getElementById('status-bar').innerText = `Atualizado: ${dadosApp.ultima_sincronizacao || 'Agora'}`;
         } catch (e) {
             dadosApp = JSON.parse(localStorage.getItem('med_h_cache') || "{}");
-            document.getElementById('status-bar').innerText = "Offline - Usando Cache";
+            document.getElementById('status-bar').innerText = "Offline";
         }
     }
 
@@ -128,27 +125,27 @@
         const itens = dadosApp["Grade"] || [];
         
         ordem.forEach(dia => {
-            const aulas = itens.filter(a => a["Dia da Semana"] === dia);
+            const aulas = itens.filter(a => String(a["Dia da Semana"]).trim() === dia);
             if(aulas.length > 0) {
                 let html = aulas.map(a => `
                     <div class="grade-item">
                         <div class="grade-hora">${a["Horários"] || '--:--'}</div>
                         <div>
-                            <div class="grade-nome">${a["Matéria"]}</div>
-                            <div style="font-size:0.75em; opacity:0.6;">${a["Grupo"] || 'Geral'}</div>
+                            <span class="grade-nome">${a["Matéria"]}</span>
+                            <small style="opacity:0.6; font-size:0.75em;">${a["Grupo"] || 'Turma H'}</small>
                         </div>
                     </div>
                 `).join('');
-                corpo.innerHTML += `<details class="secao-retratil"><summary class="secao-titulo">${dia} <span>▾</span></summary><div style="padding:5px 15px;">${html}</div></details>`;
+                corpo.innerHTML += `<details class="secao-retratil"><summary class="secao-titulo">${dia} ▾</summary><div style="padding:5px 15px;">${html}</div></details>`;
             }
         });
         document.getElementById('meuModal').style.display = 'flex';
     }
 
-    // --- GRUPOS (COM PESQUISA) ---
+    // --- GRUPOS ---
     function abrirGrupos() {
         const corpo = document.getElementById('modal-corpo');
-        document.getElementById('modal-titulo').innerText = "Grupos de Estudo";
+        document.getElementById('modal-titulo').innerText = "Grupos";
         corpo.innerHTML = `<input type="text" class="search-box" id="inputBusca" placeholder="🔍 Buscar aluno ou grupo..." onkeyup="filtrarGrupos()">
                            <div id="container-grupos"></div>`;
         renderizarGrupos(dadosApp["Grupos"] || []);
@@ -159,37 +156,34 @@
         const container = document.getElementById('container-grupos');
         container.innerHTML = "";
         const materias = [...new Set(lista.map(i => i["Matéria"]))];
-
         materias.forEach(mat => {
             const gruposMat = lista.filter(i => i["Matéria"] === mat);
             const nomesG = [...new Set(gruposMat.map(g => g["Nome do Grupo"]))];
             let html = nomesG.map(ng => {
                 const membros = gruposMat.filter(g => g["Nome do Grupo"] === ng).map(m => `<li>${m["Integrantes"]}</li>`).join('');
-                return `<details style="margin:5px 0; border:1px solid rgba(128,128,128,0.2); border-radius:10px;"><summary style="padding:10px; cursor:pointer; font-size:0.9em;">${ng}</summary><ul style="padding-bottom:10px; font-size:0.85em; color:#bbb;">${membros}</ul></details>`;
+                return `<details style="margin:5px 0; border:1px solid rgba(128,128,128,0.2); border-radius:10px;"><summary style="padding:10px; cursor:pointer; font-size:0.9em;">${ng}</summary><ul style="font-size:0.85em; color:#bbb; padding-bottom:10px;">${membros}</ul></details>`;
             }).join('');
-            container.innerHTML += `<details class="secao-retratil" open><summary class="secao-titulo">${mat} <span>▾</span></summary><div style="padding:10px;">${html}</div></details>`;
+            container.innerHTML += `<details class="secao-retratil" open><summary class="secao-titulo">${mat} ▾</summary><div style="padding:10px;">${html}</div></details>`;
         });
     }
 
     function filtrarGrupos() {
         const termo = document.getElementById('inputBusca').value.toLowerCase();
-        const filtrados = dadosApp["Grupos"].filter(g => 
-            g["Integrantes"].toLowerCase().includes(termo) || g["Nome do Grupo"].toLowerCase().includes(termo)
-        );
+        const filtrados = dadosApp["Grupos"].filter(g => g["Integrantes"].toLowerCase().includes(termo) || g["Nome do Grupo"].toLowerCase().includes(termo));
         renderizarGrupos(filtrados);
     }
 
     // --- ARQUIVOS ---
     function abrirArquivos() {
         const corpo = document.getElementById('modal-corpo');
-        document.getElementById('modal-titulo').innerText = "Arquivos e Materiais";
+        document.getElementById('modal-titulo').innerText = "Arquivos";
         corpo.innerHTML = "";
         const itens = dadosApp["Arquivos"] || [];
         const cats = [...new Set(itens.map(i => i["Nome"]))];
         cats.forEach(c => {
             const arqs = itens.filter(i => i["Nome"] === c);
-            let html = arqs.map(a => `<a href="${a["Links"]}" target="_blank" class="item-lista"><div><b>${a["Descrição"]}</b></div><span>🔗</span></a>`).join('');
-            corpo.innerHTML += `<details class="secao-retratil"><summary class="secao-titulo">${c} <span>▾</span></summary><div style="padding:5px 10px;">${html}</div></details>`;
+            let html = arqs.map(a => `<a href="${a["Links"]}" target="_blank" class="item-lista"><b>${a["Descrição"]}</b><span>🔗</span></a>`).join('');
+            corpo.innerHTML += `<details class="secao-retratil"><summary class="secao-titulo">${c} ▾</summary><div style="padding:5px 10px;">${html}</div></details>`;
         });
         document.getElementById('meuModal').style.display = 'flex';
     }
@@ -197,41 +191,39 @@
     // --- AVISOS ---
     function abrirAvisos() {
         const corpo = document.getElementById('modal-corpo');
-        document.getElementById('modal-titulo').innerText = "Quadro de Avisos";
+        document.getElementById('modal-titulo').innerText = "Avisos";
         const itens = dadosApp["Avisos"] || [];
         corpo.innerHTML = itens.slice().reverse().map(i => `
-            <div style="background:rgba(0,123,255,0.05); padding:18px; border-radius:15px; margin-bottom:12px; border:1px solid rgba(0,123,255,0.2);">
-                <div style="font-size:0.7em; opacity:0.5; margin-bottom:8px;">📅 ${i["Data"]}</div>
-                <div style="font-weight:bold; color:var(--p-med); font-size:1.1em;">${i["Titulo"]}</div>
-                <div style="font-size:0.92em; margin-top:8px; line-height:1.4;">${i["Mensagem"]}</div>
+            <div style="background:rgba(0,123,255,0.05); padding:15px; border-radius:12px; margin-bottom:10px; border:1px solid rgba(0,123,255,0.2);">
+                <small style="opacity:0.5;">${i["Data"] || ''}</small>
+                <div style="font-weight:bold; color:var(--p-med); margin-top:4px;">${i["Titulo"]}</div>
+                <div style="font-size:0.9em; margin-top:6px;">${i["Mensagem"]}</div>
             </div>
         `).join('');
         document.getElementById('meuModal').style.display = 'flex';
     }
 
-    // --- LINKS AULAS ---
+    // --- LINKS ---
     function abrirLinks() {
         const corpo = document.getElementById('modal-corpo');
-        document.getElementById('modal-titulo').innerText = "Aulas Online / Links";
+        document.getElementById('modal-titulo').innerText = "Links / Aulas";
         const itens = dadosApp["Links"] || [];
         corpo.innerHTML = itens.map(i => `
-            <div class="item-lista" style="flex-direction:column; align-items:flex-start; border-left: 4px solid #28a745;">
-                <b style="color:var(--p-med); font-size:1.1em;">${i["Materia"]}</b>
-                <div style="font-size:0.85em; margin:8px 0;">🗓️ ${i["Data"]} às ${i["Horário"]}</div>
-                <div style="font-size:0.8em; opacity:0.7; margin-bottom:12px;">${i["Descicao"] || ''}</div>
-                <a href="${i["Url"]}" target="_blank" style="background:#28a745; color:white; text-decoration:none; padding:12px; border-radius:10px; width:100%; text-align:center; font-weight:bold;">ACESSAR AULA</a>
+            <div class="item-lista" style="flex-direction:column; align-items:flex-start;">
+                <b style="color:var(--p-med);">${i["Materia"]}</b>
+                <small>🗓️ ${i["Data"]} às ${i["Horário"]}</small>
+                <a href="${i["Url"]}" target="_blank" style="background:#28a745; color:white; text-decoration:none; padding:10px; border-radius:8px; width:100%; text-align:center; font-weight:bold; margin-top:10px;">ACESSAR AULA</a>
             </div>
         `).join('');
         document.getElementById('meuModal').style.display = 'flex';
     }
 
     function fecharModal() { document.getElementById('meuModal').style.display = 'none'; }
-    
     function toggleTheme() {
-        const novo = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-        document.body.setAttribute('data-theme', novo);
-        document.getElementById('theme-icon').innerText = novo === 'dark' ? '🌙' : '💡';
-        localStorage.setItem('med_h_theme', novo);
+        const n = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        document.body.setAttribute('data-theme', n);
+        document.getElementById('theme-icon').innerText = n === 'dark' ? '🌙' : '💡';
+        localStorage.setItem('med_h_theme', n);
     }
 
     window.onload = () => {
@@ -241,9 +233,8 @@
         carregarDados();
         setTimeout(() => { 
             const s = document.getElementById('splash');
-            s.style.opacity = '0';
-            setTimeout(() => s.style.display = 'none', 800);
-        }, 2200);
+            if(s) { s.style.opacity = '0'; setTimeout(() => s.style.display = 'none', 800); }
+        }, 2000);
     };
 </script>
 </body>
