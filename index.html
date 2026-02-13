@@ -35,7 +35,29 @@
             transition: top 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             box-shadow: 0 4px 15px var(--shadow);
         }
-        
+
+        /* --- CLASSES DA GRADE --- */
+        .grade-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--shadow);
+            align-items: flex-start;
+        }
+        .grade-item:last-child { border-bottom: none; }
+        .grade-hora {
+            flex: 0 0 75px;
+            font-size: 0.8em;
+            font-weight: 800;
+            color: var(--p-med);
+            text-align: right;
+            padding-top: 2px;
+        }
+        .grade-info { flex: 1; text-align: left; }
+        .grade-materia { font-weight: bold; font-size: 0.95em; display: block; color: var(--text-color); }
+        .grade-grupo { font-size: 0.8em; color: #888; margin-top: 3px; display: block; }
+
+        /* --- RESTANTE DO LAYOUT --- */
         #splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; transition: opacity 0.8s; }
         .logo-animado { width: 180px; animation: pulsar 2s infinite; }
         @keyframes pulsar { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
@@ -56,10 +78,7 @@
         .search-container { position: sticky; top: -21px; background: var(--card-bg); z-index: 10; padding: 10px 0; margin-bottom: 15px; border-bottom: 1px solid var(--shadow); }
         .search-input { width: 100%; height: 45px; padding: 0 15px; border-radius: 10px; border: none; background: var(--input-bg); color: var(--text-color); font-size: 16px; }
 
-        /* AJUSTE DAS GUIAS (MATÉRIAS E ARQUIVOS) */
         .materia-retratil { margin-bottom: 10px; border: 1px solid var(--shadow); border-radius: 12px; background: var(--card-bg); overflow: hidden; width: 100%; }
-        
-        /* Limpa seta nativa do iPhone */
         summary::-webkit-details-marker { display: none !important; }
         summary { list-style: none !important; outline: none; }
 
@@ -80,29 +99,18 @@
         .materia-retratil[open] .materia-sumario::after { content: '📂'; }
 
         .arquivo-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            background: var(--input-bg);
-            border-radius: 10px;
-            margin-bottom: 8px;
-            text-decoration: none;
-            color: var(--text-color);
-            width: 100%;
-            box-sizing: border-box;
-            transition: transform 0.1s;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px; background: var(--input-bg); border-radius: 10px; margin-bottom: 8px;
+            text-decoration: none; color: var(--text-color); width: 100%; box-sizing: border-box;
         }
-        .arquivo-item:active { transform: scale(0.98); }
 
         ul.lista-integrantes { padding: 0 15px 15px 35px !important; margin: 0 !important; list-style-type: circle; border-left: 3px solid var(--p-med); margin-left: 15px !important; text-align: left; }
-        ul.lista-integrantes li { font-size: 0.85em; margin-bottom: 5px; }
         
         #theme-toggle { position: fixed; bottom: 25px; right: 25px; z-index: 999; background: var(--card-bg); border: 2px solid var(--p-med); border-radius: 50%; width: 50px; height: 50px; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 15px var(--shadow); }
 
-        .footer-creditos { text-align: center; font-size: 11px; color: #888; padding: 20px 0; width: 100%; font-style: italic; opacity: 0.8; }
+        .footer-creditos { text-align: center; font-size: 11px; color: #888; padding: 30px 0; width: 100%; font-style: italic; opacity: 0.8; }
         
-        .admin-form input, .admin-form textarea { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid var(--shadow); background: var(--input-bg); color: var(--text-color); font-family: inherit; }
+        .admin-form input, .admin-form textarea { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid var(--shadow); background: var(--input-bg); color: var(--text-color); }
         .btn-postar { background: #28a745; color: white; border: none; padding: 15px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; }
     </style>
 </head>
@@ -246,14 +254,13 @@
         corpo.innerHTML = "";
         let itens = dadosApp[nomeAba] || [];
 
-        if (nomeAba === "Arquivos" || nomeAba === "Grupos") {
-            if(nomeAba === "Grupos") {
-                corpo.innerHTML = `<div class="search-container"><input type="text" id="inputBusca" class="search-input" placeholder="🔍 Buscar..." oninput="filtrarGrupos()"></div>`;
-            }
-            
+        if (nomeAba === "Grade" || nomeAba === "Arquivos" || nomeAba === "Grupos") {
             const estrutura = {};
             itens.forEach(item => {
-                const cat = nomeAba === "Arquivos" ? (item.Nome || "Geral") : formatarNome(item["Matéria"] || "Geral");
+                let cat;
+                if (nomeAba === "Grade") cat = item["Dia da Semana"] || "Outros";
+                else if (nomeAba === "Arquivos") cat = item.Nome || "Geral";
+                else cat = formatarNome(item["Matéria"] || "Geral");
                 if (!estrutura[cat]) estrutura[cat] = [];
                 estrutura[cat].push(item);
             });
@@ -261,12 +268,22 @@
             for (let cat in estrutura) {
                 const det = document.createElement('details');
                 det.className = 'materia-retratil';
-                det.addEventListener('toggle', function() {
-                    if (this.open) document.querySelectorAll('.materia-retratil').forEach(d => { if (d !== this) d.open = false; });
-                });
+                const hoje = new Intl.DateTimeFormat('pt-BR', {weekday: 'long'}).format(new Date());
+                if (nomeAba === "Grade" && cat.toLowerCase().includes(hoje.split('-')[0].toLowerCase())) {
+                    det.open = true;
+                }
 
                 let conteudoInterno = "";
-                if(nomeAba === "Arquivos") {
+                if (nomeAba === "Grade") {
+                    conteudoInterno = estrutura[cat].map(aula => `
+                        <div class="grade-item">
+                            <div class="grade-hora">${aula.Horários || '--:--'}</div>
+                            <div class="grade-info">
+                                <span class="grade-materia">${aula.Matéria || 'Sem Nome'}</span>
+                                <span class="grade-grupo">👥 ${aula.Grupo || 'Todos'}</span>
+                            </div>
+                        </div>`).join('');
+                } else if (nomeAba === "Arquivos") {
                     conteudoInterno = estrutura[cat].map(arq => `
                         <a href="${arq.Link}" target="_blank" class="arquivo-item">
                             <div style="font-size: 0.95em; font-weight: 500; text-align: left; flex: 1; padding-right: 10px; word-break: break-word;">
@@ -290,19 +307,16 @@
                             <ul class="lista-integrantes">${grps[g].map(n => `<li>${n}</li>`).join('')}</ul>
                         </details>`).join('');
                 }
-
                 det.innerHTML = `<summary class="materia-sumario"><span>${cat}</span></summary><div style="padding: 12px; box-sizing: border-box;">${conteudoInterno}</div>`;
                 corpo.appendChild(det);
             }
         } else {
             itens.slice().reverse().forEach(item => {
                 const div = document.createElement('div');
-                div.style.padding = "15px"; 
-                div.style.borderBottom = "1px solid var(--shadow)";
-                div.style.textAlign = "left";
+                div.style.padding = "15px"; div.style.borderBottom = "1px solid var(--shadow)"; div.style.textAlign = "left";
                 div.innerHTML = `
-                    <div style="font-weight: bold; color: var(--p-med);">${item.Matéria || item.Nome || item.Titulo || ''}</div>
-                    <div style="font-size: 0.9em; color: var(--text-color); margin-top: 4px;">${item.Horário || item.Descrição || item.Mensagem || ''}</div>
+                    <div style="font-weight: bold; color: var(--p-med);">${item.Titulo || ''}</div>
+                    <div style="font-size: 0.9em; color: var(--text-color); margin-top: 4px;">${item.Mensagem || ''}</div>
                 `;
                 corpo.appendChild(div);
             });
@@ -343,8 +357,7 @@
         }, 1500);
     });
 </script>
-<p><p><p><p>
+
 <div class="footer-creditos">Desenvolvido por João Vitor Fróis Sanchez</div>
 </body>
 </html>
-
