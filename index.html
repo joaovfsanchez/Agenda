@@ -25,43 +25,59 @@
         #status-bar { font-size: 0.8em; margin-top: 5px; color: #888; height: 1.2em; }
         .status-online { color: #5cb85c; font-weight: bold; }
         
+        /* Grid de Cards */
         .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .card { background: var(--card-bg); padding: 20px; border-radius: 15px; text-align: center; box-shadow: 0 4px 6px var(--shadow); cursor: pointer; position: relative; font-weight: 600; transition: transform 0.1s; border: none; -webkit-tap-highlight-color: transparent; }
+        .card { 
+            background: var(--card-bg); padding: 20px; border-radius: 15px; 
+            text-align: center; box-shadow: 0 4px 6px var(--shadow); 
+            cursor: pointer; position: relative; font-weight: 600; 
+            transition: transform 0.1s; border: none; -webkit-tap-highlight-color: transparent;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
         .card:active { transform: scale(0.95); }
-        .card span { display: block; font-size: 1.5em; margin-bottom: 8px; }
+        .card span.icon { display: block; font-size: 1.5em; margin-bottom: 8px; }
         
+        /* Badge Novo Corrigido */
+        .notification-badge { 
+            position: absolute; top: 10px; right: 10px; background: #ff3b30; 
+            color: white; font-size: 9px; padding: 2px 6px; border-radius: 10px; 
+            display: none; font-weight: bold; z-index: 5;
+        }
+        
+        /* Modal */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); align-items: center; justify-content: center; padding: 20px; z-index: 2000; backdrop-filter: blur(4px); }
-        .modal-content { background: var(--card-bg); padding: 25px; border-radius: 20px; width: 100%; max-width: 400px; max-height: 85vh; overflow-y: auto; position: relative; display: flex; flex-direction: column; }
+        .modal-content { background: var(--card-bg); padding: 25px; border-radius: 20px; width: 100%; max-width: 400px; max-height: 85vh; overflow-y: auto; position: relative; }
         .close-btn { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 20px; color: var(--text-color); cursor: pointer; padding: 5px; z-index: 100; }
         
+        /* Busca */
         .search-container { position: sticky; top: -26px; background: var(--card-bg); z-index: 10; padding: 10px 0; margin-bottom: 15px; border-bottom: 1px solid var(--shadow); }
-        .search-input { width: 100%; height: 45px; padding: 0 15px; border-radius: 10px; border: none; background: var(--input-bg); color: var(--text-color); box-sizing: border-box; font-size: 16px; outline: none; -webkit-appearance: none; }
+        .search-input { width: 100%; height: 45px; padding: 0 15px; border-radius: 10px; border: none; background: var(--input-bg); color: var(--text-color); box-sizing: border-box; font-size: 16px; -webkit-appearance: none; }
 
-        /* Estilo da Matéria */
+        /* Estilo das Matérias e Grupos (Centralização Focada) */
         .materia-retratil { margin-bottom: 10px; border: 1px solid var(--shadow); border-radius: 12px; background: var(--card-bg); overflow: hidden; }
-        .materia-sumario { 
-            display: flex !important; justify-content: space-between !important; align-items: center !important;
-            background: rgba(0,123,255,0.07); padding: 14px; font-weight: 800; color: var(--p-med); 
-            text-transform: uppercase; font-size: 0.85em; cursor: pointer; list-style: none;
+        
+        summary { 
+            display: grid !important; 
+            grid-template-columns: 1fr auto; 
+            align-items: center; 
+            width: 100%; 
+            padding: 14px; 
+            cursor: pointer; 
+            list-style: none;
+            box-sizing: border-box;
         }
-        .materia-sumario::-webkit-details-marker { display: none; }
+        summary::-webkit-details-marker { display: none; }
+
+        .materia-sumario { background: rgba(0,123,255,0.07); font-weight: 800; color: var(--p-med); text-transform: uppercase; font-size: 0.85em; }
         .materia-sumario::after { content: '📁'; opacity: 0.5; }
         .materia-retratil[open] .materia-sumario::after { content: '📂'; opacity: 1; }
 
-        /* Estilo do Grupo Interno */
-        .grupo-detalhe { border-bottom: 1px solid rgba(0,0,0,0.05); margin: 0 10px; }
-        .grupo-sumario { 
-            display: flex !important; justify-content: space-between !important; align-items: center !important;
-            width: 100%; padding: 12px 5px; cursor: pointer; font-weight: 600; font-size: 0.95em; list-style: none;
-        }
-        .grupo-sumario::-webkit-details-marker { display: none; }
-
-        ul.lista-integrantes { padding: 10px 0 15px 25px !important; margin: 0 !important; list-style-type: circle; border-left: 2px solid var(--p-med); margin-bottom: 10px !important; }
+        .grupo-detalhe { border-top: 1px solid rgba(0,0,0,0.05); }
+        .grupo-sumario { font-weight: 600; font-size: 0.95em; padding: 12px 15px; }
         
-        .aviso-item { border-bottom: 1px solid var(--shadow); padding: 12px 0; }
-        .arquivo-btn { display: inline-flex; align-items: center; background: var(--p-med); color: white; padding: 8px 15px; border-radius: 8px; text-decoration: none; font-size: 0.85em; margin-top: 8px; font-weight: bold; }
+        ul.lista-integrantes { padding: 5px 15px 15px 40px !important; margin: 0 !important; list-style-type: circle; border-left: 3px solid var(--p-med); margin-left: 15px !important; }
         
-        #theme-toggle { position: fixed; bottom: 25px; right: 25px; z-index: 999; background: var(--card-bg); border: 2px solid var(--p-med); border-radius: 50%; width: 50px; height: 50px; display: none; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 4px 15px var(--shadow); cursor: pointer; }
+        #theme-toggle { position: fixed; bottom: 25px; right: 25px; z-index: 999; background: var(--card-bg); border: 2px solid var(--p-med); border-radius: 50%; width: 50px; height: 50px; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 15px var(--shadow); cursor: pointer; }
     </style>
 </head>
 <body>
@@ -79,19 +95,19 @@
 </div>
 
 <div class="grid-container">
-    <div class="card" onclick="mostrarAba('Grade')"><span>📅</span>Grade</div>
-    <div class="card" onclick="mostrarAba('Grupos')"><span>👥</span>Grupos</div>
+    <div class="card" onclick="mostrarAba('Grade')"><span class="icon">📅</span>Grade</div>
+    <div class="card" onclick="mostrarAba('Grupos')"><span class="icon">👥</span>Grupos</div>
     <div class="card" onclick="abrirAvisos()">
         <span id="badge-avisos" class="notification-badge">NOVO</span>
-        <span>🔔</span>Avisos
+        <span class="icon">🔔</span>Avisos
     </div>
-    <div class="card" onclick="mostrarAba('Arquivos')"><span>📄</span>Arquivos</div>
+    <div class="card" onclick="mostrarAba('Arquivos')"><span class="icon">📄</span>Arquivos</div>
 </div>
 
 <div id="meuModal" class="modal">
     <div class="modal-content">
         <button class="close-btn" onclick="fecharModal()">✕</button>
-        <h3 id="modal-titulo" style="margin:0 0 10px 0; color:var(--p-med);">Título</h3>
+        <h3 id="modal-titulo" style="margin:0 0 15px 0; color:var(--p-med);">Título</h3>
         <div id="modal-corpo"></div>
     </div>
 </div>
@@ -112,28 +128,33 @@
             dadosApp = await res.json();
             localStorage.setItem('cache_medicina', JSON.stringify(dadosApp));
             status.innerHTML = `<span class="status-online">● Atualizado: ${dadosApp.ultima_sincronizacao}</span>`;
+            verificarNovosAvisos();
         } catch (e) {
             const cache = localStorage.getItem('cache_medicina');
-            if(cache) dadosApp = JSON.parse(cache);
+            if(cache) {
+                dadosApp = JSON.parse(cache);
+                status.innerHTML = `<span>● Modo Offline</span>`;
+            }
         }
     }
 
-    function filtrarGrupos() {
-        const termo = document.getElementById('inputBusca').value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        const materias = document.querySelectorAll('.materia-retratil');
-        
-        materias.forEach(matBox => {
-            let matchMat = false;
-            matBox.querySelectorAll('.grupo-detalhe').forEach(grp => {
-                const txt = grp.innerText.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                if (txt.includes(termo)) {
-                    grp.style.display = "block"; matchMat = true;
-                    if (termo.length > 2) grp.setAttribute('open', 'true');
-                } else { grp.style.display = "none"; grp.removeAttribute('open'); }
-            });
-            matBox.style.display = matchMat ? "block" : "none";
-            if (matchMat && termo.length > 1) matBox.setAttribute('open', 'true');
-        });
+    function verificarNovosAvisos() {
+        if (dadosApp.Avisos && dadosApp.Avisos.length > 0) {
+            const ultimoAviso = dadosApp.Avisos[dadosApp.Avisos.length - 1];
+            const idAvisoAtual = btoa(unescape(encodeURIComponent((ultimoAviso.Titulo || "") + (ultimoAviso.Mensagem || ""))));
+            const ultimoLido = localStorage.getItem('ultimo_id_aviso_lido');
+            document.getElementById('badge-avisos').style.display = (idAvisoAtual !== ultimoLido) ? 'block' : 'none';
+        }
+    }
+
+    function abrirAvisos() {
+        mostrarAba('Avisos');
+        if (dadosApp.Avisos && dadosApp.Avisos.length > 0) {
+            const ultimoAviso = dadosApp.Avisos[dadosApp.Avisos.length - 1];
+            const idAvisoAtual = btoa(unescape(encodeURIComponent((ultimoAviso.Titulo || "") + (ultimoAviso.Mensagem || ""))));
+            localStorage.setItem('ultimo_id_aviso_lido', idAvisoAtual);
+            document.getElementById('badge-avisos').style.display = 'none';
+        }
     }
 
     function mostrarAba(nomeAba) {
@@ -157,42 +178,43 @@
             for (let mat in estrutura) {
                 const matDet = document.createElement('details');
                 matDet.className = 'materia-retratil';
-                // Lógica de auto-recolhimento das matérias
+                matDet.innerHTML = `<summary class="materia-sumario"><span>${mat}</span></summary><div class="container-grupos"></div>`;
+                
+                // Auto-recolhimento Matérias
                 matDet.addEventListener('toggle', function() {
                     if(this.open) {
-                        corpo.querySelectorAll('.materia-retratil').forEach(m => { if(m !== this) m.removeAttribute('open'); });
+                        document.querySelectorAll('.materia-retratil').forEach(m => { if(m !== this) m.removeAttribute('open'); });
                     }
                 });
 
-                matDet.innerHTML = `<summary class="materia-sumario">${mat}</summary><div class="container-grupos"></div>`;
                 const container = matDet.querySelector('.container-grupos');
-
                 for (let grp in estrutura[mat]) {
                     const grpDet = document.createElement('details');
                     grpDet.className = 'grupo-detalhe';
-                    // Lógica de auto-recolhimento dos grupos internos
+                    grpDet.innerHTML = `<summary class="grupo-sumario"><span>${grp}</span><small style="color:#888;">${estrutura[mat][grp].length} ▾</small></summary>
+                                        <ul class="lista-integrantes">${estrutura[mat][grp].map(n => `<li>${n}</li>`).join('')}</ul>`;
+                    
+                    // Auto-recolhimento Grupos
                     grpDet.addEventListener('toggle', function() {
                         if(this.open) {
                             container.querySelectorAll('.grupo-detalhe').forEach(g => { if(g !== this) g.removeAttribute('open'); });
                         }
                     });
-
-                    grpDet.innerHTML = `
-                        <summary class="grupo-sumario"><span>${grp}</span><small style="color:#888;">${estrutura[mat][grp].length} ▾</small></summary>
-                        <ul class="lista-integrantes">${estrutura[mat][grp].map(n => `<li>${n}</li>`).join('')}</ul>
-                    `;
                     container.appendChild(grpDet);
                 }
                 corpo.appendChild(matDet);
             }
         } else {
-            // Outras abas (Arquivos, Grade, etc)
             itens.reverse().forEach(item => {
-                const div = document.createElement('div'); div.className = 'aviso-item';
-                if(nomeAba === "Arquivos") {
-                    div.innerHTML = `<span style="font-weight:bold">${item.Nome || 'Arquivo'}</span><br><a href="${item.Link}" target="_blank" class="arquivo-btn">📂 Abrir</a>`;
-                } else if(nomeAba === "Grade") {
-                    div.innerHTML = `<b>${item.Matéria || ''}</b><br><small>${item.Horário || ''}</small>`;
+                const div = document.createElement('div');
+                div.style.padding = "12px 0";
+                div.style.borderBottom = "1px solid var(--shadow)";
+                if(nomeAba === "Avisos") {
+                    div.innerHTML = `<small style="color:#888">${item.Data || ''}</small><br><b>${item.Titulo || 'Aviso'}</b><p style="margin:5px 0; font-size:0.9em">${item.Mensagem || ''}</p>`;
+                } else if(nomeAba === "Arquivos") {
+                    div.innerHTML = `<b>${item.Nome || 'Arquivo'}</b><br><a href="${item.Link}" target="_blank" style="color:var(--p-med); text-decoration:none; font-weight:bold;">📂 Abrir Link</a>`;
+                } else {
+                    div.innerHTML = `<b>${item.Matéria || ''}</b><br><small>${item.Horário || ''} - ${item.Sala || ''}</small>`;
                 }
                 corpo.appendChild(div);
             });
@@ -200,22 +222,39 @@
         modal.style.display = "flex";
     }
 
+    function filtrarGrupos() {
+        const termo = document.getElementById('inputBusca').value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        document.querySelectorAll('.materia-retratil').forEach(mat => {
+            let match = false;
+            mat.querySelectorAll('.grupo-detalhe').forEach(grp => {
+                if (grp.innerText.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(termo)) {
+                    grp.style.display = "block"; match = true;
+                    if(termo.length > 2) grp.setAttribute('open', 'true');
+                } else { grp.style.display = "none"; }
+            });
+            mat.style.display = match ? "block" : "none";
+            if(match && termo.length > 1) mat.setAttribute('open', 'true');
+        });
+    }
+
     function fecharModal() { document.getElementById('meuModal').style.display = "none"; }
     function toggleTheme() {
-        const html = document.documentElement;
-        const isDark = html.getAttribute('data-theme') === 'dark';
-        html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
         document.getElementById('theme-icon').innerText = isDark ? '💡' : '🌙';
         localStorage.setItem('theme', isDark ? 'light' : 'dark');
     }
 
     window.addEventListener('load', () => {
         carregarDados();
-        if (localStorage.getItem('theme') === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.getElementById('theme-icon').innerText = '🌙';
+        }
         setTimeout(() => {
             document.getElementById('splash').style.display = 'none';
             document.getElementById('theme-toggle').style.display = 'flex';
-        }, 2000);
+        }, 1500);
     });
 </script>
 </body>
