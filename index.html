@@ -41,7 +41,25 @@
         #modal-titulo { text-align: left !important; display: block; width: 100%; margin-bottom: 20px; color: var(--p-med); font-weight: 800; font-size: 1.4em; }
 
         .close-btn { position: absolute; top: 15px; right: 20px; background: #333; border: none; font-size: 20px; color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 10; }
-        
+        /* ESTILO DO AGUARDANDO AULAS - ADICIONE ISSO */
+        .item-aguardando { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 25px 15px; 
+            background: rgba(255, 255, 255, 0.02); 
+            border: 1px dashed rgba(0, 123, 255, 0.3); 
+            border-radius: 18px; 
+            color: #888; 
+            margin: 10px; 
+            font-style: italic; 
+            font-size: 0.85em; 
+            text-align: center !important; 
+            gap: 8px;
+        }
+
+        .item-aguardando span:first-child { font-size: 1.8em; } /* Tamanho do Emoji */
         /* AJUSTE FORMULÁRIOS ADMIN */
         .admin-form { display: flex; flex-direction: column; gap: 12px; width: 100%; }
         .admin-form input, .admin-form textarea { 
@@ -74,7 +92,7 @@
         .secao-retratil { margin-bottom: 10px; border-radius: 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(0,123,255,0.1); overflow: hidden; width: 100%; }
         .secao-titulo { background: rgba(0,123,255,0.15); color: #4dabff; padding: 16px; font-weight: 800; font-size: 0.85em; text-transform: uppercase; cursor: pointer; display: flex !important; justify-content: space-between !important; align-items: center; list-style: none; text-align: left !important; }
         .grade-item { display: flex; align-items: center; gap: 15px; padding: 15px; border-bottom: 1px solid rgba(128,128,128,0.1); background: rgba(0,0,0,0.1); text-align: left !important; }
-        .grade-hora { flex: 0 0 90px; height: 45px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 0.62em; background: var(--p-med); border-radius: 10px; }
+        .grade-hora { flex: 0 0 88px; height: 42px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 0.62em; background: var(--p-med); border-radius: 10px; line-height: 1.1; }
         .item-lista-link { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--input-bg); border-radius: 12px; text-decoration: none; color: inherit; margin-bottom: 8px; text-align: left !important; }
 
         #theme-toggle { position: fixed; bottom: 25px; right: 25px; background: var(--card-bg); border: 2px solid var(--p-med); border-radius: 50%; width: 55px; height: 55px; display: flex; align-items: center; justify-content: center; z-index: 999; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
@@ -242,7 +260,7 @@
         const dias = [...new Set(itens.map(a => a["Dia da Semana"]))].sort((a,b) => ordem.findIndex(d => a.includes(d)) - ordem.findIndex(d => b.includes(d)));
         dias.forEach(dia => {
             const aulas = itens.filter(a => a["Dia da Semana"] === dia && a["Matéria"] && a["Matéria"].trim() !== "");
-            let html = aulas.length === 0 ? `<div class="item-aguardando"><span>Aguardando aulas...</span><span>⏳</span></div>` :
+            let html = aulas.length === 0 ? `<div class="item-aguardando"><span>⏳</span><span>Aguardando a liberação das aulas...</span></div>` :
                 aulas.map(a => `<div class="grade-item"><div class="grade-hora">${a["Horários"]}</div><div style="flex:1; text-align:left;"><b>${a["Matéria"]}</b><br><small style="opacity:0.6">👥 ${a["Grupo"] || 'Geral'}</small></div></div>`).join('');
             corpo.innerHTML += `<details class="secao-retratil"><summary class="secao-titulo"><span>${dia}</span><span>▼</span></summary><div>${html}</div></details>`;
         });
@@ -335,4 +353,5 @@
 </script>
 </body>
 </html>
+
 
