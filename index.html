@@ -3,16 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Agenda Medicine - Turma H</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Med Turma H">
     <meta name="theme-color" content="#007bff">
 
-    <link rel="apple-touch-icon" href="icon.png">
-    <link rel="icon" type="image/png" href="icon.png">
-    <link rel="shortcut icon" href="icon.png">
+    <link rel="manifest" href="manifest.json?v=2">
+    <link rel="apple-touch-icon" href="icon.png?v=2">
+    <link rel="apple-touch-icon" sizes="152x152" href="icon.png?v=2">
+    <link rel="apple-touch-icon" sizes="180x180" href="icon.png?v=2">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon.png?v=2">
+    <link rel="shortcut icon" href="icon.png?v=2">
 
     <style>
         :root { --p-med: #007bff; --bg: #121212; --card-bg: #1e1e1e; --text-color: #e0e0e0; --shadow: rgba(0,0,0,0.5); --input-bg: #2d2d2d; }
@@ -23,6 +26,7 @@
 
         input, textarea, button { font-size: 16px !important; }
 
+        /* Splash Screen */
         #splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; transition: opacity 0.8s ease; }
         .logo-pulsando { width: 120px; animation: pulsar 2s infinite ease-in-out; }
         @keyframes pulsar { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } }
@@ -30,10 +34,12 @@
         .header { text-align: center; margin-bottom: 20px; }
         #status-bar { font-size: 0.8em; color: #888; margin-top: 5px; }
         
+        /* Grid Principal */
         .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .card { background: var(--card-bg); height: 110px; border-radius: 15px; box-shadow: 0 4px 6px var(--shadow); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 600; border: 1px solid rgba(255,255,255,0.05); }
         .card .icon { font-size: 1.8em; margin-bottom: 8px; }
         
+        /* Modais */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; padding: 15px; z-index: 2000; backdrop-filter: blur(8px); }
         .modal-content { background: var(--card-bg); padding: 20px; border-radius: 25px; width: 100%; max-width: 450px; max-height: 85vh; overflow-y: auto; position: relative; border: 1px solid rgba(0,123,255,0.3); }
         .close-btn { position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 28px; color: var(--text-color); }
@@ -43,7 +49,6 @@
 
         .secao-retratil { margin-bottom: 12px; border-radius: 15px; background: rgba(255,255,255,0.03); border: 1px solid var(--shadow); overflow: hidden; }
         .secao-titulo { background: rgba(0,123,255,0.12); color: var(--p-med); padding: 14px 18px; font-weight: 800; font-size: 0.85em; text-transform: uppercase; cursor: pointer; display: flex !important; justify-content: space-between; align-items: center; list-style: none; }
-        .secao-titulo::-webkit-details-marker { display: none; }
 
         .grade-item { display: flex; align-items: center; gap: 12px; padding: 12px 15px; border-bottom: 1px solid rgba(128,128,128,0.1); }
         .grade-hora { flex: 0 0 100px; color: #fff; font-weight: 800; font-size: 0.75em; text-align: center; background: var(--p-med); padding: 5px; border-radius: 6px; }
@@ -92,7 +97,7 @@
         <button class="close-btn" onclick="this.parentElement.parentElement.style.display='none'">✕</button>
         <h3 style="color:#28a745;">Postar Aula Online</h3>
         <input type="password" id="senhaLink" placeholder="Senha" style="width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid #444; background:#2d2d2d; color:white;">
-        <input type="text" id="dataLink" placeholder="Data (DD/MM/AAAA)" style="width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid #444; background:#2d2d2d; color:white;">
+        <input type="text" id="dataLink" placeholder="Data (DD/MM)" style="width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid #444; background:#2d2d2d; color:white;">
         <input type="text" id="horaLink" placeholder="Horário (HH:MM)" style="width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid #444; background:#2d2d2d; color:white;">
         <input type="text" id="materiaLink" placeholder="Matéria" style="width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid #444; background:#2d2d2d; color:white;">
         <input type="text" id="urlLink" placeholder="Link (URL)" style="width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid #444; background:#2d2d2d; color:white;">
@@ -125,6 +130,7 @@
     window.onload = () => {
         carregarDados();
         
+        // Timer Admin Aulas
         const btnAulas = document.getElementById('btnAulasOnline');
         const ligarTimerLink = () => timerPlanilha = setTimeout(() => document.getElementById('modalLinkAdmin').style.display = 'flex', 5000);
         btnAulas.addEventListener('touchstart', ligarTimerLink);
@@ -132,6 +138,7 @@
         btnAulas.addEventListener('touchend', () => clearTimeout(timerPlanilha));
         btnAulas.addEventListener('mouseup', () => clearTimeout(timerPlanilha));
 
+        // Timer Admin Avisos
         const btnCreditos = document.getElementById('btnAdmin');
         const ligarTimerAviso = () => timerAdmin = setTimeout(() => document.getElementById('modalAvisoAdmin').style.display = 'flex', 5000);
         btnCreditos.addEventListener('touchstart', ligarTimerAviso);
@@ -162,6 +169,7 @@
     function toggleTheme() {
         const n = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
         document.body.setAttribute('data-theme', n);
+        document.getElementById('theme-icon').innerText = n === 'dark' ? '🌙' : '☀️';
     }
 
     function setupAccordion(classeAlvo) {
@@ -203,7 +211,7 @@
         const corpo = document.getElementById('modal-corpo');
         document.getElementById('modal-titulo').innerText = "Avisos";
         const itens = (dadosApp["Avisos"] || []).slice().reverse();
-        corpo.innerHTML = itens.map(i => `
+        corpo.innerHTML = itens.length === 0 ? "<p style='text-align:center;'>Nenhum aviso.</p>" : itens.map(i => `
             <div style="background:rgba(0,123,255,0.05); padding:15px; border-radius:12px; margin-bottom:12px; border-left: 4px solid var(--p-med);">
                 <div style="font-size: 0.75em; color: #888;">${formatarDataBR(i["Data"])}</div>
                 <div style="font-weight:800; color:var(--p-med); text-transform:uppercase;">${i["Titulo"]}</div>
@@ -233,7 +241,7 @@
     function abrirGrupos() {
         const corpo = document.getElementById('modal-corpo');
         document.getElementById('modal-titulo').innerText = "Grupos";
-        corpo.innerHTML = `<div class="search-container"><input type="text" id="inputBusca" class="search-input" placeholder="🔍 Buscar..." onkeyup="filtrarGrupos()"></div><div id="container-grupos"></div>`;
+        corpo.innerHTML = `<div class="search-container"><input type="text" id="inputBusca" class="search-input" placeholder="🔍 Buscar aluno ou matéria..." onkeyup="filtrarGrupos()"></div><div id="container-grupos"></div>`;
         renderizarGrupos(dadosApp["Grupos"] || []);
         document.getElementById('meuModal').style.display = 'flex';
     }
@@ -259,7 +267,11 @@
 
     function filtrarGrupos() {
         const termo = document.getElementById('inputBusca').value.toLowerCase();
-        const filtrados = (dadosApp["Grupos"] || []).filter(g => String(g["Matéria"]).toLowerCase().includes(termo) || String(g["Nome do Grupo"]).toLowerCase().includes(termo) || String(g["Integrantes"]).toLowerCase().includes(termo));
+        const filtrados = (dadosApp["Grupos"] || []).filter(g => 
+            String(g["Matéria"]).toLowerCase().includes(termo) || 
+            String(g["Nome do Grupo"]).toLowerCase().includes(termo) || 
+            String(g["Integrantes"]).toLowerCase().includes(termo)
+        );
         renderizarGrupos(filtrados);
     }
 
