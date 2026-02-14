@@ -10,16 +10,16 @@
     <meta name="apple-mobile-web-app-title" content="Medicina - Turma H">
     <meta name="theme-color" content="#007bff">
 
-    <link rel="manifest" href="manifest.json?v=15">
-    <link rel="apple-touch-icon" href="icon.png?v=15">
-    <link rel="icon" type="image/png" href="icon.png?v=15">
+    <link rel="manifest" href="manifest.json?v=16">
+    <link rel="apple-touch-icon" href="icon.png?v=16">
+    <link rel="icon" type="image/png" href="icon.png?v=16">
 
     <style>
         :root { --p-med: #007bff; --bg: #121212; --card-bg: #1e1e1e; --text-color: #e0e0e0; --shadow: rgba(0,0,0,0.5); --input-bg: #2d2d2d; --danger: #ff3b30; }
         [data-theme="light"] { --bg: #f4f7f6; --card-bg: #ffffff; --text-color: #333333; --shadow: rgba(0,0,0,0.1); --input-bg: #eeeeee; }
         
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: var(--text-color); transition: background 0.3s; padding-bottom: 80px; overflow-x: hidden; width: 100vw; }
+        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: var(--text-color); transition: background 0.3s; padding-bottom: 100px; overflow-x: hidden; width: 100vw; }
 
         #splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; transition: opacity 0.8s ease; }
         .logo-pulsando { width: 120px; animation: pulsar 2s infinite ease-in-out; }
@@ -36,42 +36,48 @@
         @keyframes jump { from { transform: translateY(0); } to { transform: translateY(-3px); } }
         
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; padding: 15px; z-index: 2000; backdrop-filter: blur(10px); }
-        .modal-content { background: var(--card-bg); padding: 25px; border-radius: 28px; width: 100%; max-width: 450px; max-height: 85vh; overflow-y: auto; position: relative; border: 1px solid rgba(0,123,255,0.2); text-align: left !important; }
+        .modal-content { background: var(--card-bg); padding: 25px; border-radius: 28px; width: 95%; max-width: 450px; max-height: 90vh; overflow-y: auto; position: relative; border: 1px solid rgba(0,123,255,0.2); text-align: left !important; }
         
         #modal-titulo { text-align: left !important; display: block; width: 100%; margin-bottom: 20px; color: var(--p-med); font-weight: 800; font-size: 1.4em; }
-        #modal-corpo { text-align: left !important; width: 100%; display: block; }
 
         .close-btn { position: absolute; top: 15px; right: 20px; background: #333; border: none; font-size: 20px; color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 10; }
         
-        /* CORREÇÃO DOS TÍTULOS (DIAS, MATÉRIAS, GRUPOS) */
-        .secao-retratil { margin-bottom: 10px; border-radius: 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(0,123,255,0.1); overflow: hidden; width: 100%; }
-        
-        .secao-titulo { 
-            background: rgba(0,123,255,0.15); 
-            color: #4dabff; 
+        /* AJUSTE FORMULÁRIOS ADMIN */
+        .admin-form { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+        .admin-form input, .admin-form textarea { 
+            width: 100%; 
             padding: 16px; 
-            font-weight: 800; 
-            font-size: 0.85em; 
-            text-transform: uppercase; 
-            cursor: pointer; 
-            display: flex !important; /* Mantém ícone e texto na mesma linha */
-            justify-content: space-between !important; 
-            align-items: center; 
-            list-style: none; 
-            text-align: left !important; /* FORÇA ESQUERDA */
+            border-radius: 14px; 
+            border: 1px solid #444; 
+            background: var(--input-bg); 
+            color: var(--text-color); 
+            font-size: 18px; /* Texto maior para leitura fácil */
+            text-align: left;
+            -webkit-appearance: none;
         }
-        .secao-titulo::-webkit-details-marker { display: none; } /* Remove seta padrão */
+        .admin-btn { width: 100%; padding: 18px; background: var(--p-med); color: white; border: none; border-radius: 14px; font-weight: bold; font-size: 16px; margin-top: 10px; cursor: pointer; }
 
+        /* ASSINATURA DO DESENVOLVEDOR */
+        .footer-creditos { 
+            text-align: center; 
+            font-size: 10px; 
+            color: #666; 
+            margin-top: 80px; /* Bem longe dos botões */
+            padding: 15px; 
+            width: 100%; 
+            opacity: 0.5;
+            letter-spacing: 0.5px;
+            user-select: none;
+        }
+
+        /* OUTROS ESTILOS */
+        .secao-retratil { margin-bottom: 10px; border-radius: 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(0,123,255,0.1); overflow: hidden; width: 100%; }
+        .secao-titulo { background: rgba(0,123,255,0.15); color: #4dabff; padding: 16px; font-weight: 800; font-size: 0.85em; text-transform: uppercase; cursor: pointer; display: flex !important; justify-content: space-between !important; align-items: center; list-style: none; text-align: left !important; }
         .grade-item { display: flex; align-items: center; gap: 15px; padding: 15px; border-bottom: 1px solid rgba(128,128,128,0.1); background: rgba(0,0,0,0.1); text-align: left !important; }
-        .grade-hora { flex: 0 0 100px; height: 45px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 0.72em; text-align: center; background: var(--p-med); border-radius: 10px; }
-        
+        .grade-hora { flex: 0 0 90px; height: 45px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 0.72em; background: var(--p-med); border-radius: 10px; }
         .item-lista-link { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--input-bg); border-radius: 12px; text-decoration: none; color: inherit; margin-bottom: 8px; text-align: left !important; }
-        .item-aguardando { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(255,255,255,0.02); border: 1px dashed #444; border-radius: 12px; color: #888; margin: 10px; font-style: italic; font-size: 0.85em; text-align: left !important; }
 
-        ul { text-align: left !important; padding-left: 25px; margin: 10px 0; }
-        li { text-align: left !important; margin-bottom: 5px; }
-
-        #theme-toggle { position: fixed; bottom: 25px; right: 25px; background: var(--card-bg); border: 2px solid var(--p-med); border-radius: 50%; width: 55px; height: 55px; display: flex; align-items: center; justify-content: center; z-index: 999; }
+        #theme-toggle { position: fixed; bottom: 25px; right: 25px; background: var(--card-bg); border: 2px solid var(--p-med); border-radius: 50%; width: 55px; height: 55px; display: flex; align-items: center; justify-content: center; z-index: 999; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         #ptr { text-align: center; height: 0; overflow: hidden; transition: height 0.2s; color: var(--p-med); font-size: 0.8em; font-weight: bold; line-height: 40px; }
     </style>
 </head>
@@ -178,6 +184,55 @@
         configurar('meuNome', abrirPainelAvisos);
     }
 
+    function abrirPainelLinks() {
+        document.getElementById('modal-titulo').innerText = "Postar Aula";
+        document.getElementById('modal-corpo').innerHTML = `
+            <div class="admin-form">
+                <input type="password" id="adm-senha" placeholder="Senha de Acesso">
+                <input type="text" id="adm-data" placeholder="Data (Ex: 15/05)">
+                <input type="text" id="adm-hora" placeholder="Horário (Ex: 19:00)">
+                <input type="text" id="adm-materia" placeholder="Nome da Matéria">
+                <input type="text" id="adm-url" placeholder="Link da Aula (URL)">
+                <button class="admin-btn" onclick="publicar('Links')">PUBLICAR AULA</button>
+                <p id="adm-status" style="text-align:center; font-size:14px; margin-top:5px;"></p>
+            </div>`;
+        document.getElementById('meuModal').style.display = 'flex';
+    }
+
+    function abrirPainelAvisos() {
+        document.getElementById('modal-titulo').innerText = "Novo Aviso";
+        document.getElementById('modal-corpo').innerHTML = `
+            <div class="admin-form">
+                <input type="password" id="adm-senha" placeholder="Senha de Acesso">
+                <input type="text" id="adm-titulo" placeholder="Título do Aviso">
+                <textarea id="adm-msg" placeholder="Digite a mensagem aqui..." rows="5"></textarea>
+                <button class="admin-btn" onclick="publicar('Avisos')">PUBLICAR AVISO</button>
+                <p id="adm-status" style="text-align:center; font-size:14px; margin-top:5px;"></p>
+            </div>`;
+        document.getElementById('meuModal').style.display = 'flex';
+    }
+
+    async function publicar(aba) {
+        const status = document.getElementById('adm-status');
+        const payload = { senha: document.getElementById('adm-senha').value, aba: aba };
+        if(aba === 'Links') {
+            payload.data = document.getElementById('adm-data').value;
+            payload.horario = document.getElementById('adm-hora').value;
+            payload.materia = document.getElementById('adm-materia').value;
+            payload.url = document.getElementById('adm-url').value;
+        } else {
+            payload.titulo = document.getElementById('adm-titulo').value;
+            payload.mensagem = document.getElementById('adm-msg').value;
+        }
+        status.innerText = "⏳ Enviando...";
+        try {
+            await fetch(URL_API, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+            status.innerText = "✅ Publicado com sucesso!";
+            setTimeout(fecharModal, 1500);
+        } catch(e) { status.innerText = "❌ Erro ao enviar."; }
+    }
+
+    // --- FUNÇÕES DE EXIBIÇÃO (MANTIDAS) ---
     function abrirGrade() {
         const corpo = document.getElementById('modal-corpo');
         document.getElementById('modal-titulo').innerText = "Grade de Aulas";
@@ -185,7 +240,6 @@
         const itens = dadosApp["Grade"] || [];
         const ordem = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
         const dias = [...new Set(itens.map(a => a["Dia da Semana"]))].sort((a,b) => ordem.findIndex(d => a.includes(d)) - ordem.findIndex(d => b.includes(d)));
-        
         dias.forEach(dia => {
             const aulas = itens.filter(a => a["Dia da Semana"] === dia && a["Matéria"] && a["Matéria"].trim() !== "");
             let html = aulas.length === 0 ? `<div class="item-aguardando"><span>Aguardando aulas...</span><span>⏳</span></div>` :
@@ -198,7 +252,7 @@
     function abrirGrupos() {
         const corpo = document.getElementById('modal-corpo');
         document.getElementById('modal-titulo').innerText = "Grupos";
-        corpo.innerHTML = `<input type="text" id="buscag" placeholder="🔍 Buscar aluno ou matéria..." style="width:100%; padding:12px; border-radius:10px; background:var(--input-bg); color:white; border:1px solid #444; margin-bottom:15px; text-align: left;" onkeyup="filtrarG()"> <div id="cg"></div>`;
+        corpo.innerHTML = `<input type="text" id="buscag" placeholder="🔍 Buscar..." style="width:100%; padding:14px; border-radius:12px; background:var(--input-bg); color:white; border:1px solid #444; margin-bottom:15px;" onkeyup="filtrarG()"> <div id="cg"></div>`;
         renderGrupos(dadosApp["Grupos"] || []);
         document.getElementById('meuModal').style.display = 'flex';
     }
@@ -277,38 +331,6 @@
             if (parseInt(ptr.style.height) > 50) carregarDados();
             ptr.style.height = '0';
         });
-    }
-
-    function abrirPainelLinks() {
-        document.getElementById('modal-titulo').innerText = "Postar Aula Online";
-        document.getElementById('modal-corpo').innerHTML = `<div class="admin-form"><input type="password" id="adm-senha" placeholder="Senha"><input type="text" id="adm-data" placeholder="Data (DD/MM/AAAA)"><input type="text" id="adm-hora" placeholder="Horário (HH:MM)"><input type="text" id="adm-materia" placeholder="Matéria"><input type="text" id="adm-url" placeholder="URL"><button class="admin-btn" onclick="publicar('Links')">Publicar</button><p id="adm-status" style="text-align:center; margin-top:10px; font-size:12px;"></p></div>`;
-        document.getElementById('meuModal').style.display = 'flex';
-    }
-
-    function abrirPainelAvisos() {
-        document.getElementById('modal-titulo').innerText = "Postar Aviso";
-        document.getElementById('modal-corpo').innerHTML = `<div class="admin-form"><input type="password" id="adm-senha" placeholder="Senha"><input type="text" id="adm-titulo" placeholder="Título"><textarea id="adm-msg" placeholder="Mensagem..." rows="4"></textarea><button class="admin-btn" onclick="publicar('Avisos')">Publicar</button><p id="adm-status" style="text-align:center; margin-top:10px; font-size:12px;"></p></div>`;
-        document.getElementById('meuModal').style.display = 'flex';
-    }
-
-    async function publicar(aba) {
-        const status = document.getElementById('adm-status');
-        const payload = { senha: document.getElementById('adm-senha').value, aba: aba };
-        if(aba === 'Links') {
-            payload.data = document.getElementById('adm-data').value;
-            payload.horario = document.getElementById('adm-hora').value;
-            payload.materia = document.getElementById('adm-materia').value;
-            payload.url = document.getElementById('adm-url').value;
-        } else {
-            payload.titulo = document.getElementById('adm-titulo').value;
-            payload.mensagem = document.getElementById('adm-msg').value;
-        }
-        status.innerText = "Publicando...";
-        try {
-            await fetch(URL_API, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-            status.innerText = "✅ Sucesso!";
-            setTimeout(fecharModal, 1500);
-        } catch(e) { status.innerText = "❌ Erro."; }
     }
 </script>
 </body>
