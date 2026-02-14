@@ -10,9 +10,9 @@
     <meta name="apple-mobile-web-app-title" content="Medicina - Turma H">
     <meta name="theme-color" content="#007bff">
 
-    <link rel="manifest" href="manifest.json?v=10">
-    <link rel="apple-touch-icon" href="icon.png?v=10">
-    <link rel="icon" type="image/png" href="icon.png?v=10">
+    <link rel="manifest" href="manifest.json?v=11">
+    <link rel="apple-touch-icon" href="icon.png?v=11">
+    <link rel="icon" type="image/png" href="icon.png?v=11">
 
     <style>
         :root { --p-med: #007bff; --bg: #121212; --card-bg: #1e1e1e; --text-color: #e0e0e0; --shadow: rgba(0,0,0,0.5); --input-bg: #2d2d2d; --danger: #ff3b30; }
@@ -36,22 +36,20 @@
         @keyframes jump { from { transform: translateY(0); } to { transform: translateY(-3px); } }
         
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; padding: 15px; z-index: 2000; backdrop-filter: blur(10px); }
-        .modal-content { background: var(--card-bg); padding: 20px; border-radius: 28px; width: 100%; max-width: 450px; max-height: 85vh; overflow-y: auto; position: relative; border: 1px solid rgba(0,123,255,0.2); }
+        .modal-content { background: var(--card-bg); padding: 25px; border-radius: 28px; width: 100%; max-width: 450px; max-height: 85vh; overflow-y: auto; position: relative; border: 1px solid rgba(0,123,255,0.2); text-align: left; }
         .close-btn { position: absolute; top: 15px; right: 20px; background: #333; border: none; font-size: 20px; color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 10; }
         
+        /* Formulários Admin */
+        .admin-form input, .admin-form textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 12px; border: 1px solid #444; background: var(--input-bg); color: var(--text-color); font-size: 16px; }
+        .admin-btn { width: 100%; padding: 15px; background: var(--p-med); color: white; border: none; border-radius: 12px; font-weight: bold; margin-top: 10px; cursor: pointer; }
+
         .secao-retratil { margin-bottom: 10px; border-radius: 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(0,123,255,0.1); overflow: hidden; }
-        .secao-titulo { background: rgba(0,123,255,0.15); color: #4dabff; padding: 16px; font-weight: 800; font-size: 0.85em; text-transform: uppercase; cursor: pointer; display: flex; justify-content: space-between; align-items: center; list-style: none; text-align: left; }
-        .secao-titulo::-webkit-details-marker { display: none; }
-        .secao-titulo::after { content: '▼'; font-size: 10px; opacity: 0.5; }
+        .secao-titulo { background: rgba(0,123,255,0.15); color: #4dabff; padding: 16px; font-weight: 800; font-size: 0.85em; text-transform: uppercase; cursor: pointer; display: flex; justify-content: space-between; align-items: center; list-style: none; }
+        
+        .grade-item { display: flex; align-items: center; gap: 15px; padding: 15px; border-bottom: 1px solid rgba(128,128,128,0.1); }
+        .grade-hora { flex: 0 0 100px; height: 40px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 0.72em; background: var(--p-med); border-radius: 8px; }
 
-        .grade-item { display: flex; align-items: center; gap: 15px; padding: 15px; border-bottom: 1px solid rgba(128,128,128,0.1); background: rgba(0,0,0,0.1); }
-        .grade-hora { flex: 0 0 100px; height: 45px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 0.72em; text-align: center; background: var(--p-med); border-radius: 10px; }
-        .grade-info { flex: 1; text-align: left; font-size: 0.9em; display: flex; flex-direction: column; }
-
-        .item-aguardando { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(255,255,255,0.02); border: 1px dashed #444; border-radius: 12px; color: #888; margin: 10px; text-align: left; font-style: italic; font-size: 0.85em; }
-        .item-lista-link { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--input-bg); border-radius: 12px; text-decoration: none; color: inherit; margin-bottom: 8px; text-align: left; }
-
-        .footer-creditos { text-align: center; font-size: 11px; color: #666; margin-top: 50px; padding: 20px 0; width: 100%; border-top: 1px solid rgba(255,255,255,0.05); }
+        .footer-creditos { text-align: center; font-size: 11px; color: #666; margin-top: 50px; padding: 20px; width: 100%; border-top: 1px solid rgba(255,255,255,0.05); user-select: none; -webkit-user-select: none; }
 
         #theme-toggle { position: fixed; bottom: 25px; right: 25px; background: var(--card-bg); border: 2px solid var(--p-med); border-radius: 50%; width: 55px; height: 55px; display: flex; align-items: center; justify-content: center; z-index: 999; }
         #ptr { text-align: center; height: 0; overflow: hidden; transition: height 0.2s; color: var(--p-med); font-size: 0.8em; font-weight: bold; }
@@ -81,14 +79,15 @@
         <span class="icon">🔔</span><span>Avisos</span>
     </div>
     <div class="card" onclick="abrirArquivos()"><span class="icon">📄</span><span>Arquivos</span></div>
+    
     <div id="btnAulasOnline" class="card" onclick="abrirLinks()" style="grid-column: span 2; height: 85px; flex-direction: row; gap: 15px;">
         <span class="icon">💻</span><span>Aulas Online</span>
     </div>
 </div>
 
-<div id="meuModal" class="modal"><div class="modal-content"><button class="close-btn" onclick="fecharModal()">✕</button><h3 id="modal-titulo" style="margin-bottom:20px; color:var(--p-med); text-align: left;"></h3><div id="modal-corpo"></div></div></div>
+<div id="meuModal" class="modal"><div class="modal-content"><button class="close-btn" onclick="fecharModal()">✕</button><h3 id="modal-titulo" style="margin-bottom:20px; color:var(--p-med);"></h3><div id="modal-corpo"></div></div></div>
 
-<div class="footer-creditos">
+<div class="footer-creditos" id="meuNome">
     Desenvolvido por João Vitor Fróis Sanchez
 </div>
 
@@ -99,6 +98,7 @@
     window.onload = () => {
         carregarDados();
         setupPullToRefresh();
+        setupLongPress();
         setTimeout(() => {
             document.getElementById('splash').style.opacity = '0';
             setTimeout(() => document.getElementById('splash').style.display = 'none', 800);
@@ -134,26 +134,114 @@
         document.getElementById('theme-icon').innerText = n === 'dark' ? '🌙' : '☀️';
     }
 
+    // --- FUNÇÕES DE LONGO PRESS (5 SEGUNDOS) ---
+    function setupLongPress() {
+        const configurar = (id, callback) => {
+            let timer;
+            const el = document.getElementById(id);
+            const start = () => { timer = setTimeout(callback, 5000); };
+            const cancel = () => { clearTimeout(timer); };
+            
+            el.addEventListener('mousedown', start);
+            el.addEventListener('touchstart', start);
+            el.addEventListener('mouseup', cancel);
+            el.addEventListener('mouseleave', cancel);
+            el.addEventListener('touchend', cancel);
+        };
+
+        configurar('btnAulasOnline', abrirPainelLinks);
+        configurar('meuNome', abrirPainelAvisos);
+    }
+
+    // Painel Admin Aulas Online
+    function abrirPainelLinks() {
+        document.getElementById('modal-titulo').innerText = "Postar Aula Online";
+        document.getElementById('modal-corpo').innerHTML = `
+            <div class="admin-form">
+                <input type="password" id="adm-senha" placeholder="Senha do Representante">
+                <input type="text" id="adm-data" placeholder="Data (DD/MM/AAAA)">
+                <input type="text" id="adm-hora" placeholder="Horário (HH:MM)">
+                <input type="text" id="adm-materia" placeholder="Matéria">
+                <input type="text" id="adm-url" placeholder="URL da Aula">
+                <button class="admin-btn" onclick="publicar('Links')">Publicar Aula</button>
+                <p id="adm-status" style="text-align:center; margin-top:10px; font-size:12px;"></p>
+            </div>
+        `;
+        document.getElementById('meuModal').style.display = 'flex';
+    }
+
+    // Painel Admin Avisos
+    function abrirPainelAvisos() {
+        document.getElementById('modal-titulo').innerText = "Postar Novo Aviso";
+        document.getElementById('modal-corpo').innerHTML = `
+            <div class="admin-form">
+                <input type="password" id="adm-senha" placeholder="Senha do Representante">
+                <input type="text" id="adm-titulo" placeholder="Título do Aviso">
+                <textarea id="adm-msg" placeholder="Mensagem..." rows="4"></textarea>
+                <button class="admin-btn" onclick="publicar('Avisos')">Publicar Aviso</button>
+                <p id="adm-status" style="text-align:center; margin-top:10px; font-size:12px;"></p>
+            </div>
+        `;
+        document.getElementById('meuModal').style.display = 'flex';
+    }
+
+    async function publicar(aba) {
+        const status = document.getElementById('adm-status');
+        const senha = document.getElementById('adm-senha').value;
+        if(!senha) { alert("Digite a senha!"); return; }
+
+        let payload = { senha: senha, aba: aba };
+        
+        if(aba === 'Links') {
+            payload.data = document.getElementById('adm-data').value;
+            payload.horario = document.getElementById('adm-hora').value;
+            payload.materia = document.getElementById('adm-materia').value;
+            payload.url = document.getElementById('adm-url').value;
+        } else {
+            payload.titulo = document.getElementById('adm-titulo').value;
+            payload.mensagem = document.getElementById('adm-msg').value;
+        }
+
+        status.innerText = "Publicando...";
+        try {
+            await fetch(URL_API, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+            status.innerText = "✅ Publicado com sucesso! Atualize o app.";
+            status.style.color = "#4dabff";
+            setTimeout(fecharModal, 2000);
+        } catch(e) {
+            status.innerText = "❌ Erro ao publicar.";
+            status.style.color = "red";
+        }
+    }
+
+    // --- FUNÇÕES DE EXIBIÇÃO (MODAIS) ---
     function abrirGrade() {
         const corpo = document.getElementById('modal-corpo');
         document.getElementById('modal-titulo').innerText = "Grade de Aulas";
         corpo.innerHTML = "";
         const itens = dadosApp["Grade"] || [];
         const ordem = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
-        const diasExistentes = [...new Set(itens.map(a => a["Dia da Semana"]))].sort((a,b) => ordem.findIndex(d => a.includes(d)) - ordem.findIndex(d => b.includes(d)));
+        const dias = [...new Set(itens.map(a => a["Dia da Semana"]))].sort((a,b) => ordem.findIndex(d => a.includes(d)) - ordem.findIndex(d => b.includes(d)));
 
-        diasExistentes.forEach(dia => {
-            const aulas = itens.filter(a => a["Dia da Semana"] === dia);
-            const aulasValidas = aulas.filter(a => a["Matéria"] && a["Matéria"].trim() !== "");
-            let html = (aulasValidas.length === 0) ? 
-                `<div class="item-aguardando"><span>Aguardando aulas...</span><span>⏳</span></div>` :
-                aulasValidas.map(a => `
-                    <div class="grade-item">
-                        <div class="grade-hora">${a["Horários"]}</div>
-                        <div class="grade-info"><b>${a["Matéria"]}</b><small style="opacity:0.7">👥 ${a["Grupo"] || 'Geral'}</small></div>
-                    </div>`).join('');
+        dias.forEach(dia => {
+            const aulas = itens.filter(a => a["Dia da Semana"] === dia && a["Matéria"] && a["Matéria"].trim() !== "");
+            let html = aulas.length === 0 ? `<div class="item-aguardando"><span>Aguardando aulas...</span><span>⏳</span></div>` :
+                aulas.map(a => `<div class="grade-item"><div class="grade-hora">${a["Horários"]}</div><div style="flex:1;"><b>${a["Matéria"]}</b><br><small style="opacity:0.6">${a["Grupo"] || 'Geral'}</small></div></div>`).join('');
             corpo.innerHTML += `<details class="secao-retratil"><summary class="secao-titulo">${dia}</summary><div>${html}</div></details>`;
         });
+        document.getElementById('meuModal').style.display = 'flex';
+    }
+
+    function abrirLinks() {
+        const corpo = document.getElementById('modal-corpo');
+        document.getElementById('modal-titulo').innerText = "Aulas Online";
+        const itens = dadosApp["Links"] || [];
+        corpo.innerHTML = itens.length === 0 ? "<p style='text-align:center;'>Nenhuma aula agendada.</p>" : itens.map(i => `
+            <div style="padding:15px; background:var(--input-bg); border-radius:15px; margin-bottom:10px;">
+                <b>${i["Materia"] || i["Matéria"]}</b><br>
+                <small>🗓️ ${i["Data"]} - ${i["Horário"] || i["Horario"]}</small>
+                <a href="${i["Url"] || i["URL"]}" target="_blank" style="display:block; background:var(--p-med); color:white; text-align:center; padding:10px; border-radius:8px; margin-top:10px; text-decoration:none; font-weight:bold;">ACESSAR</a>
+            </div>`).join('');
         document.getElementById('meuModal').style.display = 'flex';
     }
 
@@ -161,9 +249,9 @@
         const corpo = document.getElementById('modal-corpo');
         document.getElementById('modal-titulo').innerText = "Avisos Recentes";
         const itens = (dadosApp["Avisos"] || []).slice().reverse();
-        localStorage.setItem('avisos_lidos', (dadosApp["Avisos"] || []).length.toString());
+        corpo.innerHTML = itens.length === 0 ? "<p style='text-align:center;'>Sem avisos.</p>" : itens.map(i => `<div style="background:rgba(0,123,255,0.05); padding:15px; border-radius:15px; margin-bottom:10px; border-left:4px solid var(--p-med);"><small>${i["Data"]}</small><br><b>${i["Titulo"]}</b><p style="font-size:0.9em;">${i["Mensagem"]}</p></div>`).join('');
+        localStorage.setItem('avisos_lidos', (dadosApp["Avisos"] || []).length);
         document.getElementById('aviso-badge').style.display = 'none';
-        corpo.innerHTML = itens.length === 0 ? "<p style='text-align:center;'>Nenhum aviso.</p>" : itens.map(i => `<div style="background:rgba(0,123,255,0.05); padding:15px; border-radius:15px; margin-bottom:12px; border-left:4px solid var(--p-med); text-align: left;"><small style="color:#888">${i["Data"]}</small><div style="font-weight:800; color:var(--p-med); margin:4px 0;">${i["Titulo"]}</div><div style="font-size:0.9em; white-space:pre-wrap;">${i["Mensagem"]}</div></div>`).join('');
         document.getElementById('meuModal').style.display = 'flex';
     }
 
@@ -174,12 +262,7 @@
         const itens = dadosApp["Arquivos"] || [];
         [...new Set(itens.map(i => i["Nome"]))].forEach(n => {
             const links = itens.filter(i => i["Nome"] === n);
-            let html = links.map(a => {
-                if (!a["Links"] || a["Links"].trim() === "" || a["Links"] === "#") {
-                    return `<div class="item-aguardando"><span>${a["Descrição"]} (Aguardando arquivos...)</span><span>⏳</span></div>`;
-                }
-                return `<a href="${a["Links"]}" target="_blank" class="item-lista-link"><b>${a["Descrição"]}</b><span>📂</span></a>`;
-            }).join('');
+            let html = links.map(a => (!a["Links"] || a["Links"] === "#") ? `<div class="item-aguardando"><span>${a["Descrição"]} (Aguardando...)</span><span>⏳</span></div>` : `<a href="${a["Links"]}" target="_blank" class="item-lista-link"><b>${a["Descrição"]}</b><span>📂</span></a>`).join('');
             corpo.innerHTML += `<details class="secao-retratil"><summary class="secao-titulo">${n}</summary><div style="padding:10px;">${html}</div></details>`;
         });
         document.getElementById('meuModal').style.display = 'flex';
@@ -188,7 +271,7 @@
     function abrirGrupos() {
         const corpo = document.getElementById('modal-corpo');
         document.getElementById('modal-titulo').innerText = "Grupos";
-        corpo.innerHTML = `<input type="text" id="buscag" placeholder="🔍 Buscar aluno ou matéria..." style="width:100%; padding:12px; border-radius:10px; background:var(--input-bg); color:white; border:1px solid #444; margin-bottom:15px; text-align: left;" onkeyup="filtrarG()"> <div id="cg"></div>`;
+        corpo.innerHTML = `<input type="text" id="buscag" placeholder="🔍 Buscar aluno ou matéria..." style="width:100%; padding:12px; border-radius:10px; background:var(--input-bg); color:white; border:1px solid #444; margin-bottom:15px;" onkeyup="filtrarG()"> <div id="cg"></div>`;
         renderGrupos(dadosApp["Grupos"] || []);
         document.getElementById('meuModal').style.display = 'flex';
     }
@@ -202,7 +285,7 @@
             const nomes = [...new Set(gMat.map(g => g["Nome do Grupo"]))];
             let h = nomes.map(ng => {
                 const mb = gMat.filter(g => g["Nome do Grupo"] === ng).map(m => `<li>${m["Integrantes"]}</li>`).join('');
-                return `<details style="margin:5px 0; border:1px solid #333; border-radius:8px; text-align: left;"><summary style="padding:10px; font-size:0.9em; font-weight:bold; cursor:pointer;">${ng}</summary><ul style="font-size:0.85em; color:#bbb; padding-bottom:10px;">${mb}</ul></details>`;
+                return `<details style="margin:5px 0; border:1px solid #333; border-radius:8px;"><summary style="padding:10px; font-weight:bold;">${ng}</summary><ul style="font-size:0.85em; color:#bbb; padding-bottom:10px;">${mb}</ul></details>`;
             }).join('');
             container.innerHTML += `<details class="secao-retratil"><summary class="secao-titulo">${m}</summary><div style="padding:5px 10px;">${h}</div></details>`;
         });
@@ -212,21 +295,6 @@
         const t = document.getElementById('buscag').value.toLowerCase();
         const f = (dadosApp["Grupos"] || []).filter(g => JSON.stringify(g).toLowerCase().includes(t));
         renderGrupos(f);
-    }
-
-    function abrirLinks() {
-        const corpo = document.getElementById('modal-corpo');
-        document.getElementById('modal-titulo').innerText = "Aulas Online";
-        const itens = dadosApp["Links"] || [];
-        corpo.innerHTML = itens.length === 0 ? "<p style='text-align:center;'>Nenhuma aula online agendada.</p>" : itens.map(i => {
-            // Suporte para nomes de campos com ou sem acento vindo da planilha
-            const m = i["Materia"] || i["Matéria"] || "Matéria Indefinida";
-            const d = i["Data"] || "";
-            const h = i["Horário"] || i["Horario"] || "";
-            const u = i["Url"] || i["URL"] || i["Links"] || "#";
-            return `<div style="padding:15px; background:var(--input-bg); border-radius:15px; margin-bottom:10px; display:flex; flex-direction:column; text-align: left;"><b>${m}</b><small style="opacity:0.7; margin:5px 0;">🗓️ ${d} - ${h}</small><a href="${u}" target="_blank" style="background:var(--p-med); color:white; text-decoration:none; padding:10px; border-radius:8px; width:100%; text-align:center; font-weight:bold; margin-top:5px;">ACESSAR</a></div>`;
-        }).join('');
-        document.getElementById('meuModal').style.display = 'flex';
     }
 
     function setupPullToRefresh() {
@@ -248,4 +316,3 @@
 </script>
 </body>
 </html>
-
