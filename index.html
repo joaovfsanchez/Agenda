@@ -4,9 +4,15 @@
     <meta charset="UTF-8">
     <title>Agenda Medicine - Turma H</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Med Turma H">
     <meta name="theme-color" content="#007bff">
+
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="shortcut icon" href="icon.png">
 
     <style>
         :root { --p-med: #007bff; --bg: #121212; --card-bg: #1e1e1e; --text-color: #e0e0e0; --shadow: rgba(0,0,0,0.5); --input-bg: #2d2d2d; }
@@ -119,7 +125,6 @@
     window.onload = () => {
         carregarDados();
         
-        // Timer Painel Aulas Online (Segurar 5s)
         const btnAulas = document.getElementById('btnAulasOnline');
         const ligarTimerLink = () => timerPlanilha = setTimeout(() => document.getElementById('modalLinkAdmin').style.display = 'flex', 5000);
         btnAulas.addEventListener('touchstart', ligarTimerLink);
@@ -127,7 +132,6 @@
         btnAulas.addEventListener('touchend', () => clearTimeout(timerPlanilha));
         btnAulas.addEventListener('mouseup', () => clearTimeout(timerPlanilha));
 
-        // Timer Painel Avisos (Segurar 5s no seu nome)
         const btnCreditos = document.getElementById('btnAdmin');
         const ligarTimerAviso = () => timerAdmin = setTimeout(() => document.getElementById('modalAvisoAdmin').style.display = 'flex', 5000);
         btnCreditos.addEventListener('touchstart', ligarTimerAviso);
