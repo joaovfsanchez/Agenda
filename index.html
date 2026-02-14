@@ -15,6 +15,7 @@
     <link rel="icon" type="image/png" href="icon.png?v=16">
 
     <style>
+        
         :root { --p-med: #007bff; --bg: #121212; --card-bg: #1e1e1e; --text-color: #e0e0e0; --shadow: rgba(0,0,0,0.5); --input-bg: #2d2d2d; --danger: #ff3b30; }
         [data-theme="light"] { --bg: #f4f7f6; --card-bg: #ffffff; --text-color: #333333; --shadow: rgba(0,0,0,0.1); --input-bg: #eeeeee; }
         
@@ -41,6 +42,14 @@
         #modal-titulo { text-align: left !important; display: block; width: 100%; margin-bottom: 20px; color: var(--p-med); font-weight: 800; font-size: 1.4em; }
 
         .close-btn { position: absolute; top: 15px; right: 20px; background: #333; border: none; font-size: 20px; color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 10; }
+        /* Bloqueia a seleção e a lupa no botão de aulas e no nome */
+        #btnAulasOnline, #meuNome {
+           -webkit-user-select: none;  /* Safari e Chrome Mobile */
+           -moz-user-select: none;     /* Firefox */
+           -ms-user-select: none;      /* IE/Edge */
+           user-select: none;          /* Padrão */
+           -webkit-touch-callout: none; /* Bloqueia o menu de "copiar/lupa" no iOS */
+        }
         /* ESTILO DO AGUARDANDO AULAS - ADICIONE ISSO */
         .item-aguardando { 
             display: flex; 
@@ -188,19 +197,25 @@
     }
 
     function setupLongPress() {
-        const configurar = (id, callback) => {
-            let timer;
-            const el = document.getElementById(id);
-            const start = () => { timer = setTimeout(callback, 5000); };
-            const cancel = () => { clearTimeout(timer); };
-            el.addEventListener('mousedown', start);
-            el.addEventListener('touchstart', start);
-            el.addEventListener('mouseup', cancel);
-            el.addEventListener('touchend', cancel);
-        };
-        configurar('btnAulasOnline', abrirPainelLinks);
-        configurar('meuNome', abrirPainelAvisos);
-    }
+    const configurar = (id, callback) => {
+        let timer;
+        const el = document.getElementById(id);
+        
+        // Impede que o menu de contexto (lupa/copiar) apareça
+        el.oncontextmenu = function(e) { e.preventDefault(); e.stopPropagation(); return false; };
+
+        const start = () => { timer = setTimeout(callback, 5000); };
+        const cancel = () => { clearTimeout(timer); };
+
+        el.addEventListener('mousedown', start);
+        el.addEventListener('touchstart', start);
+        el.addEventListener('mouseup', cancel);
+        el.addEventListener('touchend', cancel);
+    };
+    
+    configurar('btnAulasOnline', abrirPainelLinks);
+    configurar('meuNome', abrirPainelAvisos);
+}
 
     function abrirPainelLinks() {
         document.getElementById('modal-titulo').innerText = "Postar Aula";
@@ -353,6 +368,7 @@
 </script>
 </body>
 </html>
+
 
 
 
